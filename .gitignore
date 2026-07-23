@@ -1,0 +1,19 @@
+# Python
+pipeline/.venv/
+api/.venv/
+pipeline/data/*
+!pipeline/data/.gitkeep
+pipeline/outputs/*
+!pipeline/outputs/.gitkeep
+__pycache__/
+*.pyc
+
+# FastF1 cache
+.fastf1-cache/
+
+# Node / site
+node_modules/
+site/dist/
+
+# OS
+.DS_Store

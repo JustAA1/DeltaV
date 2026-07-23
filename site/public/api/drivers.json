@@ -1,0 +1,205 @@
+{
+  "season": 2026,
+  "drivers": [
+    {
+      "code": "NOR",
+      "name": "Lando Norris",
+      "team": "McLaren",
+      "number": 1,
+      "color": "#FF8000",
+      "image": "/drivers/norris-lando.png"
+    },
+    {
+      "code": "VER",
+      "name": "Max Verstappen",
+      "team": "Red Bull Racing",
+      "number": 3,
+      "color": "#3671C6",
+      "image": "/drivers/verstappen-max.png"
+    },
+    {
+      "code": "BOR",
+      "name": "Gabriel Bortoleto",
+      "team": "Audi",
+      "number": 5,
+      "color": "#F50537",
+      "image": "/drivers/bortoleto-gabriel.png"
+    },
+    {
+      "code": "HAD",
+      "name": "Isack Hadjar",
+      "team": "Red Bull Racing",
+      "number": 6,
+      "color": "#3671C6",
+      "image": "/drivers/hadjar-isack.png"
+    },
+    {
+      "code": "GAS",
+      "name": "Pierre Gasly",
+      "team": "Alpine",
+      "number": 10,
+      "color": "#FF87BC",
+      "image": "/drivers/gasly-pierre.png"
+    },
+    {
+      "code": "PER",
+      "name": "Sergio Perez",
+      "team": "Cadillac",
+      "number": 11,
+      "color": "#A7ADB2",
+      "image": "/drivers/perez-sergio.png"
+    },
+    {
+      "code": "ANT",
+      "name": "Kimi Antonelli",
+      "team": "Mercedes",
+      "number": 12,
+      "color": "#27F4D2",
+      "image": "/drivers/antonelli-kimi.png"
+    },
+    {
+      "code": "ALO",
+      "name": "Fernando Alonso",
+      "team": "Aston Martin",
+      "number": 14,
+      "color": "#229971",
+      "image": "/drivers/alonso-fernando.png"
+    },
+    {
+      "code": "LEC",
+      "name": "Charles Leclerc",
+      "team": "Ferrari",
+      "number": 16,
+      "color": "#E8002D",
+      "image": "/drivers/leclerc-charles.png"
+    },
+    {
+      "code": "STR",
+      "name": "Lance Stroll",
+      "team": "Aston Martin",
+      "number": 18,
+      "color": "#229971",
+      "image": "/drivers/stroll-lance.png"
+    },
+    {
+      "code": "ALB",
+      "name": "Alexander Albon",
+      "team": "Williams",
+      "number": 23,
+      "color": "#64C4FF",
+      "image": "/drivers/albon-alexander.png"
+    },
+    {
+      "code": "HUL",
+      "name": "Nico Hulkenberg",
+      "team": "Audi",
+      "number": 27,
+      "color": "#F50537",
+      "image": "/drivers/hulkenberg-nico.png"
+    },
+    {
+      "code": "LAW",
+      "name": "Liam Lawson",
+      "team": "Racing Bulls",
+      "number": 30,
+      "color": "#6692FF",
+      "image": "/drivers/lawson-liam.png"
+    },
+    {
+      "code": "OCO",
+      "name": "Esteban Ocon",
+      "team": "Haas F1 Team",
+      "number": 31,
+      "color": "#B6BABD",
+      "image": "/drivers/ocon-esteban.png"
+    },
+    {
+      "code": "LIN",
+      "name": "Arvid Lindblad",
+      "team": "Racing Bulls",
+      "number": 41,
+      "color": "#6692FF",
+      "image": null
+    },
+    {
+      "code": "COL",
+      "name": "Franco Colapinto",
+      "team": "Alpine",
+      "number": 43,
+      "color": "#FF87BC",
+      "image": "/drivers/colapinto-franco.png"
+    },
+    {
+      "code": "HAM",
+      "name": "Lewis Hamilton",
+      "team": "Ferrari",
+      "number": 44,
+      "color": "#E8002D",
+      "image": "/drivers/hamilton-lewis.png"
+    },
+    {
+      "code": "SAI",
+      "name": "Carlos Sainz",
+      "team": "Williams",
+      "number": 55,
+      "color": "#64C4FF",
+      "image": "/drivers/sainz-carlos.png"
+    },
+    {
+      "code": "RUS",
+      "name": "George Russell",
+      "team": "Mercedes",
+      "number": 63,
+      "color": "#27F4D2",
+      "image": "/drivers/russell-george.png"
+    },
+    {
+      "code": "BOT",
+      "name": "Valtteri Bottas",
+      "team": "Cadillac",
+      "number": 77,
+      "color": "#A7ADB2",
+      "image": "/drivers/bottas-valtteri.png"
+    },
+    {
+      "code": "PIA",
+      "name": "Oscar Piastri",
+      "team": "McLaren",
+      "number": 81,
+      "color": "#FF8000",
+      "image": "/drivers/piastri-oscar.png"
+    },
+    {
+      "code": "BEA",
+      "name": "Oliver Bearman",
+      "team": "Haas F1 Team",
+      "number": 87,
+      "color": "#B6BABD",
+      "image": "/drivers/bearman-oliver.png"
+    }
+  ],
+  "races": {
+    "1": "Australian Grand Prix",
+    "2": "Chinese Grand Prix",
+    "3": "Japanese Grand Prix",
+    "4": "Miami Grand Prix",
+    "5": "Canadian Grand Prix",
+    "6": "Monaco Grand Prix",
+    "7": "Barcelona Grand Prix",
+    "8": "Austrian Grand Prix",
+    "9": "British Grand Prix",
+    "10": "Belgian Grand Prix",
+    "11": "Hungarian Grand Prix",
+    "12": "Dutch Grand Prix",
+    "13": "Italian Grand Prix",
+    "14": "Spanish Grand Prix",
+    "15": "Azerbaijan Grand Prix",
+    "16": "Singapore Grand Prix",
+    "17": "United States Grand Prix",
+    "18": "Mexico City Grand Prix",
+    "19": "S\u00e3o Paulo Grand Prix",
+    "20": "Las Vegas Grand Prix",
+    "21": "Qatar Grand Prix",
+    "22": "Abu Dhabi Grand Prix"
+  }
+}
