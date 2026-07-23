@@ -193,6 +193,8 @@ export function saveActiveWhatIfDraft(draft: WhatIfDraft): void {
 export function clearWhatIfDraft(): void {
   try {
     sessionStorage.removeItem(ACTIVE_DRAFT_KEY)
+    sessionStorage.removeItem(REMOVE_DRAFT_KEY)
+    sessionStorage.removeItem(POINTS_DRAFT_KEY)
   } catch {
     // ignore
   }
@@ -300,11 +302,14 @@ export function resolveRemoveForSeason(
   }
 
   const target = normWhatIfText(remove.name)
-  const team = options.teams.find((t) => {
+  const exact = options.teams.find((t) => normWhatIfText(t.name) === target)
+  if (exact) return { name: exact.name }
+  const partial = options.teams.filter((t) => {
     const name = normWhatIfText(t.name)
-    return name === target || name.includes(target) || target.includes(name)
+    return name.includes(target) || target.includes(name)
   })
-  return team ? { name: team.name } : null
+  if (partial.length === 1) return { name: partial[0].name }
+  return null
 }
 
 /** Keep a what-if scenario when changing season; return null if it no longer applies. */

@@ -331,21 +331,14 @@ export function PodiumigamiPage() {
   const [season, setSeason] = useState(DEFAULT_SEASON)
   const [modal, setModal] = useState<{ title: string; trios: PodiumigamiCombo[] } | null>(null)
 
-  const { data: fullData, isLoading: fullLoading } = useQuery({
+  const { data: fullData, isLoading: fullLoading, isError, refetch } = useQuery({
     queryKey: ['podiumigami'],
     queryFn: () => api.podiumigami(),
   })
 
-  const { data: seasonData, isLoading: seasonLoading } = useQuery({
-    queryKey: ['podiumigami', season],
-    queryFn: () => api.podiumigami(season),
-    enabled: scope === 'yearly',
-  })
-
   const seasonStats = useMemo(() => {
-    if (seasonData?.season) return seasonData.season
     return fullData?.by_season?.[String(season)] ?? null
-  }, [seasonData, fullData, season])
+  }, [fullData, season])
 
   const hero = useMemo(() => {
     if (scope === 'yearly') {
@@ -369,13 +362,18 @@ export function PodiumigamiPage() {
 
   if (fullLoading && !fullData) return <LoadingSkeleton rows={4} />
 
-  if (!fullData) {
+  if (isError || !fullData) {
     return (
       <section className="page">
         <header className="page-header">
           <h1>Podiumigami</h1>
         </header>
-        <p>Could not load podiumigami data.</p>
+        <p className="page-empty" role="alert">
+          Could not load podiumigami data.{' '}
+          <button type="button" className="what-if-clear" onClick={() => void refetch()}>
+            Retry
+          </button>
+        </p>
       </section>
     )
   }
@@ -401,9 +399,7 @@ export function PodiumigamiPage() {
       {hero && <HeroPodiumigami race={hero} />}
 
       {scope === 'yearly' ? (
-        seasonLoading && !seasonStats ? (
-          <LoadingSkeleton rows={3} />
-        ) : seasonStats ? (
+        seasonStats ? (
           <YearlyPanel seasonStats={seasonStats} onOpenRanked={openRanked} />
         ) : (
           <p>No podium data for {season}.</p>

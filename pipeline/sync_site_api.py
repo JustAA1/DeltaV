@@ -8,6 +8,7 @@ import shutil
 from pathlib import Path
 
 from config import CURRENT_SEASON, OUTPUTS_DIR, RACES_2026
+from points_rules import get_points_system_changes
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +18,17 @@ COPY_NAMES = (
     "drivers.json",
     "leaderboard.json",
     "podiums.json",
+    "points_system_changes.json",
 )
+
+
+def write_points_system_changes_json(dest_dir: Path | None = None) -> Path:
+    out_dir = Path(OUTPUTS_DIR) if dest_dir is None else dest_dir
+    out_dir.mkdir(parents=True, exist_ok=True)
+    path = out_dir / "points_system_changes.json"
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(get_points_system_changes(), f, indent=2)
+    return path
 
 
 def write_races_json(dest_dir: Path | None = None) -> Path:
@@ -56,6 +67,7 @@ def sync_site_api() -> None:
     SITE_API_DIR.mkdir(parents=True, exist_ok=True)
 
     write_races_json(src)
+    write_points_system_changes_json(src)
 
     # Drop stale prediction rounds (and unused artifacts) before copying the current set
     for stale in SITE_API_DIR.glob("predictions_*.json"):

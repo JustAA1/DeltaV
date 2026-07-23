@@ -10,6 +10,8 @@ import {
   DEFAULT_WHAT_IF_SEASON,
   DEFAULT_WHAT_IF_TEAM,
   DEFAULT_WHAT_IF_TEAM_COLOR,
+  isDefaultPointsSelection,
+  isDefaultRemoveSelection,
 } from '../lib/whatIfDefaults'
 import { useLiveWhatIfAvailable } from '../lib/useLiveWhatIfAvailable'
 import {
@@ -343,6 +345,12 @@ export function WhatIfPage() {
   }, [pointsSystemKeys, pointsSeason, pointsFrom])
 
   const canSubmitRemove = removals.length > 0
+  const removeIsDefault = isDefaultRemoveSelection(season, entityType, selectedValues)
+  const pointsIsDefault = isDefaultPointsSelection(pointsSeason, pointsFrom)
+  const removeCanRun = liveWhatIf || removeIsDefault
+  const pointsCanRun = liveWhatIf || pointsIsDefault
+  // Notice only when leaving hosted defaults (and live API isn't serving customs)
+  const showLocalOnlyWarning = (!removeIsDefault || !pointsIsDefault) && !liveWhatIf
 
   const markRemoveTouched = () => {
     removeFormTouched.current = true
@@ -359,7 +367,7 @@ export function WhatIfPage() {
 
   const handleRemoveSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!liveWhatIf || !canSubmitRemove) return
+    if (!removeCanRun || !canSubmitRemove) return
     const draft = { kind: 'remove' as const, season, removeType: entityType, removes: removals }
     saveWhatIfDraft(draft)
     navigate(`/leaderboard?${whatIfSearchParams(draft).toString()}`)
@@ -367,7 +375,7 @@ export function WhatIfPage() {
 
   const handlePointsSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!liveWhatIf) return
+    if (!pointsCanRun) return
     const draft = { kind: 'points' as const, season: pointsSeason, pointsFrom }
     saveWhatIfDraft(draft)
     navigate(`/leaderboard?${whatIfSearchParams(draft).toString()}`)
@@ -394,18 +402,11 @@ export function WhatIfPage() {
             Explore alternate championships by removing drivers and teams, or swapping in a different
             era&apos;s points system.
           </p>
-          {!liveWhatIf && (
+          {showLocalOnlyWarning && (
             <p className="what-if-local-only" role="status">
               {liveStatus === 'checking'
                 ? 'Checking for the local DeltaV API…'
-                : (
-                  <>
-                    Alternate standings need the local DeltaV API. Clone the repo, run{' '}
-                    <code>api/</code> (<code>uvicorn</code> on port 8000) and{' '}
-                    <code>site/</code> with <code>npm run dev</code>, then use View alternate
-                    standings here.
-                  </>
-                )}
+                : 'Alternate standings can only be accessed when the site is run locally. Clone the repo to view alternative standings.'}
             </p>
           )}
         </header>
@@ -459,7 +460,7 @@ export function WhatIfPage() {
                 </select>
               </label>
 
-              <label className="what-if-field what-if-field-span">
+              <label className="what-if-field">
                 <span className="what-if-field-label">
                   {entityType === 'driver' ? 'Drivers' : 'Teams'}
                 </span>
@@ -485,14 +486,14 @@ export function WhatIfPage() {
             <button
               type="submit"
               className="what-if-submit"
-              disabled={!liveWhatIf || !canSubmitRemove}
+              disabled={!removeCanRun || !canSubmitRemove}
               title={
-                liveWhatIf
+                removeCanRun
                   ? undefined
-                  : 'Run DeltaV locally (api + npm run dev) to view alternate standings'
+                  : 'Run DeltaV locally (api + npm run dev) to view custom alternate standings'
               }
             >
-              {liveWhatIf ? 'View alternate standings' : 'Available locally only'}
+              {removeCanRun ? 'View alternate standings' : 'Available locally only'}
             </button>
           </form>
 
@@ -540,14 +541,14 @@ export function WhatIfPage() {
             <button
               type="submit"
               className="what-if-submit"
-              disabled={!liveWhatIf}
+              disabled={!pointsCanRun}
               title={
-                liveWhatIf
+                pointsCanRun
                   ? undefined
-                  : 'Run DeltaV locally (api + npm run dev) to view alternate standings'
+                  : 'Run DeltaV locally (api + npm run dev) to view custom alternate standings'
               }
             >
-              {liveWhatIf ? 'View alternate standings' : 'Available locally only'}
+              {pointsCanRun ? 'View alternate standings' : 'Available locally only'}
             </button>
           </form>
         </div>

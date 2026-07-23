@@ -46,35 +46,6 @@ export interface ActualResult {
   position: number
 }
 
-export interface BacktestRace {
-  round: number
-  season: number
-  event_name: string
-  metrics: {
-    spearman: number
-    podium_hit_rate: number
-    mean_position_error: number
-    winner_correct: boolean
-  }
-  predictions: PredictionEntry[]
-  actual: ActualResult[]
-}
-
-export interface BacktestSummary {
-  races_evaluated: number
-  mean_spearman: number
-  mean_podium_hit_rate: number
-  mean_position_error: number
-  winner_hit_rate: number
-  note?: string
-}
-
-export interface BacktestResponse {
-  season: number
-  races: BacktestRace[]
-  summary: BacktestSummary
-}
-
 export interface LeaderboardEntity {
   name: string
   code?: string

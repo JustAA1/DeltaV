@@ -140,7 +140,7 @@ export function PredictionsPage() {
   const round = selectedRound ?? rounds[rounds.length - 1]?.round ?? 1
   const [sortBy, setSortBy] = useState<SortMode | null>(null)
 
-  const { data: prediction, isLoading } = useQuery({
+  const { data: prediction, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['predictions', round],
     queryFn: () => api.predictions(round),
     enabled: round > 0,
@@ -230,6 +230,16 @@ export function PredictionsPage() {
 
       {isLoading ? (
         <LoadingSkeleton />
+      ) : isError ? (
+        <p className="page-empty" role="alert">
+          Could not load predictions for round {round}
+          {error instanceof Error ? `: ${error.message}` : ''}.{' '}
+          <button type="button" className="what-if-clear" onClick={() => void refetch()}>
+            Retry
+          </button>
+        </p>
+      ) : !prediction ? (
+        <p className="page-empty">No prediction data for this round yet.</p>
       ) : (
         <>
           {podium.length > 0 && (

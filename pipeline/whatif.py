@@ -67,14 +67,26 @@ def _resolve_driver(season_df: pd.DataFrame, identifier: str) -> tuple[str, str]
     if not target:
         return None
     seen: set[str] = set()
+    exact: list[tuple[str, str]] = []
+    partial: list[tuple[str, str]] = []
     for _, row in season_df.sort_values("round").iterrows():
         code = str(row.get("driver_code") or "").strip()
         if not code or code in seen:
             continue
         seen.add(code)
         name = str(row.get("driver_name") or code)
-        if _norm(code) == target or _norm(name) == target or target in _norm(name):
-            return code, name
+        code_n = _norm(code)
+        name_n = _norm(name)
+        if code_n == target or name_n == target:
+            exact.append((code, name))
+        elif target in name_n or name_n in target:
+            partial.append((code, name))
+    if len(exact) == 1:
+        return exact[0]
+    if len(exact) > 1:
+        return exact[0]
+    if len(partial) == 1:
+        return partial[0]
     return None
 
 
@@ -86,9 +98,18 @@ def _resolve_team(season_df: pd.DataFrame, identifier: str) -> str | None:
     canonical = normalize_team(identifier)
     if canonical in teams:
         return canonical
-    for team in teams:
-        if _norm(team) == target_norm or target_norm in _norm(team) or _norm(team) in target_norm:
-            return team
+    exact = [team for team in teams if _norm(team) == target_norm]
+    if len(exact) == 1:
+        return exact[0]
+    if len(exact) > 1:
+        return exact[0]
+    partial = [
+        team
+        for team in teams
+        if target_norm in _norm(team) or _norm(team) in target_norm
+    ]
+    if len(partial) == 1:
+        return partial[0]
     return None
 
 

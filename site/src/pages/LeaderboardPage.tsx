@@ -17,6 +17,7 @@ import { WhatIfClauseText } from '../components/WhatIfClauseText'
 import { WhatIfPointsClauseText } from '../components/WhatIfPointsClauseText'
 import { lastName, ranksAtStage, sortSeriesAtStage, toLeaderboardChartData } from '../lib/leaderboard'
 import { useLiveWhatIfAvailable } from '../lib/useLiveWhatIfAvailable'
+import { isHostedWhatIfDraft } from '../lib/whatIfDefaults'
 import { formatPoints, roundPoints } from '../lib/points'
 import {
   adaptWhatIfDraftToSeason,
@@ -337,22 +338,22 @@ export function LeaderboardPage() {
   const [searchParams] = useSearchParams()
   const { available: liveWhatIf } = useLiveWhatIfAvailable()
   const requestedWhatIf = useMemo(() => parseWhatIfFromSearchParams(searchParams), [searchParams])
-  const whatIfBlocked = Boolean(requestedWhatIf) && !liveWhatIf
-  const whatIfFromUrl = liveWhatIf ? requestedWhatIf : null
+  const hostedWhatIf = isHostedWhatIfDraft(requestedWhatIf)
+  const whatIfRunnable = liveWhatIf || hostedWhatIf
+  const whatIfBlocked = Boolean(requestedWhatIf) && !whatIfRunnable
+  const whatIfFromUrl = whatIfRunnable ? requestedWhatIf : null
   const whatIfActive = whatIfFromUrl !== null
   const whatIfSeason = whatIfFromUrl?.season ?? 2026
   const whatIfChampionship = whatIfFromUrl?.championship ?? 'drivers'
   const whatIfRemoves = whatIfFromUrl && isRemoveWhatIfDraft(whatIfFromUrl) ? whatIfFromUrl.removes : []
-  const whatIfRemoveType =
-    whatIfFromUrl && isRemoveWhatIfDraft(whatIfFromUrl) ? whatIfFromUrl.removeType : 'driver'
   const whatIfQueryKeyStr = useMemo(
     () => (whatIfFromUrl ? whatIfQueryKey(whatIfFromUrl) : ''),
     [whatIfFromUrl],
   )
 
-  const [season, setSeason] = useState(whatIfActive ? whatIfSeason : 2026)
+  const [season, setSeason] = useState(requestedWhatIf?.season ?? 2026)
   const [mode, setMode] = useState<'drivers' | 'constructors'>(
-    whatIfActive ? whatIfChampionship : 'drivers',
+    requestedWhatIf?.championship ?? (whatIfActive ? whatIfChampionship : 'drivers'),
   )
   const [hidden, setHidden] = useState<Set<string>>(new Set())
   const scrollLockRef = useRef<number | null>(null)
@@ -365,23 +366,30 @@ export function LeaderboardPage() {
 
   // Restore saved what-if when Leaderboard nav drops query params
   useEffect(() => {
-    if (!liveWhatIf) return
+    // Never overwrite an explicit What If URL (including blocked custom links)
+    if (requestedWhatIf) return
     if (whatIfActive && whatIfFromUrl) return
     const draft = loadWhatIfDraft()
-    if (draft) {
-      navigate(`/leaderboard?${whatIfSearchParams(draft).toString()}`, {
-        replace: true,
-        preventScrollReset: true,
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- restore once when API becomes available
-  }, [liveWhatIf])
+    if (!draft) return
+    // Hosted site: only restore precomputed default scenarios
+    if (!liveWhatIf && !isHostedWhatIfDraft(draft)) return
+    navigate(`/leaderboard?${whatIfSearchParams(draft).toString()}`, {
+      replace: true,
+      preventScrollReset: true,
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- restore once when API/draft becomes available
+  }, [liveWhatIf, requestedWhatIf])
 
   useEffect(() => {
+    if (requestedWhatIf) {
+      setSeason(requestedWhatIf.season)
+      if (requestedWhatIf.championship) setMode(requestedWhatIf.championship)
+      return
+    }
     if (!whatIfActive) return
     setSeason(whatIfSeason)
     setMode(whatIfChampionship)
-  }, [whatIfActive, whatIfSeason, whatIfChampionship, whatIfQueryKeyStr])
+  }, [requestedWhatIf, whatIfActive, whatIfSeason, whatIfChampionship, whatIfQueryKeyStr])
 
   useEffect(() => {
     if (whatIfActive) {
@@ -391,26 +399,14 @@ export function LeaderboardPage() {
 
   const { data, isLoading, isFetching, error } = useQuery({
     queryKey: whatIfActive
-      ? ['what-if', season, whatIfQueryKeyStr]
+      ? ['what-if', season, whatIfQueryKeyStr, liveWhatIf ? 'live' : 'hosted']
       : ['leaderboard', season],
     queryFn: () => {
       if (!whatIfFromUrl) return api.leaderboard(season)
-      if (isPointsWhatIfDraft(whatIfFromUrl)) {
-        return api.whatIfPointsSystem({
-          season,
-          points_from: whatIfFromUrl.pointsFrom,
-          championship: whatIfChampionship,
-        })
-      }
-      return api.whatIf({
-        season,
-        removes: whatIfRemoves.map((r) => ({
-          type: whatIfRemoveType,
-          name: r.name,
-          id: r.id,
-        })),
-        championship: whatIfChampionship,
-      })
+      return api.whatIfDraft(
+        { ...whatIfFromUrl, championship: whatIfChampionship, season },
+        liveWhatIf,
+      )
     },
     enabled: whatIfActive
       ? isPointsWhatIfDraft(whatIfFromUrl!) || whatIfRemoves.length > 0
@@ -497,6 +493,13 @@ export function LeaderboardPage() {
     setSeason(next)
 
     if (!adapted) {
+      clearWhatIfDraft()
+      navigate('/leaderboard', { preventScrollReset: true })
+      return
+    }
+
+    // Hosted-only: don't leave a custom whatif=1 URL that falls back to official standings
+    if (!liveWhatIf && !isHostedWhatIfDraft(adapted)) {
       clearWhatIfDraft()
       navigate('/leaderboard', { preventScrollReset: true })
       return
@@ -713,9 +716,8 @@ export function LeaderboardPage() {
           </h1>
           {whatIfBlocked && (
             <p className="what-if-local-only lb-what-if-blocked" role="status">
-              This What If link needs the local DeltaV API. Open the site with{' '}
-              <code>npm run dev</code> and <code>uvicorn</code> on port 8000, or clear the scenario
-              below.
+              Alternate standings can only be accessed when the site is run locally. Clone the repo
+              to view alternative standings.
             </p>
           )}
           {(whatIfActiveClause || whatIfBlocked) && (

@@ -13,8 +13,11 @@ import type {
 import {
   POINTS_SYSTEM_CHANGES,
   constructorChampionsFromLeaderboard,
+  hostedWhatIfPath,
+  loadHostedWhatIf,
   whatIfOptionsFromLeaderboard,
 } from '../lib/whatIfDefaults'
+import type { WhatIfDraft } from '../lib/whatIfStorage'
 
 async function fetchJson<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(path, init)
@@ -34,7 +37,10 @@ let leaderboardFilePromise: Promise<LeaderboardFile> | null = null
 
 function loadLeaderboardFile() {
   if (!leaderboardFilePromise) {
-    leaderboardFilePromise = fetchJson<LeaderboardFile>('/api/leaderboard.json')
+    leaderboardFilePromise = fetchJson<LeaderboardFile>('/api/leaderboard.json').catch((err) => {
+      leaderboardFilePromise = null
+      throw err
+    })
   }
   return leaderboardFilePromise
 }
@@ -75,8 +81,13 @@ export const api = {
   whatIfConstructorChampions: async (): Promise<ConstructorChampionsResponse> =>
     constructorChampionsFromLeaderboard(await loadLeaderboardFile()),
 
-  whatIfPointsSystemChanges: async (): Promise<PointsSystemChangesResponse> =>
-    POINTS_SYSTEM_CHANGES,
+  whatIfPointsSystemChanges: async (): Promise<PointsSystemChangesResponse> => {
+    try {
+      return await fetchJson<PointsSystemChangesResponse>('/api/points_system_changes.json')
+    } catch {
+      return POINTS_SYSTEM_CHANGES
+    }
+  },
 
   // Live endpoints — require local api/ (npm run dev + uvicorn)
   whatIf: (body: WhatIfRequest) =>
@@ -91,4 +102,28 @@ export const api = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     }),
+
+  /** Prefers live API; falls back to static JSON for hosted default scenarios. */
+  whatIfDraft: async (draft: WhatIfDraft, liveAvailable: boolean): Promise<SeasonLeaderboard> => {
+    if (liveAvailable) {
+      if (draft.kind === 'points') {
+        return api.whatIfPointsSystem({
+          season: draft.season,
+          points_from: draft.pointsFrom,
+          championship: draft.championship,
+        })
+      }
+      return api.whatIf({
+        season: draft.season,
+        removes: draft.removes.map((r) => ({
+          type: draft.removeType,
+          name: r.name,
+          id: r.id,
+        })),
+        championship: draft.championship,
+      })
+    }
+    if (hostedWhatIfPath(draft)) return loadHostedWhatIf(draft)
+    throw new Error('This What If scenario needs the local DeltaV API')
+  },
 }

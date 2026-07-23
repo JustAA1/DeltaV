@@ -1,8 +1,11 @@
 import type {
   ConstructorChampionsResponse,
   PointsSystemChangesResponse,
+  SeasonLeaderboard,
   WhatIfOptions,
 } from '../types'
+import type { PointsWhatIfDraft, RemoveWhatIfDraft, WhatIfDraft } from './whatIfStorage'
+import pointsSystemChangesFallback from './pointsSystemChanges.fallback.json'
 
 /** Default remove-from-grid scenario shown on What If. */
 export const DEFAULT_WHAT_IF_SEASON = 2026
@@ -13,39 +16,65 @@ export const DEFAULT_WHAT_IF_TEAM_COLOR = '#27F4D2'
 export const DEFAULT_POINTS_SEASON = 2021
 export const DEFAULT_POINTS_FROM = 2007
 
-/**
- * Hardcoded points-era labels (mirrors pipeline/points_rules.py).
- * Used so the What If points card works without a live API GET.
- */
-export const POINTS_SYSTEM_CHANGES: PointsSystemChangesResponse = {
-  changes: {
-    '1980': '9-6-4-3-2-1',
-    '1991': 'Top 6 scored',
-    '2003': 'Top 8 scored',
-    '2010': '25-point system',
-  },
-  seasonChanges: {
-    '1980': 'Best 5 from first 7, best 5 from the rest',
-    '1981': 'Best 11 races counted',
-    '1991': 'Top 6 scored',
-    '2003': 'Top 8 scored',
-    '2010': '25-point system',
-  },
-  systems: Object.fromEntries(
-    Array.from({ length: 2026 - 1980 + 1 }, (_, i) => {
-      const year = 1980 + i
-      const key =
-        year >= 2010
-          ? '25,18,15,12,10,8,6,4,2,1'
-          : year >= 2003
-            ? '10,8,6,5,4,3,2,1'
-            : year >= 1991
-              ? '10,6,4,3,2,1'
-              : '9,6,4,3,2,1'
-      return [String(year), key]
-    }),
-  ),
+/** Static precomputed payloads for hosted default scenarios (no live API). */
+export const DEFAULT_REMOVE_WHAT_IF_PATH = '/api/whatif_remove_2026_mercedes.json'
+export const DEFAULT_POINTS_WHAT_IF_PATH = '/api/whatif_points_2021_from_2007.json'
+
+export function isDefaultRemoveSelection(
+  season: number,
+  entityType: 'driver' | 'team',
+  selectedValues: string[],
+): boolean {
+  if (season !== DEFAULT_WHAT_IF_SEASON || entityType !== 'team' || selectedValues.length !== 1) {
+    return false
+  }
+  const value = selectedValues[0].trim().toLowerCase()
+  return value === DEFAULT_WHAT_IF_TEAM.toLowerCase()
 }
+
+export function isDefaultPointsSelection(season: number, pointsFrom: number): boolean {
+  return season === DEFAULT_POINTS_SEASON && pointsFrom === DEFAULT_POINTS_FROM
+}
+
+export function isDefaultRemoveDraft(draft: RemoveWhatIfDraft): boolean {
+  return isDefaultRemoveSelection(
+    draft.season,
+    draft.removeType,
+    draft.removes.map((r) => (draft.removeType === 'driver' ? r.id ?? r.name : r.name)),
+  )
+}
+
+export function isDefaultPointsDraft(draft: PointsWhatIfDraft): boolean {
+  return isDefaultPointsSelection(draft.season, draft.pointsFrom)
+}
+
+/** Whether this scenario can be served from static JSON without the local API. */
+export function isHostedWhatIfDraft(draft: WhatIfDraft | null | undefined): boolean {
+  if (!draft) return false
+  if (draft.kind === 'points') return isDefaultPointsDraft(draft)
+  return isDefaultRemoveDraft(draft)
+}
+
+export function hostedWhatIfPath(draft: WhatIfDraft): string | null {
+  if (draft.kind === 'points' && isDefaultPointsDraft(draft)) return DEFAULT_POINTS_WHAT_IF_PATH
+  if (draft.kind === 'remove' && isDefaultRemoveDraft(draft)) return DEFAULT_REMOVE_WHAT_IF_PATH
+  return null
+}
+
+export async function loadHostedWhatIf(draft: WhatIfDraft): Promise<SeasonLeaderboard> {
+  const path = hostedWhatIfPath(draft)
+  if (!path) throw new Error('No hosted What If payload for this scenario')
+  const res = await fetch(path)
+  if (!res.ok) throw new Error(`Failed to load ${path}`)
+  return res.json() as Promise<SeasonLeaderboard>
+}
+
+/**
+ * Fallback points-era labels (generated from pipeline/points_rules.py).
+ * Prefer `/api/points_system_changes.json` when present.
+ */
+export const POINTS_SYSTEM_CHANGES: PointsSystemChangesResponse =
+  pointsSystemChangesFallback as PointsSystemChangesResponse
 
 interface LeaderboardFileSeason {
   drivers?: { code?: string; name?: string; team?: string; color?: string }[]

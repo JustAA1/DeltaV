@@ -78,6 +78,24 @@ def championship_counting_label(year: int) -> str | None:
     return None
 
 
+def sprint_signature_key(year: int) -> str:
+    schedule = sprint_points_schedule(year)
+    if not schedule:
+        return "none"
+    return ",".join(str(x) for x in schedule)
+
+
+def points_equivalence_key(year: int) -> str:
+    """Full scoring identity: race table + counting rules + sprint table."""
+    return "|".join(
+        (
+            race_signature_key(year),
+            championship_counting_key(year),
+            sprint_signature_key(year),
+        )
+    )
+
+
 def get_points_system_changes() -> dict:
     changes: dict[str, str] = {}
     season_changes: dict[str, str] = {}
@@ -90,7 +108,7 @@ def get_points_system_changes() -> dict:
     for year in seasons:
         year_str = str(year)
         race_key = race_signature_key(year)
-        systems[year_str] = race_key
+        systems[year_str] = points_equivalence_key(year)
 
         if prev_race_key is None or race_key != prev_race_key:
             changes[year_str] = race_points_system_label(year)

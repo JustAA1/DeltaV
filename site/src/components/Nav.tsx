@@ -1,6 +1,8 @@
+import { useEffect, useId, useRef, useState } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useLiveWhatIfAvailable } from '../lib/useLiveWhatIfAvailable'
-import { leaderboardWhatIfHref } from '../lib/whatIfStorage'
+import { isHostedWhatIfDraft } from '../lib/whatIfDefaults'
+import { leaderboardWhatIfHref, loadWhatIfDraft } from '../lib/whatIfStorage'
 
 function GitHubIcon() {
   return (
@@ -10,61 +12,130 @@ function GitHubIcon() {
   )
 }
 
+function MenuIcon({ open }: { open: boolean }) {
+  return (
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+      {open ? (
+        <>
+          <path d="M6 6l12 12" />
+          <path d="M18 6L6 18" />
+        </>
+      ) : (
+        <>
+          <path d="M4 7h16" />
+          <path d="M4 12h16" />
+          <path d="M4 17h16" />
+        </>
+      )}
+    </svg>
+  )
+}
+
 export function Nav() {
   const location = useLocation()
   const navigate = useNavigate()
+  const menuId = useId()
+  const rootRef = useRef<HTMLElement>(null)
+  const menuToggleRef = useRef<HTMLButtonElement>(null)
+  const [menuOpen, setMenuOpen] = useState(false)
   const { available: liveWhatIf } = useLiveWhatIfAvailable()
-  const leaderboardHref = liveWhatIf ? leaderboardWhatIfHref() : '/leaderboard'
+  const draft = loadWhatIfDraft()
+  const leaderboardHref =
+    liveWhatIf || isHostedWhatIfDraft(draft) ? leaderboardWhatIfHref(draft) : '/leaderboard'
   const leaderboardActive = location.pathname === '/leaderboard'
 
+  useEffect(() => {
+    setMenuOpen(false)
+  }, [location.pathname, location.search])
+
+  useEffect(() => {
+    if (!menuOpen) return
+
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setMenuOpen(false)
+        menuToggleRef.current?.focus()
+      }
+    }
+    const onPointerDown = (e: MouseEvent) => {
+      if (!rootRef.current?.contains(e.target as Node)) setMenuOpen(false)
+    }
+
+    document.addEventListener('keydown', onKeyDown)
+    document.addEventListener('mousedown', onPointerDown)
+
+    const firstLink = rootRef.current?.querySelector<HTMLElement>('.nav-links a, .nav-links .nav-link')
+    firstLink?.focus()
+
+    return () => {
+      document.body.style.overflow = prevOverflow
+      document.removeEventListener('keydown', onKeyDown)
+      document.removeEventListener('mousedown', onPointerDown)
+    }
+  }, [menuOpen])
+
+  const goLeaderboard = (e: React.MouseEvent) => {
+    e.preventDefault()
+    setMenuOpen(false)
+    navigate(leaderboardHref, { preventScrollReset: true })
+  }
+
+  const linkClass = ({ isActive }: { isActive: boolean }) =>
+    isActive ? 'nav-link active' : 'nav-link'
+
   return (
-    <header className="site-nav">
+    <header ref={rootRef} className={`site-nav${menuOpen ? ' is-open' : ''}`}>
       <div className="nav-inner">
         <div className="brand">
           <span className="brand-mark" aria-hidden />
           <span className="brand-text">DeltaV</span>
         </div>
-        <nav className="nav-links" aria-label="Main">
-          <NavLink
-            to="/"
-            end
-            className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
+
+        <div className="nav-actions">
+          <a
+            className="nav-github"
+            href="https://github.com/JustAA1/DeltaV"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="DeltaV on GitHub"
+            title="GitHub"
           >
+            <GitHubIcon />
+          </a>
+          <button
+            ref={menuToggleRef}
+            type="button"
+            className="nav-menu-toggle"
+            aria-expanded={menuOpen}
+            aria-controls={menuId}
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            onClick={() => setMenuOpen((open) => !open)}
+          >
+            <MenuIcon open={menuOpen} />
+          </button>
+        </div>
+
+        <nav id={menuId} className="nav-links" aria-label="Main">
+          <NavLink to="/" end className={linkClass} onClick={() => setMenuOpen(false)}>
             Predictions
           </NavLink>
-          <NavLink
-            to="/podiumigami"
-            className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
-          >
+          <NavLink to="/podiumigami" className={linkClass} onClick={() => setMenuOpen(false)}>
             Podiumigami
           </NavLink>
           <a
             href={leaderboardHref}
             className={leaderboardActive ? 'nav-link active' : 'nav-link'}
-            onClick={(e) => {
-              e.preventDefault()
-              navigate(leaderboardHref, { preventScrollReset: true })
-            }}
+            onClick={goLeaderboard}
           >
             Leaderboard
           </a>
-          <NavLink
-            to="/what-if"
-            className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}
-          >
+          <NavLink to="/what-if" className={linkClass} onClick={() => setMenuOpen(false)}>
             What If?
           </NavLink>
         </nav>
-        <a
-          className="nav-github"
-          href="https://github.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="DeltaV on GitHub"
-          title="GitHub"
-        >
-          <GitHubIcon />
-        </a>
       </div>
     </header>
   )
