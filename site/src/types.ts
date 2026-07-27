@@ -229,6 +229,9 @@ export interface PodiumigamiRace {
   occurrence: number
   occurrence_in_year: number
   trio_count: number
+  /** Prior occurrence of this trio (null on first-ever / podiumigami). */
+  last_occurred_year?: number | null
+  last_occurred_event?: string | null
 }
 
 export interface PodiumigamiCombo {
@@ -239,6 +242,7 @@ export interface PodiumigamiCombo {
   drivers: PodiumigamiTrioDriver[]
   first_year?: number | null
   last_year?: number | null
+  last_event_name?: string | null
 }
 
 export interface PodiumigamiSeasonStats {

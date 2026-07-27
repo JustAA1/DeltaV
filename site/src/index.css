@@ -1719,6 +1719,17 @@ body {
   flex-shrink: 0;
 }
 
+.podiumigami-last-occurred {
+  margin: 0.4rem 0 0;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+.podiumigami-race-row.is-compact .podiumigami-last-occurred {
+  margin-top: 0.35rem;
+}
+
 .podiumigami-gold-badge {
   font-size: 0.62rem;
   font-weight: 700;
@@ -1906,11 +1917,23 @@ body {
 .trio-rank-row {
   display: grid;
   grid-template-columns: 2rem 1fr auto;
-  align-items: center;
+  align-items: start;
   gap: 0.55rem;
   padding: 0.45rem 0.5rem;
   border-radius: 8px;
   background: var(--surface-2);
+}
+
+.trio-rank-body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.trio-rank-body .podiumigami-last-occurred {
+  margin: 0;
+  font-size: 0.68rem;
 }
 
 .trio-rank-row .trio-icons {
@@ -1923,6 +1946,7 @@ body {
 }
 
 .trio-rank-pos {
+  padding-top: 0.35rem;
   font-weight: 700;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
@@ -1938,6 +1962,7 @@ body {
   align-items: center;
   justify-content: flex-end;
   min-width: 5.5rem;
+  padding-top: 0.2rem;
 }
 
 .podiumigami-footnote {

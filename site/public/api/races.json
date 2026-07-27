@@ -55,6 +55,11 @@
       "round": 11,
       "event_name": "Hungarian Grand Prix",
       "season": 2026
+    },
+    {
+      "round": 12,
+      "event_name": "Dutch Grand Prix",
+      "season": 2026
     }
   ]
 }

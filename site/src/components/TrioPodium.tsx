@@ -120,19 +120,30 @@ export function TrioRankListModal({
           </button>
         </header>
         <ol className="trio-rank-list">
-          {trios.map((trio, i) => (
-            <li key={trio.key} className="trio-rank-row">
-              <span className="trio-rank-pos">{i + 1}</span>
-              <TrioIcons drivers={trio.drivers} size={24} />
-              <div className="trio-rank-meta">
-                {trio.is_podiumigami ? (
-                  <span className="podiumigami-gold-badge">Podiumigami</span>
-                ) : (
-                  <span className="trio-rank-count">×{trio.count}</span>
-                )}
-              </div>
-            </li>
-          ))}
+          {trios.map((trio, i) => {
+            const prior =
+              !trio.is_podiumigami &&
+              trio.last_year != null &&
+              trio.last_event_name
+                ? `Last occurred at the ${trio.last_year} ${trio.last_event_name}`
+                : null
+            return (
+              <li key={trio.key} className="trio-rank-row">
+                <span className="trio-rank-pos">{i + 1}</span>
+                <div className="trio-rank-body">
+                  <TrioIcons drivers={trio.drivers} size={24} />
+                  {prior && <p className="podiumigami-last-occurred">{prior}</p>}
+                </div>
+                <div className="trio-rank-meta">
+                  {trio.is_podiumigami ? (
+                    <span className="podiumigami-gold-badge">Podiumigami</span>
+                  ) : (
+                    <span className="trio-rank-count">×{trio.count}</span>
+                  )}
+                </div>
+              </li>
+            )
+          })}
         </ol>
       </div>
     </div>

@@ -1,0 +1,162 @@
+{
+  "round": 12,
+  "season": 2026,
+  "event_name": "Dutch Grand Prix",
+  "upcoming": true,
+  "predictions": [
+    {
+      "driver_code": "ANT",
+      "driver_name": "Kimi Antonelli",
+      "team": "Mercedes",
+      "predicted_position": 1,
+      "confidence": 0.1518
+    },
+    {
+      "driver_code": "HAD",
+      "driver_name": "Isack Hadjar",
+      "team": "Red Bull Racing",
+      "predicted_position": 2,
+      "confidence": 0.1095
+    },
+    {
+      "driver_code": "LEC",
+      "driver_name": "Charles Leclerc",
+      "team": "Ferrari",
+      "predicted_position": 3,
+      "confidence": 0.1064
+    },
+    {
+      "driver_code": "VER",
+      "driver_name": "Max Verstappen",
+      "team": "Red Bull Racing",
+      "predicted_position": 4,
+      "confidence": 0.0992
+    },
+    {
+      "driver_code": "NOR",
+      "driver_name": "Lando Norris",
+      "team": "McLaren",
+      "predicted_position": 5,
+      "confidence": 0.0921
+    },
+    {
+      "driver_code": "HAM",
+      "driver_name": "Lewis Hamilton",
+      "team": "Ferrari",
+      "predicted_position": 6,
+      "confidence": 0.0604
+    },
+    {
+      "driver_code": "RUS",
+      "driver_name": "George Russell",
+      "team": "Mercedes",
+      "predicted_position": 7,
+      "confidence": 0.0457
+    },
+    {
+      "driver_code": "LAW",
+      "driver_name": "Liam Lawson",
+      "team": "Racing Bulls",
+      "predicted_position": 8,
+      "confidence": 0.0442
+    },
+    {
+      "driver_code": "LIN",
+      "driver_name": "Arvid Lindblad",
+      "team": "Racing Bulls",
+      "predicted_position": 9,
+      "confidence": 0.0377
+    },
+    {
+      "driver_code": "GAS",
+      "driver_name": "Pierre Gasly",
+      "team": "Alpine",
+      "predicted_position": 10,
+      "confidence": 0.0336
+    },
+    {
+      "driver_code": "BOR",
+      "driver_name": "Gabriel Bortoleto",
+      "team": "Audi",
+      "predicted_position": 11,
+      "confidence": 0.0333
+    },
+    {
+      "driver_code": "HUL",
+      "driver_name": "Nico Hulkenberg",
+      "team": "Audi",
+      "predicted_position": 12,
+      "confidence": 0.0292
+    },
+    {
+      "driver_code": "COL",
+      "driver_name": "Franco Colapinto",
+      "team": "Alpine",
+      "predicted_position": 13,
+      "confidence": 0.0232
+    },
+    {
+      "driver_code": "PIA",
+      "driver_name": "Oscar Piastri",
+      "team": "McLaren",
+      "predicted_position": 14,
+      "confidence": 0.0231
+    },
+    {
+      "driver_code": "ALB",
+      "driver_name": "Alexander Albon",
+      "team": "Williams",
+      "predicted_position": 15,
+      "confidence": 0.0192
+    },
+    {
+      "driver_code": "OCO",
+      "driver_name": "Esteban Ocon",
+      "team": "Haas F1 Team",
+      "predicted_position": 16,
+      "confidence": 0.0165
+    },
+    {
+      "driver_code": "BEA",
+      "driver_name": "Oliver Bearman",
+      "team": "Haas F1 Team",
+      "predicted_position": 17,
+      "confidence": 0.0162
+    },
+    {
+      "driver_code": "SAI",
+      "driver_name": "Carlos Sainz",
+      "team": "Williams",
+      "predicted_position": 18,
+      "confidence": 0.0153
+    },
+    {
+      "driver_code": "STR",
+      "driver_name": "Lance Stroll",
+      "team": "Aston Martin",
+      "predicted_position": 19,
+      "confidence": 0.0132
+    },
+    {
+      "driver_code": "ALO",
+      "driver_name": "Fernando Alonso",
+      "team": "Aston Martin",
+      "predicted_position": 20,
+      "confidence": 0.0125
+    },
+    {
+      "driver_code": "PER",
+      "driver_name": "Sergio Perez",
+      "team": "Cadillac",
+      "predicted_position": 21,
+      "confidence": 0.011
+    },
+    {
+      "driver_code": "BOT",
+      "driver_name": "Valtteri Bottas",
+      "team": "Cadillac",
+      "predicted_position": 22,
+      "confidence": 0.0066
+    }
+  ]
+}

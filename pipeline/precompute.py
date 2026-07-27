@@ -1,4 +1,4 @@
-"""CLI entrypoint: ingest -> features -> model -> backtest -> assets."""
+"""CLI entrypoint: ingest -> features -> model -> backtest -> sync (incl. Merc What If)."""
 
 from __future__ import annotations
 
@@ -142,7 +142,7 @@ def main() -> int:
         return 1
 
     step += 1
-    _step(step, total_steps, "Sync site/public/api for Vercel")
+    _step(step, total_steps, "Sync site/public/api (+ Mercedes 2026 What If)")
     _finish_outputs()
 
     elapsed = time.monotonic() - started

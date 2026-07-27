@@ -114,8 +114,18 @@ function StatCard({
   )
 }
 
+function lastOccurredLabel(year: number, eventName: string): string {
+  return `Last occurred at the ${year} ${eventName}`
+}
+
 function RaceCard({ race }: { race: PodiumigamiRace }) {
   const flag = countryFlag(race.country)
+  const prior =
+    !race.is_podiumigami &&
+    race.last_occurred_year != null &&
+    race.last_occurred_event
+      ? lastOccurredLabel(race.last_occurred_year, race.last_occurred_event)
+      : null
   return (
     <article className="podiumigami-race-row is-compact">
       <div className="podiumigami-race-meta">
@@ -133,6 +143,7 @@ function RaceCard({ race }: { race: PodiumigamiRace }) {
         )}
       </div>
       <PodiumDisplay podium={race.podium} size="compact" className="podiumigami-race-podium" />
+      {prior && <p className="podiumigami-last-occurred">{prior}</p>}
     </article>
   )
 }

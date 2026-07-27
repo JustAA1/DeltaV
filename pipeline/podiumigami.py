@@ -74,6 +74,7 @@ def _ranked_trios(
     sample: dict[str, list[dict]] = {}
     first_year: dict[str, int] = {}
     last_year: dict[str, int] = {}
+    last_event: dict[str, str] = {}
     for race in races:
         key = race["key"]
         last_seen[key] = (race["year"], race["round"])
@@ -81,8 +82,9 @@ def _ranked_trios(
         y = race["year"]
         if key not in first_year or y < first_year[key]:
             first_year[key] = y
-        if key not in last_year or y > last_year[key]:
-            last_year[key] = y
+        # Chronological walk → last write is the most recent occurrence
+        last_year[key] = y
+        last_event[key] = str(race.get("event_name") or "")
 
     ranked = sorted(
         counter.items(),
@@ -106,6 +108,7 @@ def _ranked_trios(
                 "drivers": _drivers_from_podium(podium),
                 "first_year": first_year.get(key),
                 "last_year": last_year.get(key),
+                "last_event_name": last_event.get(key) or None,
             }
         )
     return out
@@ -158,6 +161,8 @@ def build_podiumigami(sessions: pd.DataFrame | None = None) -> dict[str, Any]:
 
     all_races: list[dict] = []
     hero: dict | None = None
+    # Most recent prior race for each trio key (year, round, event_name)
+    prior_race: dict[str, tuple[int, int, str]] = {}
 
     for year, rnd, event, country, grp in race_groups:
         podium = [_driver_entry(row) for _, row in grp.iterrows()]
@@ -167,6 +172,7 @@ def build_podiumigami(sessions: pd.DataFrame | None = None) -> dict[str, Any]:
         occurrence = trio_counts[key] + 1
         trio_counts[key] += 1
         is_podiumigami = occurrence == 1
+        prev = prior_race.get(key)
 
         decade = f"{(year // 10) * 10}s"
         decade_races[decade] += 1
@@ -187,10 +193,13 @@ def build_podiumigami(sessions: pd.DataFrame | None = None) -> dict[str, Any]:
             "occurrence": occurrence,
             "occurrence_in_year": season_trio[year][key],
             "trio_count": 0,  # filled after final counts known
+            "last_occurred_year": prev[0] if prev else None,
+            "last_occurred_event": prev[2] if prev else None,
         }
         all_races.append(race_rec)
         season_races[year].append(race_rec)
         decade_race_lists[decade].append(race_rec)
+        prior_race[key] = (year, rnd, event)
         if is_podiumigami:
             hero = race_rec
 

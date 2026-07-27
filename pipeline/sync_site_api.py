@@ -61,6 +61,31 @@ def write_races_json(dest_dir: Path | None = None) -> Path:
     return path
 
 
+def write_hosted_what_if_defaults(dest_dir: Path | None = None) -> Path | None:
+    """Refresh the hosted remove-from-grid What If default (Mercedes, current season).
+
+    The 2021←2007 points-system payload is historical and not rewritten here.
+    """
+    out_dir = SITE_API_DIR if dest_dir is None else Path(dest_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    try:
+        from whatif import compute_what_if
+
+        payload = compute_what_if(
+            season=CURRENT_SEASON,
+            remove_type="team",
+            identifiers=["Mercedes"],
+        )
+    except Exception as exc:
+        logger.warning("Hosted What If refresh failed: %s", exc)
+        return None
+
+    path = out_dir / "whatif_remove_2026_mercedes.json"
+    path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    logger.info("Wrote hosted What If → %s", path)
+    return path
+
+
 def sync_site_api() -> None:
     """Publish JSON artifacts to site/public/api for Vercel."""
     src = Path(OUTPUTS_DIR)
@@ -91,6 +116,9 @@ def sync_site_api() -> None:
 
     for path in src.glob("predictions_*.json"):
         shutil.copy2(path, SITE_API_DIR / path.name)
+        copied += 1
+
+    if write_hosted_what_if_defaults(SITE_API_DIR) is not None:
         copied += 1
 
     logger.info("Synced %d API files → %s", copied, SITE_API_DIR)
