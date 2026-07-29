@@ -55,6 +55,28 @@ export function formatEventDate(iso: string): string {
   return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
+/** R = Grand Prix, S = Sprint. Older index rows omit the field. */
+export function sessionOf(race: { session?: string | null }): 'R' | 'S' {
+  return race.session === 'S' ? 'S' : 'R'
+}
+
+/** Sprint before race on the same weekend. */
+export function sortReplays<T extends { round: number; session?: string | null }>(races: T[]): T[] {
+  return [...races].sort((a, b) => {
+    if (a.round !== b.round) return a.round - b.round
+    return (sessionOf(a) === 'S' ? 0 : 1) - (sessionOf(b) === 'S' ? 0 : 1)
+  })
+}
+
+export function replayPath(race: {
+  season: number
+  round: number
+  session?: string | null
+}): string {
+  const base = `/replays/${race.season}/${race.round}`
+  return sessionOf(race) === 'S' ? `${base}/sprint` : base
+}
+
 /** Build an SVG path for a quantized outline, flipping Y for screen space. */
 export function outlinePath(points: [number, number][], qh: number): string {
   if (points.length < 2) return ''

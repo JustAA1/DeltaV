@@ -363,6 +363,8 @@ export interface ReplayFeedEntry {
 export interface RaceReplay {
   season: number
   round: number
+  /** R = Grand Prix, S = Sprint. Absent on older race files → treat as R. */
+  session?: 'R' | 'S'
   event_name: string
   circuit: string
   country: string
@@ -389,6 +391,8 @@ export interface RaceReplay {
 export interface ReplaysIndexRace {
   season: number
   round: number
+  /** R = Grand Prix, S = Sprint. */
+  session: 'R' | 'S'
   event_name: string
   circuit: string
   country: string

@@ -18,6 +18,7 @@ function App() {
           <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route path="/podiumigami" element={<PodiumigamiPage />} />
           <Route path="/replays" element={<ReplaysPage />} />
+          <Route path="/replays/:season/:round/sprint" element={<ReplayDetailPage />} />
           <Route path="/replays/:season/:round" element={<ReplayDetailPage />} />
           <Route path="/what-if" element={<WhatIfPage />} />
         </Routes>

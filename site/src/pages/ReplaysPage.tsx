@@ -5,6 +5,7 @@ import { api } from '../api/client'
 import { LoadingSkeleton } from '../components/LoadingSkeleton'
 import { ReplayCard } from '../components/replay/ReplayCard'
 import { SeasonSwitcher } from '../components/replay/SeasonSwitcher'
+import { sortReplays } from '../lib/replayUtils'
 
 export function ReplaysPage() {
   const [params, setParams] = useSearchParams()
@@ -49,9 +50,7 @@ export function ReplaysPage() {
 
   const requested = Number(params.get('season'))
   const season = seasons.includes(requested) ? requested : (seasons.at(-1) ?? data.season)
-  const races = (data.races ?? [])
-    .filter((r) => r.season === season)
-    .sort((a, b) => a.round - b.round)
+  const races = sortReplays((data.races ?? []).filter((r) => r.season === season))
 
   return (
     <section className="page">
@@ -59,7 +58,7 @@ export function ReplaysPage() {
         <div>
           <h1>Replays</h1>
           <p className="page-subtitle">
-            Track-map playback of every completed {season} race
+            Track-map playback of every completed {season} race and sprint
           </p>
         </div>
         <SeasonSwitcher
@@ -80,7 +79,7 @@ export function ReplaysPage() {
         <div className="replay-card-grid">
           {races.map((race) => (
             <ReplayCard
-              key={`${race.season}-${race.round}`}
+              key={`${race.season}-${race.round}-${race.session ?? 'R'}`}
               race={race}
               driver={race.winner ? byCode.get(race.winner.code) : undefined}
             />

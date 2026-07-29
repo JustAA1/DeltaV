@@ -1,7 +1,13 @@
 import { Link } from 'react-router-dom'
 import { DriverAvatar } from '../DriverAvatar'
 import type { DriverRecord, ReplaysIndexRace } from '../../types'
-import { formatDuration, formatEventDate, outlinePath } from '../../lib/replayUtils'
+import {
+  formatDuration,
+  formatEventDate,
+  outlinePath,
+  replayPath,
+  sessionOf,
+} from '../../lib/replayUtils'
 
 interface ReplayCardProps {
   race: ReplaysIndexRace
@@ -12,11 +18,15 @@ interface ReplayCardProps {
 export function ReplayCard({ race, driver }: ReplayCardProps) {
   const path = outlinePath(race.outline ?? [], race.q_h || 1000)
   const pad = 30
+  const isSprint = sessionOf(race) === 'S'
 
   return (
-    <Link to={`/replays/${race.season}/${race.round}`} className="replay-card">
+    <Link to={replayPath(race)} className={`replay-card${isSprint ? ' is-sprint' : ''}`}>
       <div className="replay-card-body">
-        <span className="replay-card-round">Round {String(race.round).padStart(2, '0')}</span>
+        <div className="replay-card-tags">
+          <span className="replay-card-round">Round {String(race.round).padStart(2, '0')}</span>
+          {isSprint && <span className="replay-card-sprint">Sprint</span>}
+        </div>
         <h2 className="replay-card-title">{race.event_name}</h2>
         <p className="replay-card-place">
           {race.circuit}

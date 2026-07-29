@@ -8,9 +8,10 @@ Each race becomes site/public/api/replays/{season}_{round}.json with:
   - tyre stints, pit stops, SC/VSC/red-flag windows, lap markers, race control feed
 
 Usage:
-  python replays.py                     # 2026 completed races (auto)
+  python replays.py                     # 2026 completed races + sprints (auto)
   python replays.py --season 2026 --rounds 1,2,3
   python replays.py --season 2026 --max-round 11
+  python replays.py --season 2026 --rounds 2,4,5,9 --session S
 """
 
 from __future__ import annotations
@@ -25,7 +26,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from config import CACHE_DIR, CURRENT_SEASON, OUTPUTS_DIR, RACES_2026, get_team_color
+from config import CACHE_DIR, CURRENT_SEASON, OUTPUTS_DIR, RACES_2026, SPRINT_ROUNDS_2026, get_team_color
 
 logger = logging.getLogger(__name__)
 
@@ -1306,25 +1307,32 @@ def _load_circuit_info(session) -> Any:
     return info
 
 
-def build_replay(season: int, round_num: int) -> dict[str, Any] | None:
-    """Load one race session and return the compact replay payload."""
+def build_replay(
+    season: int,
+    round_num: int,
+    session_type: str = "R",
+) -> dict[str, Any] | None:
+    """Load one race or sprint session and return the compact replay payload."""
     import fastf1
 
+    sess = _session_code(session_type)
     _enable_cache()
     try:
-        session = fastf1.get_session(season, round_num, "R")
+        session = fastf1.get_session(season, round_num, sess)
         session.load(laps=True, telemetry=True, weather=False, messages=True)
     except Exception as exc:
-        logger.error("Failed to load %d R%d: %s", season, round_num, exc)
+        logger.error("Failed to load %d %s%d: %s", season, sess, round_num, exc)
         return None
 
     event = getattr(session, "event", None)
     event_name = getattr(event, "EventName", "") if event is not None else RACES_2026.get(round_num, "")
+    if sess == "S" and event_name and "sprint" not in event_name.lower():
+        event_name = f"{event_name} Sprint"
     circuit = getattr(event, "Location", "") if event is not None else ""
 
     laps = getattr(session, "laps", None)
     if laps is None or (hasattr(laps, "empty") and laps.empty):
-        logger.error("No laps for %d R%d", season, round_num)
+        logger.error("No laps for %d %s%d", season, sess, round_num)
         return None
 
     t0 = _race_t0_seconds(laps)
@@ -1339,7 +1347,7 @@ def build_replay(season: int, round_num: int) -> dict[str, Any] | None:
             end_candidates.append(t - t0)
     duration_s = int(max(end_candidates)) if end_candidates else 0
     if duration_s < 60:
-        logger.error("Duration too short for %d R%d (%ds)", season, round_num, duration_s)
+        logger.error("Duration too short for %d %s%d (%ds)", season, sess, round_num, duration_s)
         return None
     # Cap pathological outliers (e.g. red-flag session clocks)
     duration_s = min(duration_s, 60 * 60 * 4)
@@ -1349,10 +1357,10 @@ def build_replay(season: int, round_num: int) -> dict[str, Any] | None:
 
     center = _build_centerline(session, laps)
     if center is None:
-        logger.info("Falling back to single-lap centerline for %d R%d", season, round_num)
+        logger.info("Falling back to single-lap centerline for %d %s%d", season, sess, round_num)
         center = _pick_centerline_lap(session, laps)
     if center is None:
-        logger.error("No centerline for %d R%d", season, round_num)
+        logger.error("No centerline for %d %s%d", season, sess, round_num)
         return None
     cx, cy = _rotate_xy(center[0], center[1], rotation)
 
@@ -1408,7 +1416,7 @@ def build_replay(season: int, round_num: int) -> dict[str, Any] | None:
 
     drivers = _driver_meta(session, laps, t0, duration_s)
     if not drivers:
-        logger.error("No drivers for %d R%d", season, round_num)
+        logger.error("No drivers for %d %s%d", season, sess, round_num)
         return None
 
     on_track = _make_offtrack_filter(smooth_x, smooth_y)
@@ -1449,6 +1457,7 @@ def build_replay(season: int, round_num: int) -> dict[str, Any] | None:
     return {
         "season": season,
         "round": round_num,
+        "session": sess,
         "event_name": event_name,
         "circuit": circuit,
         "country": getattr(event, "Country", "") if event is not None else "",
@@ -1482,10 +1491,30 @@ def build_replay(season: int, round_num: int) -> dict[str, Any] | None:
     }
 
 
+
+def _session_code(session: str) -> str:
+    """Normalize FastF1 session identifiers to R (race) or S (sprint)."""
+    s = (session or "R").strip().upper()
+    if s in {"S", "SPRINT"}:
+        return "S"
+    return "R"
+
+
+def _replay_stem(season: int, round_num: int, session: str = "R") -> str:
+    """Filename stem: 2026_9 for a race, 2026_9_S for a sprint."""
+    code = _session_code(session)
+    if code == "S":
+        return f"{season}_{round_num}_S"
+    return f"{season}_{round_num}"
+
+
+def _index_key(round_num: int, session: str = "R") -> str:
+    return f"{int(round_num)}_{_session_code(session)}"
+
 def write_replay(payload: dict[str, Any], dest_dir: Path | None = None) -> Path:
     out_dir = Path(OUTPUTS_DIR) / "replays" if dest_dir is None else Path(dest_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    path = out_dir / f"{payload['season']}_{payload['round']}.json"
+    path = out_dir / f"{_replay_stem(payload['season'], payload['round'], payload.get('session', 'R'))}.json"
     with open(path, "w", encoding="utf-8") as f:
         json.dump(payload, f, separators=(",", ":"))
     size_kb = path.stat().st_size / 1024
@@ -1531,6 +1560,7 @@ def write_index(
             {
                 "season": r["season"],
                 "round": r["round"],
+                "session": _session_code(r.get("session", "R")),
                 "event_name": r["event_name"],
                 "circuit": r.get("circuit", ""),
                 "country": r.get("country", ""),
@@ -1544,7 +1574,7 @@ def write_index(
                 "q_w": (r.get("track") or {}).get("q_w", Q_MAX),
                 "q_h": (r.get("track") or {}).get("q_h", Q_MAX),
                 "outline": (r.get("track") or {}).get("outline", []),
-                "file": f"replays/{r['season']}_{r['round']}.json",
+                "file": f"replays/{_replay_stem(r['season'], r['round'], r.get('session', 'R'))}.json",
             }
             for r in races
         ],
@@ -1555,36 +1585,65 @@ def write_index(
     return path
 
 
+def _jobs_for(
+    season: int,
+    rounds: list[int],
+    sessions: list[str],
+) -> list[tuple[int, str]]:
+    """(round, session) pairs to build, sprint-before-race within a weekend."""
+    sprint_set = set(SPRINT_ROUNDS_2026) if season == CURRENT_SEASON else set()
+    # For other seasons FastF1's event schedule is the source of truth; callers
+    # pass explicit sprint rounds via --rounds together with --session S.
+    jobs: list[tuple[int, str]] = []
+    for rnd in rounds:
+        for sess in sessions:
+            if sess == "S" and season == CURRENT_SEASON and rnd not in sprint_set:
+                continue
+            jobs.append((rnd, sess))
+    # Sprint before race on the same weekend (Saturday → Sunday)
+    jobs.sort(key=lambda j: (j[0], 0 if j[1] == "S" else 1))
+    return jobs
+
+
 def build_replays(
     season: int = CURRENT_SEASON,
     rounds: list[int] | None = None,
     *,
+    sessions: list[str] | None = None,
     skip_existing: bool = False,
 ) -> list[Path]:
-    """Build replay JSON for the given rounds. Default: all keys in RACES_2026 that succeed."""
+    """Build replay JSON for the given rounds/sessions.
+
+    Default sessions are race + sprint. Sprint weekends come from
+    ``SPRINT_ROUNDS_2026`` for the current season.
+    """
     _enable_cache()
     if rounds is None:
         rounds = sorted(RACES_2026.keys())
+    if sessions is None:
+        sessions = ["R", "S"]
+    sessions = [_session_code(s) for s in sessions]
 
     out_dir = Path(OUTPUTS_DIR) / "replays"
     out_dir.mkdir(parents=True, exist_ok=True)
     written: list[Path] = []
     payloads: list[dict[str, Any]] = []
 
-    # Keep previously built races in the index when doing partial rebuilds
+    # Keep previously built sessions in the index when doing partial rebuilds.
+    # Keyed by "{round}_{session}" so a sprint and its Sunday race coexist.
     existing_index = Path(OUTPUTS_DIR) / "replays_index.json"
-    prior: dict[int, dict[str, Any]] = {}
+    prior: dict[str, dict[str, Any]] = {}
     if existing_index.exists():
         try:
             data = json.loads(existing_index.read_text(encoding="utf-8"))
             for r in data.get("races", []):
                 if r.get("season") == season:
-                    prior[int(r["round"])] = r
+                    prior[_index_key(int(r["round"]), r.get("session", "R"))] = r
         except (json.JSONDecodeError, OSError, TypeError, ValueError):
             prior = {}
 
-    for rnd in rounds:
-        dest = out_dir / f"{season}_{rnd}.json"
+    for rnd, sess in _jobs_for(season, rounds, sessions):
+        dest = out_dir / f"{_replay_stem(season, rnd, sess)}.json"
         if skip_existing and dest.exists():
             logger.info("Skip existing %s", dest.name)
             try:
@@ -1593,34 +1652,38 @@ def build_replays(
             except (json.JSONDecodeError, OSError):
                 pass
             continue
-        logger.info("Building replay %d R%d …", season, rnd)
+        logger.info("Building replay %d %s%d …", season, sess, rnd)
         try:
-            payload = build_replay(season, rnd)
+            payload = build_replay(season, rnd, session_type=sess)
         except Exception:
-            # A round with no session data yet (a race that has not run) must not
-            # abort the whole build, or the index and sync never happen.
-            logger.warning("Skipping %d R%d (no data available)", season, rnd, exc_info=False)
+            # A round with no session data yet must not abort the whole build.
+            logger.warning(
+                "Skipping %d %s%d (no data available)", season, sess, rnd, exc_info=False
+            )
             continue
         if payload is None:
-            logger.warning("Skipping %d R%d (build failed)", season, rnd)
+            logger.warning("Skipping %d %s%d (build failed)", season, sess, rnd)
             continue
         written.append(write_replay(payload))
         payloads.append(payload)
 
     # Merge into full index for the season (built + prior not rebuilt)
-    by_round: dict[int, dict[str, Any]] = {}
+    by_key: dict[str, dict[str, Any]] = {}
     for r in prior.values():
-        # Lightweight stub from index — reload file if present for full fields
-        fpath = out_dir / f"{season}_{r['round']}.json"
+        sess = _session_code(r.get("session", "R"))
+        fpath = out_dir / f"{_replay_stem(season, int(r['round']), sess)}.json"
         if fpath.exists():
             try:
-                by_round[int(r["round"])] = json.loads(fpath.read_text(encoding="utf-8"))
+                by_key[_index_key(int(r["round"]), sess)] = json.loads(
+                    fpath.read_text(encoding="utf-8")
+                )
                 continue
             except (json.JSONDecodeError, OSError):
                 pass
-        by_round[int(r["round"])] = {
+        by_key[_index_key(int(r["round"]), sess)] = {
             "season": season,
             "round": int(r["round"]),
+            "session": sess,
             "event_name": r.get("event_name", ""),
             "circuit": r.get("circuit", ""),
             "country": r.get("country", ""),
@@ -1636,9 +1699,12 @@ def build_replays(
             },
         }
     for p in payloads:
-        by_round[int(p["round"])] = p
+        by_key[_index_key(int(p["round"]), p.get("session", "R"))] = p
 
-    ordered = [by_round[k] for k in sorted(by_round)]
+    ordered = sorted(
+        by_key.values(),
+        key=lambda r: (int(r["round"]), 0 if _session_code(r.get("session", "R")) == "S" else 1),
+    )
     write_index(ordered, season)
     return written
 
@@ -1654,6 +1720,12 @@ def main() -> int:
         help="Comma-separated rounds, e.g. 1,2,3",
     )
     parser.add_argument("--max-round", type=int, default=None, help="Inclusive max round")
+    parser.add_argument(
+        "--session",
+        type=str,
+        default="all",
+        help="R (race), S (sprint), or all (default)",
+    )
     parser.add_argument("--skip-existing", action="store_true")
     parser.add_argument(
         "--sync",
@@ -1670,7 +1742,20 @@ def main() -> int:
     else:
         rounds = None
 
-    paths = build_replays(args.season, rounds, skip_existing=args.skip_existing)
+    sess_arg = (args.session or "all").strip().upper()
+    if sess_arg in {"ALL", "BOTH", "*"}:
+        sessions = ["R", "S"]
+    elif sess_arg in {"S", "SPRINT"}:
+        sessions = ["S"]
+        # Sprint-only with no rounds → every scheduled sprint weekend
+        if rounds is None:
+            rounds = list(SPRINT_ROUNDS_2026) if args.season == CURRENT_SEASON else []
+    else:
+        sessions = ["R"]
+
+    paths = build_replays(
+        args.season, rounds, sessions=sessions, skip_existing=args.skip_existing
+    )
     if args.sync:
         from sync_site_api import sync_replays
 

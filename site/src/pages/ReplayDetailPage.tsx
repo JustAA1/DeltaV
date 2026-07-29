@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import { api } from '../api/client'
 import { LoadingSkeleton } from '../components/LoadingSkeleton'
 import { DriverOverlay } from '../components/replay/DriverOverlay'
@@ -10,20 +10,22 @@ import { RaceFeed } from '../components/replay/RaceFeed'
 import { ReplayControls } from '../components/replay/ReplayControls'
 import { TrackMap } from '../components/replay/TrackMap'
 import { useReplayClock } from '../lib/useReplayClock'
-import { formatEventDate, formatRaceTime } from '../lib/replayUtils'
+import { formatEventDate, formatRaceTime, sessionOf } from '../lib/replayUtils'
 
 export function ReplayDetailPage() {
   const params = useParams()
+  const location = useLocation()
   const season = Number(params.season)
   const round = Number(params.round)
+  const session: 'R' | 'S' = location.pathname.endsWith('/sprint') ? 'S' : 'R'
 
   const { data: replay, isLoading, isError, refetch } = useQuery({
-    queryKey: ['replay', season, round],
-    queryFn: () => api.replay(season, round),
+    queryKey: ['replay', season, round, session],
+    queryFn: () => api.replay(season, round, session),
     enabled: Number.isFinite(season) && Number.isFinite(round) && round > 0,
   })
 
-  const clock = useReplayClock(replay?.duration_s ?? 0, `${season}-${round}`)
+  const clock = useReplayClock(replay?.duration_s ?? 0, `${season}-${round}-${session}`)
   const [highlighted, setHighlighted] = useState<string | null>(null)
   const [selected, setSelected] = useState<string | null>(null)
 
@@ -90,13 +92,19 @@ export function ReplayDetailPage() {
           </Link>
           <h1>{replay.event_name}</h1>
           <p className="page-subtitle">
-            Round {replay.round} · {replay.circuit}
+            Round {replay.round}
+            {sessionOf(replay) === 'S' ? ' Sprint' : ''} · {replay.circuit}
             {replay.event_date && ` · ${formatEventDate(replay.event_date)}`} ·{' '}
             {replay.total_laps} laps
           </p>
         </div>
         {index && (
-          <RaceSwitcher races={index.races ?? []} round={replay.round} season={index.season} />
+          <RaceSwitcher
+            races={index.races ?? []}
+            round={replay.round}
+            session={sessionOf(replay)}
+            season={index.season}
+          />
         )}
       </header>
 
@@ -125,6 +133,7 @@ export function ReplayDetailPage() {
             playing={clock.playing}
             speed={clock.speed}
             lapMarkers={replay.lap_markers}
+            flags={replay.flags}
             onToggle={clock.toggle}
             onSeek={clock.seek}
             onSpeed={clock.setSpeed}

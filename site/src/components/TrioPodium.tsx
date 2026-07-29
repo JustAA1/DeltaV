@@ -22,13 +22,16 @@ export function TrioIcons({
   drivers,
   size = 28,
   showNames = true,
+  /** Two-up / one-down cluster — denser on narrow cards. */
+  layout = 'row',
 }: {
   drivers: PodiumigamiTrioDriver[]
   size?: number
   showNames?: boolean
+  layout?: 'row' | 'triangle'
 }) {
   return (
-    <div className="trio-icons">
+    <div className={`trio-icons${layout === 'triangle' ? ' is-triangle' : ''}`}>
       <div className="trio-icons-avatars">
         {drivers.map((d) => (
           <DriverAvatar
@@ -86,6 +89,7 @@ export function TopTriosPodium({
                 <TrioIcons
                   drivers={trio.drivers}
                   size={rank === 1 ? 36 : rank === 2 ? 30 : 26}
+                  layout="triangle"
                 />
                 {trio.is_podiumigami ? (
                   <span className="podiumigami-gold-badge">Podiumigami</span>

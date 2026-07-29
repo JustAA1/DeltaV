@@ -68,8 +68,12 @@ export const api = {
 
   replaysIndex: () => fetchJson<ReplaysIndex>('/api/replays_index.json'),
 
-  replay: (season: number, round: number) =>
-    fetchJson<RaceReplay>(`/api/replays/${season}_${round}.json`),
+  replay: (season: number, round: number, session: 'R' | 'S' = 'R') =>
+    fetchJson<RaceReplay>(
+      session === 'S'
+        ? `/api/replays/${season}_${round}_S.json`
+        : `/api/replays/${season}_${round}.json`,
+    ),
 
   leaderboard: async (season = 2026) => {
     const data = await loadLeaderboardFile()
