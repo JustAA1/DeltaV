@@ -11,6 +11,13 @@ function displayCode(code: string, name: string): string {
   return raw.length === 3 ? raw : lastName(name).slice(0, 3).toUpperCase()
 }
 
+/** Where this trio showed up — "Occurred" for first-time, "Last occurred" for repeats. */
+function occurrenceLabel(trio: PodiumigamiCombo): string | null {
+  if (trio.last_year == null || !trio.last_event_name) return null
+  const gp = `${trio.last_year} ${trio.last_event_name}`
+  return trio.is_podiumigami ? `Occurred during the ${gp}` : `Last occurred at the ${gp}`
+}
+
 export function TrioIcons({
   drivers,
   size = 28,
@@ -65,7 +72,9 @@ export function TopTriosPodium({
       aria-label="View all ranked podiumigamis"
     >
       <div className="podium top-trios-podium">
-        {slots.map(({ rank, trio }) => (
+        {slots.map(({ rank, trio }) => {
+          const where = trio ? occurrenceLabel(trio) : null
+          return (
           <article
             key={rank}
             className={`podium-card podium-${rank} top-trio-slot${trio ? '' : ' is-empty'}`}
@@ -83,12 +92,14 @@ export function TopTriosPodium({
                 ) : (
                   <span className="podium-badge">×{trio.count}</span>
                 )}
+                {where && <p className="podiumigami-last-occurred">{where}</p>}
               </>
             ) : (
               <p className="top-trio-empty">—</p>
             )}
           </article>
-        ))}
+          )
+        })}
       </div>
       {onOpenAll && <span className="top-trios-see-all">See all ranked trios</span>}
     </button>
@@ -121,18 +132,13 @@ export function TrioRankListModal({
         </header>
         <ol className="trio-rank-list">
           {trios.map((trio, i) => {
-            const prior =
-              !trio.is_podiumigami &&
-              trio.last_year != null &&
-              trio.last_event_name
-                ? `Last occurred at the ${trio.last_year} ${trio.last_event_name}`
-                : null
+            const where = occurrenceLabel(trio)
             return (
               <li key={trio.key} className="trio-rank-row">
                 <span className="trio-rank-pos">{i + 1}</span>
                 <div className="trio-rank-body">
                   <TrioIcons drivers={trio.drivers} size={24} />
-                  {prior && <p className="podiumigami-last-occurred">{prior}</p>}
+                  {where && <p className="podiumigami-last-occurred">{where}</p>}
                 </div>
                 <div className="trio-rank-meta">
                   {trio.is_podiumigami ? (

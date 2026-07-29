@@ -5,7 +5,9 @@ import type {
   PointsSystemChangesResponse,
   PodiumigamiResponse,
   RacePrediction,
+  RaceReplay,
   RacesResponse,
+  ReplaysIndex,
   SeasonLeaderboard,
   WhatIfOptions,
   WhatIfRequest,
@@ -52,6 +54,11 @@ export const api = {
 
   predictions: (round: number) =>
     fetchJson<RacePrediction>(`/api/predictions_${round}.json`),
+
+  replaysIndex: () => fetchJson<ReplaysIndex>('/api/replays_index.json'),
+
+  replay: (season: number, round: number) =>
+    fetchJson<RaceReplay>(`/api/replays/${season}_${round}.json`),
 
   leaderboard: async (season = 2026) => {
     const data = await loadLeaderboardFile()

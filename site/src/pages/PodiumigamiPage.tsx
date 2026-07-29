@@ -14,9 +14,45 @@ import type {
 
 const SEASONS = Array.from({ length: 2026 - 1980 + 1 }, (_, i) => 2026 - i)
 const DEFAULT_SEASON = 2026
-const RACE_PAGE_SIZE = 5
 
 type Scope = 'yearly' | 'alltime'
+
+/** Keep carousel page size in sync with the CSS column breakpoints. */
+function useRacePageSize(): number {
+  const [size, setSize] = useState(() => {
+    if (typeof window === 'undefined') return 5
+    const w = window.innerWidth
+    if (w <= 640) return 1
+    if (w <= 720) return 2
+    if (w <= 1100) return 3
+    return 5
+  })
+
+  useEffect(() => {
+    const update = () => {
+      const w = window.innerWidth
+      setSize(w <= 640 ? 1 : w <= 720 ? 2 : w <= 1100 ? 3 : 5)
+    }
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [])
+
+  return size
+}
+
+function useIsNarrow(maxWidth = 640): boolean {
+  const [narrow, setNarrow] = useState(() =>
+    typeof window === 'undefined' ? false : window.innerWidth <= maxWidth,
+  )
+  useEffect(() => {
+    const update = () => setNarrow(window.innerWidth <= maxWidth)
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [maxWidth])
+  return narrow
+}
 
 function SeasonNav({
   season,
@@ -157,26 +193,27 @@ function chunkRaces(races: PodiumigamiRace[], size: number): PodiumigamiRace[][]
 }
 
 function RaceCarousel({ races, title }: { races: PodiumigamiRace[]; title: string }) {
+  const pageSize = useRacePageSize()
   const [page, setPage] = useState(0)
-  const pages = useMemo(() => chunkRaces(races, RACE_PAGE_SIZE), [races])
+  const pages = useMemo(() => chunkRaces(races, pageSize), [races, pageSize])
 
   useEffect(() => {
     setPage(0)
-  }, [races])
+  }, [races, pageSize])
 
   if (races.length === 0) return null
 
   const pageIndex = Math.min(page, Math.max(0, pages.length - 1))
   const canPrev = pageIndex > 0
   const canNext = pageIndex < pages.length - 1
-  const from = pageIndex * RACE_PAGE_SIZE + 1
+  const from = pageIndex * pageSize + 1
   const to = Math.min(races.length, from + pages[pageIndex]!.length - 1)
 
   return (
     <section className="podiumigami-races">
       <div className="podiumigami-races-head">
         <h2>{title}</h2>
-        {races.length > RACE_PAGE_SIZE && (
+        {races.length > pageSize && (
           <span className="podiumigami-races-range">
             {from}–{to} of {races.length}
           </span>
@@ -223,6 +260,7 @@ function RaceCarousel({ races, title }: { races: PodiumigamiRace[]; title: strin
 }
 
 function HeroPodiumigami({ race }: { race: PodiumigamiRace }) {
+  const narrow = useIsNarrow()
   return (
     <section className="podiumigami-hero">
       <div className="podiumigami-hero-head">
@@ -233,7 +271,7 @@ function HeroPodiumigami({ race }: { race: PodiumigamiRace }) {
         <p>First time this driver trio had ever shared a podium.</p>
       </div>
       <span className="podiumigami-gold-badge hero-badge">Podiumigami</span>
-      <PodiumDisplay podium={race.podium} size="large" />
+      <PodiumDisplay podium={race.podium} size={narrow ? 'compact' : 'large'} />
     </section>
   )
 }
@@ -351,16 +389,11 @@ export function PodiumigamiPage() {
     return fullData?.by_season?.[String(season)] ?? null
   }, [fullData, season])
 
+  // Only the yearly view shows a hero; all-time leads with its own panels
   const hero = useMemo(() => {
-    if (scope === 'yearly') {
-      return (
-        seasonStats?.hero ??
-        seasonStats?.races.find((r) => r.is_podiumigami) ??
-        null
-      )
-    }
-    return fullData?.hero ?? null
-  }, [scope, seasonStats, fullData?.hero])
+    if (scope !== 'yearly') return null
+    return seasonStats?.hero ?? seasonStats?.races.find((r) => r.is_podiumigami) ?? null
+  }, [scope, seasonStats])
 
   useEffect(() => {
     if (!modal) return

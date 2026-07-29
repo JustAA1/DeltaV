@@ -1658,6 +1658,103 @@ body {
   }
 }
 
+/* Phones: one race card at a time so the three podium slots actually fit */
+@media (max-width: 640px) {
+  .podiumigami-race-page {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .podiumigami-race-row.is-compact {
+    padding: 0.7rem 0.75rem 0.8rem;
+  }
+
+  .podiumigami-race-podium {
+    gap: 0.35rem;
+  }
+
+  .podiumigami-race-podium .podium-card,
+  .podium-card-compact {
+    min-width: 0;
+    padding: 0.45rem 0.3rem 0.5rem !important;
+  }
+
+  .podiumigami-race-podium .podium-card h3,
+  .podium-card-compact h3 {
+    font-size: 0.72rem !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+
+  .podiumigami-race-row.is-compact .podiumigami-last-occurred {
+    font-size: 0.68rem;
+    overflow-wrap: anywhere;
+  }
+
+  /* Ranked trios: scroll sideways instead of crushing three columns */
+  .top-trios-podium {
+    display: flex;
+    gap: 0.55rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.35rem;
+    margin-bottom: 0;
+  }
+
+  .top-trios-podium .top-trio-slot {
+    flex: 0 0 min(78%, 16rem);
+    scroll-snap-align: center;
+    min-height: auto;
+    order: unset;
+  }
+
+  .top-trios-podium .podium-1 {
+    order: 1;
+  }
+
+  .top-trios-podium .podium-2 {
+    order: 2;
+  }
+
+  .top-trios-podium .podium-3 {
+    order: 3;
+  }
+
+  .top-trio-slot .podiumigami-last-occurred {
+    max-width: none;
+  }
+
+  .podiumigami-hero .podium {
+    gap: 0.4rem;
+  }
+
+  .podiumigami-hero .podium-card {
+    min-width: 0;
+    padding-left: 0.45rem;
+    padding-right: 0.45rem;
+  }
+
+  .podiumigami-hero .podiumigami-race-podium,
+  .podiumigami-hero .podium.podium {
+    margin-bottom: 0;
+  }
+
+  /* Keep carousel arrows from covering P3 */
+  .podiumigami-carousel-arrow.is-prev {
+    left: 0.15rem;
+  }
+
+  .podiumigami-carousel-arrow.is-next {
+    right: 0.15rem;
+  }
+
+  .podiumigami-race-viewport {
+    padding-inline: 0.15rem;
+  }
+}
+
 .podiumigami-race-row {
   padding: 1rem;
   background: var(--surface);
@@ -1814,6 +1911,12 @@ body {
 
 .top-trio-slot {
   min-height: 8rem;
+}
+
+.top-trio-slot .podiumigami-last-occurred {
+  margin-top: 0.35rem;
+  max-width: 11rem;
+  text-align: center;
 }
 
 .top-trio-empty {
@@ -1974,6 +2077,550 @@ body {
   line-height: 1.5;
 }
 
+/* ── Replays ── */
+.replay-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.replay-back {
+  display: inline-block;
+  margin-bottom: 0.4rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.replay-back:hover {
+  color: var(--text);
+}
+
+/* Race card grid */
+.replay-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1rem;
+}
+
+.replay-card {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 148px;
+  padding: 1rem 1.1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  color: inherit;
+  text-decoration: none;
+  overflow: hidden;
+  transition: border-color 0.15s, transform 0.15s;
+}
+
+.replay-card:hover {
+  border-color: var(--muted);
+  transform: translateY(-2px);
+}
+
+.replay-card-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.replay-card-round {
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.replay-card-title {
+  margin: 0.3rem 0 0;
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+}
+
+.replay-card-place {
+  margin: 0.2rem 0 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.replay-card-stats {
+  display: flex;
+  gap: 1rem;
+  margin: auto 0 0;
+  padding-top: 0.75rem;
+}
+
+.replay-card-stats div {
+  display: flex;
+  flex-direction: column;
+}
+
+.replay-card-stats dt {
+  color: var(--muted);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.replay-card-stats dd {
+  margin: 0.1rem 0 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.replay-card-map {
+  flex: 0 0 38%;
+  align-self: center;
+  max-width: 150px;
+  max-height: 124px;
+  overflow: visible;
+}
+
+.replay-card-map path {
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 2.25;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.75;
+  transition: stroke 0.15s, opacity 0.15s;
+}
+
+.replay-card:hover .replay-card-map path {
+  stroke: var(--text);
+  opacity: 1;
+}
+
+/* Player layout */
+/* The race feed is docked inside the map panel, so the page only needs two
+   columns: map (with the feed over its left edge) and positions. */
+.replay-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 250px;
+  gap: 1rem;
+  align-items: start;
+}
+
+/* Holds the canvas and the docked feed; the pit-lane legend sits below it */
+.replay-track-stage {
+  position: relative;
+}
+
+.replay-map-inset {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  bottom: 12px;
+  width: 252px;
+  display: flex;
+  pointer-events: auto;
+}
+
+.replay-map-inset .replay-panel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  /* Translucent so the circuit stays faintly visible behind the panel */
+  background: rgba(12, 14, 20, 0.82);
+  backdrop-filter: blur(7px);
+}
+
+.replay-map-inset .replay-feed {
+  flex: 1;
+  min-height: 0;
+  max-height: none;
+}
+
+.replay-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.replay-side {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.replay-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.8rem 0.9rem 0.9rem;
+}
+
+.replay-panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.replay-panel-head h2 {
+  margin: 0;
+  font-size: 0.95rem;
+  letter-spacing: -0.02em;
+}
+
+.replay-panel-sub {
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Positions */
+.replay-positions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.replay-pos-row {
+  border-radius: 5px;
+  font-size: 0.78rem;
+}
+
+.replay-pos-btn {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1.4rem 3px 2.4rem auto 1fr 2.1rem;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.2rem 0.15rem;
+  border: none;
+  border-radius: 5px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.replay-pos-row.is-active .replay-pos-btn {
+  background: var(--surface-2);
+}
+
+.replay-pos-row.is-selected .replay-pos-btn {
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
+.replay-pos-row.is-out {
+  opacity: 0.4;
+}
+
+/* A car in the pit lane is still running, just not on track */
+.replay-pos-row.is-pit .replay-pos-code {
+  color: var(--muted);
+}
+
+.replay-pos-row.is-pit .replay-pos-pits {
+  color: #78aadc;
+  font-weight: 700;
+}
+
+.replay-pos-num {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  text-align: right;
+}
+
+.replay-pos-bar {
+  width: 3px;
+  height: 1rem;
+  border-radius: 2px;
+}
+
+.replay-pos-code {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.replay-pos-tyre {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.05rem;
+  height: 1.05rem;
+  border: 1.5px solid var(--muted);
+  border-radius: 50%;
+  font-size: 0.6rem;
+  font-weight: 700;
+}
+
+.replay-pos-gap {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.replay-pos-pits {
+  color: var(--muted);
+  font-size: 0.68rem;
+  text-align: right;
+}
+
+/* Race feed */
+.replay-feed {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  /* Roughly the map's height, so the three columns end together */
+  max-height: min(60vh, 520px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.replay-feed-empty {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.replay-feed-row {
+  display: grid;
+  grid-template-columns: 2.6rem 6px 1fr;
+  align-items: start;
+  gap: 0.45rem;
+  padding: 0.35rem 0.15rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+.replay-feed-row:first-child {
+  border-top: none;
+}
+
+.replay-feed-time {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.replay-feed-dot {
+  width: 6px;
+  height: 6px;
+  margin-top: 0.35rem;
+  border-radius: 50%;
+}
+
+.replay-feed-msg {
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.replay-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 0.85rem 1.1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.replay-banner-meta {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.replay-data-note {
+  margin: 0;
+  padding: 0.65rem 0.9rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 184, 0, 0.35);
+  background: rgba(255, 184, 0, 0.08);
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.replay-track-wrap {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.replay-track-canvas {
+  display: block;
+  width: 100%;
+  cursor: crosshair;
+}
+
+.replay-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 0.9rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.replay-controls-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.replay-btn {
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.replay-btn:hover {
+  border-color: var(--muted);
+}
+
+.replay-btn-play {
+  min-width: 4.5rem;
+}
+
+.replay-speed-group .toggle {
+  padding: 0.4rem 0.65rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.replay-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.replay-time-sep {
+  opacity: 0.5;
+}
+
+.replay-lap-badge {
+  margin-left: 0.4rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.replay-scrubber {
+  display: block;
+  width: 100%;
+}
+
+.replay-scrubber input[type='range'] {
+  width: 100%;
+  accent-color: #e10600;
+  cursor: pointer;
+}
+
+.replay-stints {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.9rem 1rem 1rem;
+}
+
+.replay-stints-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.replay-stints-header h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+}
+
+.replay-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem 0.85rem;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.replay-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.replay-legend-item i {
+  display: inline-block;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 2px;
+  border: 1px solid rgba(0, 0, 0, 0.35);
+}
+
+.replay-legend-item i.flag-sc {
+  background: rgba(255, 184, 0, 0.7);
+}
+
+.replay-legend-item i.flag-vsc {
+  background: rgba(245, 215, 110, 0.7);
+}
+
+.replay-stints-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.replay-stints-svg {
+  display: block;
+  width: 100%;
+  min-width: 560px;
+  height: auto;
+  cursor: col-resize;
+}
+
 @media (max-width: 720px) {
   .podiumigami-race-podium .podium-card h3 {
     font-size: 0.7rem;
@@ -1986,5 +2633,313 @@ body {
   .trio-icons-names {
     font-size: 0.7rem;
   }
+
+  .replay-time {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .replay-card {
+    min-height: 132px;
+  }
+
+  .replay-card-stats {
+    gap: 0.75rem;
+  }
 }
 
+@media (max-width: 1100px) {
+  /* Map spans the top, positions move below it */
+  .replay-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Too narrow to dock the feed over the circuit, so it drops below the map.
+     TrackMap reads the static position and gives the space back to the track. */
+  .replay-map-inset {
+    position: static;
+    width: auto;
+    margin: 0.85rem;
+  }
+
+  .replay-map-inset .replay-feed {
+    max-height: 260px;
+  }
+}
+
+
+/* Pit lane legend under the map */
+.replay-map-legend {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0 0.9rem 0.7rem;
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.replay-legend-chip {
+  width: 18px;
+  border-top: 2px dashed currentColor;
+  border-top-color: rgba(120, 170, 220, 0.55);
+}
+
+/* Driver overlay */
+.replay-driver-modal {
+  max-width: 520px;
+}
+
+.replay-driver-id {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.replay-driver-id h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+}
+
+.replay-driver-team {
+  margin: 0.15rem 0 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+/* The shared modal shell has no padding of its own */
+.replay-driver-body {
+  padding: 0.9rem 1.1rem 1.1rem;
+  overflow-y: auto;
+}
+
+.replay-driver-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.replay-driver-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.5rem 0.6rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.replay-driver-stat-label {
+  color: var(--muted);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.replay-driver-stat-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.replay-driver-status {
+  margin: 0.7rem 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.replay-driver-section {
+  margin-top: 1rem;
+}
+
+.replay-driver-section h3 {
+  margin: 0 0 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.replay-driver-empty {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+/* One rail across the whole race, split into a chunk per stint */
+.replay-stint-strip {
+  position: relative;
+  display: flex;
+  height: 1.15rem;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--surface-2);
+}
+
+.replay-stint-chunk {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  overflow: hidden;
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.45);
+  color: rgba(0, 0, 0, 0.72);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+/* Covers the part of the race that has not been reached yet */
+.replay-stint-future {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(8, 10, 16, 0.78);
+  border-left: 1px solid rgba(255, 255, 255, 0.55);
+  pointer-events: none;
+}
+
+.replay-stint-key {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.9rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.replay-stint-key li {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.replay-stint-key i {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+/* Places gained or lost against the starting grid slot */
+.replay-pos-delta {
+  margin-left: 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.replay-pos-delta.is-up {
+  color: #39b54a;
+}
+
+.replay-pos-delta.is-down {
+  color: #ef4444;
+}
+
+.replay-pos-delta.is-even {
+  color: var(--muted);
+}
+
+/* Race winner on the all-races cards */
+.replay-card-winner {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 0.75rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--border);
+}
+
+.replay-card-winner-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.replay-card-winner-label {
+  color: var(--muted);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.replay-card-winner-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Race switcher (all-races overview and each race page) */
+.race-switcher {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.race-switcher-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.95rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.race-switcher-arrow:hover:not(:disabled) {
+  background: var(--surface-2);
+}
+
+.race-switcher-arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.race-switcher-select {
+  max-width: 15rem;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.race-switcher-select.is-season {
+  max-width: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.race-switcher-count {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.race-switcher-season {
+  opacity: 0.7;
+}

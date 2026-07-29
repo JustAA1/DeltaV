@@ -45,6 +45,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="DeltaV precompute pipeline")
     parser.add_argument("--skip-ingest", action="store_true", help="Skip FastF1 ingest")
     parser.add_argument("--skip-assets", action="store_true", help="Skip headshot/logo refresh")
+    parser.add_argument("--skip-replays", action="store_true", help="Skip race-replay telemetry build")
     parser.add_argument("--mock", action="store_true", help="Generate mock outputs only")
     parser.add_argument("--current-only", action="store_true", help="Ingest current season only")
     parser.add_argument("--max-round", type=int, default=None, help="Max round for 2026 ingest")
@@ -62,7 +63,7 @@ def main() -> int:
         logger.info("Precompute pipeline complete in %.1fs", time.monotonic() - started)
         return 0
 
-    total_steps = 5
+    total_steps = 6
     step = 0
 
     step += 1
@@ -140,6 +141,23 @@ def main() -> int:
             _finish_outputs(mock=True)
             return 0
         return 1
+
+    step += 1
+    _step(step, total_steps, "Race replays (telemetry)")
+    if args.skip_replays:
+        logger.info("Skipped (--skip-replays)")
+    else:
+        try:
+            from config import CURRENT_SEASON
+            from replays import build_replays
+
+            # Completed races only when --max-round is set; otherwise try the calendar.
+            replay_rounds = None
+            if args.max_round is not None:
+                replay_rounds = list(range(1, args.max_round + 1))
+            build_replays(CURRENT_SEASON, replay_rounds, skip_existing=True)
+        except Exception as exc:
+            logger.warning("Replay build failed (continuing): %s", exc)
 
     step += 1
     _step(step, total_steps, "Sync site/public/api (+ Mercedes 2026 What If)")

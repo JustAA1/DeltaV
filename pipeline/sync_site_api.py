@@ -86,6 +86,32 @@ def write_hosted_what_if_defaults(dest_dir: Path | None = None) -> Path | None:
     return path
 
 
+def sync_replays() -> int:
+    """Copy replay index + per-race JSON into site/public/api/replays/."""
+    src = Path(OUTPUTS_DIR)
+    SITE_API_DIR.mkdir(parents=True, exist_ok=True)
+    replays_src = src / "replays"
+    replays_dest = SITE_API_DIR / "replays"
+    replays_dest.mkdir(parents=True, exist_ok=True)
+
+    copied = 0
+    index_src = src / "replays_index.json"
+    if index_src.exists():
+        shutil.copy2(index_src, SITE_API_DIR / "replays_index.json")
+        copied += 1
+
+    if replays_src.is_dir():
+        # Drop stale season_round files, then copy current set
+        for stale in replays_dest.glob("*.json"):
+            stale.unlink(missing_ok=True)
+        for path in sorted(replays_src.glob("*.json")):
+            shutil.copy2(path, replays_dest / path.name)
+            copied += 1
+
+    logger.info("Synced %d replay file(s) → %s", copied, SITE_API_DIR)
+    return copied
+
+
 def sync_site_api() -> None:
     """Publish JSON artifacts to site/public/api for Vercel."""
     src = Path(OUTPUTS_DIR)
@@ -120,6 +146,8 @@ def sync_site_api() -> None:
 
     if write_hosted_what_if_defaults(SITE_API_DIR) is not None:
         copied += 1
+
+    copied += sync_replays()
 
     logger.info("Synced %d API files → %s", copied, SITE_API_DIR)
 

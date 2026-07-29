@@ -280,3 +280,137 @@ export interface PodiumigamiResponse {
   by_season: Record<string, PodiumigamiSeasonStats>
   season?: PodiumigamiSeasonStats
 }
+
+/* ── Race replays ── */
+
+export interface ReplayCorner {
+  n: number
+  label: string
+  x: number
+  y: number
+}
+
+export interface ReplayTrack {
+  rotation: number
+  q_max: number
+  /** Quantized box size — preserves the circuit's true aspect ratio. */
+  q_w: number
+  q_h: number
+  centerline: [number, number][]
+  outline: [number, number][]
+  corners: ReplayCorner[]
+  /** Open pit-lane path. Absent where the position feed is too coarse to derive one. */
+  pitlane?: [number, number][]
+}
+
+export interface ReplayDriver {
+  code: string
+  name: string
+  team: string
+  number: number
+  color: string
+  status: string
+  classified: string
+  finished: boolean
+  started: boolean
+  finish_position: number | null
+  grid: number | null
+  /** Race-relative second the car was last racing (retirement / chequered flag). */
+  end_t_s: number
+}
+
+export interface ReplayDriverPos {
+  x: number[]
+  y: number[]
+}
+
+export interface ReplayStint {
+  code: string
+  stint: number
+  compound: string
+  start_lap: number
+  end_lap: number
+  t_start_s: number
+  t_end_s: number
+}
+
+export interface ReplayPit {
+  code: string
+  t_s: number
+  lap: number
+}
+
+export interface ReplayFlag {
+  type: 'SC' | 'VSC' | 'RED' | string
+  t_start_s: number
+  t_end_s: number
+}
+
+export interface ReplayLapMarker {
+  lap: number
+  t_s: number
+}
+
+export interface ReplayFeedEntry {
+  t_s: number
+  category: string
+  flag: string
+  scope: string
+  lap: number | null
+  message: string
+}
+
+export interface RaceReplay {
+  season: number
+  round: number
+  event_name: string
+  circuit: string
+  country: string
+  event_date: string
+  hz: number
+  duration_s: number
+  total_laps: number
+  track: ReplayTrack
+  drivers: ReplayDriver[]
+  pos: Record<string, ReplayDriverPos>
+  /** Race progress in hundredths of a lap per frame; -1 = not running. */
+  prog: Record<string, number[]>
+  /** Race-relative [entry, exit] spans each car spent in the pit lane. */
+  pit_windows: Record<string, [number, number][]>
+  /** Present when the position feed was too unreliable to rank cars by. */
+  order_source?: 'timing'
+  stints: ReplayStint[]
+  pits: ReplayPit[]
+  flags: ReplayFlag[]
+  lap_markers: ReplayLapMarker[]
+  feed: ReplayFeedEntry[]
+}
+
+export interface ReplaysIndexRace {
+  season: number
+  round: number
+  event_name: string
+  circuit: string
+  country: string
+  event_date: string
+  duration_s: number
+  total_laps: number
+  driver_count: number
+  winner?: ReplayWinner
+  q_w: number
+  q_h: number
+  outline: [number, number][]
+  file: string
+}
+
+export interface ReplayWinner {
+  code: string
+  name: string
+  team: string
+  color: string
+}
+
+export interface ReplaysIndex {
+  season: number
+  races: ReplaysIndexRace[]
+}

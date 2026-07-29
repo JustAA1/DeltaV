@@ -125,6 +125,9 @@ export function Nav() {
           <NavLink to="/podiumigami" className={linkClass} onClick={() => setMenuOpen(false)}>
             Podiumigami
           </NavLink>
+          <NavLink to="/replays" className={linkClass} onClick={() => setMenuOpen(false)}>
+            Replays
+          </NavLink>
           <a
             href={leaderboardHref}
             className={leaderboardActive ? 'nav-link active' : 'nav-link'}
