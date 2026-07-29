@@ -11,6 +11,15 @@ CURRENT_SEASON: int = 2026
 BACKTEST_SEASON: int = 2026
 DEFAULT_TEAM_COLOR: str = "#888888"
 
+# Midfield-only championship (big 4 removed + races rescored).
+FORMULA15_START: int = 2021
+FORMULA15_TEAMS: list[str] = [
+    "Mercedes",
+    "Red Bull Racing",
+    "Ferrari",
+    "McLaren",
+]
+
 # Drivers' championship dropped-scores (constructors counted all from 1979+).
 # 1981–1990: best 11 overall. 1980: best 5 from each half of a 14-race season.
 DRIVERS_BEST_N_RESULTS: dict[int, int] = {year: 11 for year in range(1981, 1991)}

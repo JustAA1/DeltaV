@@ -34,6 +34,7 @@ import {
 import type { ChartSeries, LeaderboardStage, SeasonStatRow } from '../types'
 
 const SEASONS = Array.from({ length: 2026 - 1980 + 1 }, (_, i) => 2026 - i)
+const FORMULA15_START = 2021
 
 const STAT_CATEGORIES = [
   { key: 'wins' as const, label: 'Wins' },
@@ -332,6 +333,36 @@ function StandingsModeToggle({
   )
 }
 
+function Formula15Toggle({
+  active,
+  onChange,
+  className,
+}: {
+  active: boolean
+  onChange: (active: boolean) => void
+  className?: string
+}) {
+  return (
+    <div
+      className={className ? `toggle-group ${className}` : 'toggle-group'}
+      role="group"
+      aria-label="Formula 1.5 standings"
+    >
+      <button
+        type="button"
+        className={active ? 'toggle active' : 'toggle'}
+        aria-pressed={active}
+        onClick={(e) => {
+          onChange(!active)
+          e.currentTarget.blur()
+        }}
+      >
+        Formula 1.5
+      </button>
+    </div>
+  )
+}
+
 export function LeaderboardPage() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
@@ -355,8 +386,12 @@ export function LeaderboardPage() {
   const [mode, setMode] = useState<'drivers' | 'constructors'>(
     requestedWhatIf?.championship ?? (whatIfActive ? whatIfChampionship : 'drivers'),
   )
+  const [formula15, setFormula15] = useState(false)
   const [hidden, setHidden] = useState<Set<string>>(new Set())
   const scrollLockRef = useRef<number | null>(null)
+
+  const formula15Available = season >= FORMULA15_START && !whatIfActive && !whatIfBlocked
+  const formula15Active = formula15 && season >= FORMULA15_START && !whatIfActive
 
   // Keep active scenario in sync with the URL while viewing the leaderboard
   useEffect(() => {
@@ -364,11 +399,22 @@ export function LeaderboardPage() {
     syncActiveWhatIfDraft(whatIfFromUrl)
   }, [whatIfFromUrl])
 
+  // What If and Formula 1.5 are mutually exclusive
+  useEffect(() => {
+    if (whatIfActive || whatIfBlocked) setFormula15(false)
+  }, [whatIfActive, whatIfBlocked])
+
+  // Drop Formula 1.5 when navigating to a season before it exists
+  useEffect(() => {
+    if (season < FORMULA15_START) setFormula15(false)
+  }, [season])
+
   // Restore saved what-if when Leaderboard nav drops query params
   useEffect(() => {
     // Never overwrite an explicit What If URL (including blocked custom links)
     if (requestedWhatIf) return
     if (whatIfActive && whatIfFromUrl) return
+    if (formula15) return
     const draft = loadWhatIfDraft()
     if (!draft) return
     // Hosted site: only restore precomputed default scenarios
@@ -378,7 +424,7 @@ export function LeaderboardPage() {
       preventScrollReset: true,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps -- restore once when API/draft becomes available
-  }, [liveWhatIf, requestedWhatIf])
+  }, [liveWhatIf, requestedWhatIf, formula15])
 
   useEffect(() => {
     if (requestedWhatIf) {
@@ -397,16 +443,25 @@ export function LeaderboardPage() {
     }
   }, [whatIfActive, whatIfSeason, whatIfQueryKeyStr])
 
+  useEffect(() => {
+    if (formula15Active) setHidden(new Set())
+  }, [formula15Active, season])
+
   const { data, isLoading, isFetching, error } = useQuery({
     queryKey: whatIfActive
       ? ['what-if', season, whatIfQueryKeyStr, liveWhatIf ? 'live' : 'hosted']
-      : ['leaderboard', season],
+      : formula15Active
+        ? ['formula15', season]
+        : ['leaderboard', season],
     queryFn: () => {
-      if (!whatIfFromUrl) return api.leaderboard(season)
-      return api.whatIfDraft(
-        { ...whatIfFromUrl, championship: whatIfChampionship, season },
-        liveWhatIf,
-      )
+      if (whatIfFromUrl) {
+        return api.whatIfDraft(
+          { ...whatIfFromUrl, championship: whatIfChampionship, season },
+          liveWhatIf,
+        )
+      }
+      if (formula15Active) return api.formula15(season)
+      return api.leaderboard(season)
     },
     enabled: whatIfActive
       ? isPointsWhatIfDraft(whatIfFromUrl!) || whatIfRemoves.length > 0
@@ -439,6 +494,19 @@ export function LeaderboardPage() {
     navigate('/leaderboard', { preventScrollReset: true })
   }
 
+  const setFormula15Mode = (next: boolean) => {
+    if (next === formula15) return
+    scrollLockRef.current = window.scrollY
+    setHidden(new Set())
+    if (next) {
+      clearWhatIfDraft()
+      if (whatIfActive || requestedWhatIf) {
+        navigate('/leaderboard', { preventScrollReset: true })
+      }
+    }
+    setFormula15(next)
+  }
+
   const setModeWithWhatIf = (next: 'drivers' | 'constructors') => {
     if (next === mode) return
     scrollLockRef.current = window.scrollY
@@ -458,11 +526,12 @@ export function LeaderboardPage() {
     const y = scrollLockRef.current
     scrollLockRef.current = null
     window.scrollTo(0, y)
-  }, [mode])
+  }, [mode, formula15])
 
   const applySeasonChange = async (next: number) => {
     if (next === season) return
     setHidden(new Set())
+    if (next < FORMULA15_START) setFormula15(false)
 
     if (!whatIfFromUrl) {
       setSeason(next)
@@ -601,6 +670,15 @@ export function LeaderboardPage() {
   }, [data?.notes, mode])
 
   const modeLabel = mode === 'drivers' ? 'Drivers' : 'Constructors'
+  const championshipTitle = formula15Active
+    ? `Formula 1.5 ${modeLabel} Championship`
+    : `${modeLabel} Championship`
+  const standingsTitle = formula15Active
+    ? `${season} Formula 1.5 ${mode === 'drivers' ? 'Driver' : 'Constructor'} Standings`
+    : `${season} ${mode === 'drivers' ? 'Driver' : 'Constructor'} Standings`
+  const statsTitle = formula15Active
+    ? `${season} Formula 1.5 Season Statistics`
+    : `${season} Season Statistics`
 
   const toggle = (id: string) =>
     setHidden((prev) => {
@@ -711,8 +789,8 @@ export function LeaderboardPage() {
       <header className="page-header">
         <div>
           <h1 className={whatIfActiveClause ? 'what-if-title' : undefined}>
-            {modeLabel} Championship
-            {whatIfClauseEl}
+            {championshipTitle}
+            {!formula15Active && whatIfClauseEl}
           </h1>
           {whatIfBlocked && (
             <p className="what-if-local-only lb-what-if-blocked" role="status">
@@ -735,6 +813,9 @@ export function LeaderboardPage() {
             onSelect={selectSeason}
           />
           <StandingsModeToggle mode={mode} onChange={setModeWithWhatIf} />
+          {formula15Available && (
+            <Formula15Toggle active={formula15Active} onChange={setFormula15Mode} />
+          )}
         </div>
       </header>
 
@@ -742,7 +823,7 @@ export function LeaderboardPage() {
         <div className="chart-panel leaderboard-chart">
           <ResponsiveContainer width="100%" height={520}>
             <LineChart
-              key={`${season}-${mode}`}
+              key={`${season}-${mode}-${formula15Active ? 'f15' : 'f1'}`}
               data={chartRows}
               margin={{ top: 12, right: 16, left: 8, bottom: 8 }}
             >
@@ -794,7 +875,7 @@ export function LeaderboardPage() {
         <aside className="standings-panel">
           <div className="standings-head">
             <h3>
-              {season} {mode === 'drivers' ? 'Driver' : 'Constructor'} Standings
+              {standingsTitle}
             </h3>
           </div>
 
@@ -848,12 +929,12 @@ export function LeaderboardPage() {
 
       <section
         className={`lb-stats-section${isFetching ? ' is-fetching' : ''}`}
-        aria-label={`${season} season statistics`}
+        aria-label={statsTitle}
       >
         <div className="lb-stats-head">
           <h3>
-            {season} Season Statistics
-            {whatIfStatsClauseEl}
+            {statsTitle}
+            {!formula15Active && whatIfStatsClauseEl}
           </h3>
           <div className="lb-stats-controls">
             <SeasonNav
@@ -863,7 +944,16 @@ export function LeaderboardPage() {
               onShift={shiftSeason}
               onSelect={selectSeason}
             />
-            <StandingsModeToggle mode={mode} onChange={setModeWithWhatIf} className="lb-stats-toggle" />
+            <div className="lb-stats-toggles">
+              <StandingsModeToggle mode={mode} onChange={setModeWithWhatIf} className="lb-stats-toggle" />
+              {formula15Available && (
+                <Formula15Toggle
+                  active={formula15Active}
+                  onChange={setFormula15Mode}
+                  className="lb-stats-toggle"
+                />
+              )}
+            </div>
           </div>
         </div>
         <div className="lb-stats-grid">

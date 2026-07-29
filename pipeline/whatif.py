@@ -2,19 +2,32 @@
 
 from __future__ import annotations
 
+import json
+import logging
+import os
 import unicodedata
 from typing import Any
 
 import pandas as pd
 
 from backtest import build_leaderboard_from_sessions
-from config import LEADERBOARD_SEASONS, get_team_color, normalize_team
+from config import (
+    CURRENT_SEASON,
+    FORMULA15_START,
+    FORMULA15_TEAMS,
+    LEADERBOARD_SEASONS,
+    OUTPUTS_DIR,
+    get_team_color,
+    normalize_team,
+)
 from points_rules import (
     counting_season_for_points_what_if,
     get_points_system_changes,
     race_points_schedule,
     sprint_points_schedule,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def _norm(text: str) -> str:
@@ -377,6 +390,82 @@ def compute_what_if(
         "color": accent_color,
     }
     return leaderboard
+
+
+def compute_formula15(
+    season: int,
+    sessions: pd.DataFrame | None = None,
+) -> dict[str, Any]:
+    """Rescored midfield championship with the big 4 teams removed."""
+    if season < FORMULA15_START or season > CURRENT_SEASON:
+        raise ValueError(f"Formula 1.5 is not available for season {season}")
+    leaderboard = compute_what_if(
+        season=season,
+        remove_type="team",
+        identifiers=list(FORMULA15_TEAMS),
+        championship="drivers",
+        sessions=sessions,
+    )
+    leaderboard.pop("what_if", None)
+    return leaderboard
+
+
+def build_formula15_leaderboards(
+    sessions: pd.DataFrame | None = None,
+    *,
+    existing_path: str | None = None,
+) -> dict[str, Any]:
+    """Build Formula 1.5 standings; freeze 2021–(current-1), always refresh current season."""
+    if sessions is None:
+        from ingest import load_sessions
+
+        sessions = load_sessions()
+
+    path = existing_path or os.path.join(OUTPUTS_DIR, "formula15.json")
+    seasons_out: dict[str, Any] = {}
+    if os.path.isfile(path):
+        try:
+            with open(path, encoding="utf-8") as f:
+                prior = json.load(f)
+            seasons_out = dict(prior.get("seasons") or {})
+        except (OSError, json.JSONDecodeError) as exc:
+            logger.warning("Could not load existing Formula 1.5 file: %s", exc)
+
+    for year in range(FORMULA15_START, CURRENT_SEASON + 1):
+        key = str(year)
+        if year < CURRENT_SEASON and key in seasons_out and seasons_out[key].get("drivers"):
+            logger.info("Formula 1.5 %d: kept frozen standings", year)
+            continue
+        try:
+            lb = compute_formula15(year, sessions=sessions)
+        except ValueError as exc:
+            logger.warning("Formula 1.5 %d skipped: %s", year, exc)
+            continue
+        if not lb.get("drivers"):
+            logger.warning("No Formula 1.5 data for %d", year)
+            continue
+        seasons_out[key] = lb
+        logger.info(
+            "Formula 1.5 %d: %d drivers, %d stages",
+            year,
+            len(lb["drivers"]),
+            len(lb.get("stages") or []),
+        )
+
+    return {"seasons": seasons_out}
+
+
+def write_formula15_leaderboards(
+    sessions: pd.DataFrame | None = None,
+) -> dict[str, Any]:
+    """Compute and write formula15.json under OUTPUTS_DIR."""
+    payload = build_formula15_leaderboards(sessions)
+    path = os.path.join(OUTPUTS_DIR, "formula15.json")
+    os.makedirs(OUTPUTS_DIR, exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(payload, f, indent=2)
+    logger.info("Wrote Formula 1.5 leaderboards → %s", path)
+    return payload
 
 
 def constructor_champion_from_leaderboard(season_lb: dict[str, Any]) -> dict[str, str]:

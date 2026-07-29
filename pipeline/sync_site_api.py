@@ -17,6 +17,7 @@ SITE_API_DIR = Path(__file__).resolve().parent.parent / "site" / "public" / "api
 COPY_NAMES = (
     "drivers.json",
     "leaderboard.json",
+    "formula15.json",
     "podiums.json",
     "points_system_changes.json",
 )

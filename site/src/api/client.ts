@@ -36,6 +36,7 @@ interface LeaderboardFile {
 }
 
 let leaderboardFilePromise: Promise<LeaderboardFile> | null = null
+let formula15FilePromise: Promise<LeaderboardFile> | null = null
 
 function loadLeaderboardFile() {
   if (!leaderboardFilePromise) {
@@ -45,6 +46,16 @@ function loadLeaderboardFile() {
     })
   }
   return leaderboardFilePromise
+}
+
+function loadFormula15File() {
+  if (!formula15FilePromise) {
+    formula15FilePromise = fetchJson<LeaderboardFile>('/api/formula15.json').catch((err) => {
+      formula15FilePromise = null
+      throw err
+    })
+  }
+  return formula15FilePromise
 }
 
 export const api = {
@@ -64,6 +75,13 @@ export const api = {
     const data = await loadLeaderboardFile()
     const lb = data.seasons?.[String(season)]
     if (!lb) throw new Error(`No leaderboard for season ${season}`)
+    return lb
+  },
+
+  formula15: async (season = 2026) => {
+    const data = await loadFormula15File()
+    const lb = data.seasons?.[String(season)]
+    if (!lb) throw new Error(`No Formula 1.5 leaderboard for season ${season}`)
     return lb
   },
 

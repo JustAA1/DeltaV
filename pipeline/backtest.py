@@ -650,12 +650,20 @@ def generate_mock_data() -> None:
 
     from ingest import load_sessions
 
-    leaderboard = build_all_leaderboards(load_sessions())
+    sessions = load_sessions()
+    leaderboard = build_all_leaderboards(sessions)
     # Mock path may have no sessions yet — fall back to single-season mock standings
     if not leaderboard.get("seasons"):
         leaderboard = {"seasons": {str(BACKTEST_SEASON): _build_leaderboard(race_results, BACKTEST_SEASON)}}
     with open(os.path.join(OUTPUTS_DIR, "leaderboard.json"), "w", encoding="utf-8") as f:
         json.dump(leaderboard, f, indent=2)
+
+    try:
+        from whatif import write_formula15_leaderboards
+
+        write_formula15_leaderboards(sessions)
+    except Exception as exc:
+        logger.warning("Formula 1.5 write skipped: %s", exc)
 
     logger.info("Generated mock backtest data for %d rounds", n_rounds)
 
@@ -772,6 +780,10 @@ def run_backtest(features: pd.DataFrame | None = None, season: int = BACKTEST_SE
     leaderboard = build_all_leaderboards(sessions)
     with open(os.path.join(OUTPUTS_DIR, "leaderboard.json"), "w", encoding="utf-8") as f:
         json.dump(leaderboard, f, indent=2)
+
+    from whatif import write_formula15_leaderboards
+
+    write_formula15_leaderboards(sessions)
 
     from podiumigami import write_podiumigami
 

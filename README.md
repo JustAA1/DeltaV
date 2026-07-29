@@ -1,6 +1,6 @@
 # DeltaV
 
-Formula 1 race predictions, championship standings, podium history, and “What If?” alternate standings.
+Formula 1 race predictions, championship standings, race replays, podium history, and “What If?” alternate standings.
 
 
 | Folder      | Role                                               |
@@ -32,8 +32,12 @@ Precomputed prediction JSON lives in `site/public/api/` so the public site stays
 ## Site features
 
 - **Predictions** — Full-grid order for each 2026 round so far, with predicted-vs-actual when the race is done and a forecast for the next event.
+- **Replays** — Track-map playback of completed 2026 races:
+  - Play/pause, scrubber, and speed controls (1×–20×)
+  - Live running order with gaps, tyre compounds, and pit counts
+  - Race-control feed and per-driver overlays (stints, grid→live delta)
 - **Podiumigami** — Unique podium combinations across F1 history (recent, yearly + all-time stats). Heavily inspired by [NFL Scorigami](https://www.youtube.com/watch?v=9l5C8cGMueY) with tracking first-time outcomes.
-- **Leaderboard** — Progressive drivers’ / constructors’ championship chart (1980–2026).
+- **Leaderboard** — Progressive drivers’ / constructors’ championship chart (1980–2026), plus a **Formula 1.5** mode that rescores midfield standings with Mercedes, Red Bull, Ferrari, and McLaren removed.
 - **What If?** — Guided scenarios:
   - *Remove from grid* — e.g. “What if Mercedes didn’t race in 2026?”
   - *Swap points system* — e.g. “What if 2021 had the points system from 2007?”
