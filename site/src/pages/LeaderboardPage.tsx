@@ -13,9 +13,11 @@ import {
 import { api } from '../api/client'
 import { DriverAvatar } from '../components/DriverAvatar'
 import { LoadingSkeleton } from '../components/LoadingSkeleton'
+import { RankingEvolutionChart } from '../components/RankingEvolutionChart'
 import { WhatIfClauseText } from '../components/WhatIfClauseText'
 import { WhatIfPointsClauseText } from '../components/WhatIfPointsClauseText'
 import { lastName, ranksAtStage, sortSeriesAtStage, toLeaderboardChartData } from '../lib/leaderboard'
+import { setLeaderboardSeason } from '../lib/leaderboardSeason'
 import { useLiveWhatIfAvailable } from '../lib/useLiveWhatIfAvailable'
 import { isHostedWhatIfDraft } from '../lib/whatIfDefaults'
 import { formatPoints, roundPoints } from '../lib/points'
@@ -242,12 +244,14 @@ function RaceAxisTick({
 
 function SeasonNav({
   season,
+  seasons,
   olderSeason,
   newerSeason,
   onShift,
   onSelect,
 }: {
   season: number
+  seasons: number[]
   olderSeason: number | null
   newerSeason: number | null
   onShift: (next: number | null) => void
@@ -273,7 +277,7 @@ function SeasonNav({
             e.currentTarget.blur()
           }}
         >
-          {SEASONS.map((s) => (
+          {seasons.map((s) => (
             <option key={s} value={s}>
               {s}
             </option>
@@ -333,41 +337,13 @@ function StandingsModeToggle({
   )
 }
 
-function Formula15Toggle({
-  active,
-  onChange,
-  className,
-}: {
-  active: boolean
-  onChange: (active: boolean) => void
-  className?: string
-}) {
-  return (
-    <div
-      className={className ? `toggle-group ${className}` : 'toggle-group'}
-      role="group"
-      aria-label="Formula 1.5 standings"
-    >
-      <button
-        type="button"
-        className={active ? 'toggle active' : 'toggle'}
-        aria-pressed={active}
-        onClick={(e) => {
-          onChange(!active)
-          e.currentTarget.blur()
-        }}
-      >
-        Formula 1.5
-      </button>
-    </div>
-  )
-}
-
 export function LeaderboardPage() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [searchParams] = useSearchParams()
   const { available: liveWhatIf } = useLiveWhatIfAvailable()
+  const formula15Requested = searchParams.get('f15') === '1'
+  const reverseRequested = searchParams.get('rev') === '1'
   const requestedWhatIf = useMemo(() => parseWhatIfFromSearchParams(searchParams), [searchParams])
   const hostedWhatIf = isHostedWhatIfDraft(requestedWhatIf)
   const whatIfRunnable = liveWhatIf || hostedWhatIf
@@ -386,12 +362,16 @@ export function LeaderboardPage() {
   const [mode, setMode] = useState<'drivers' | 'constructors'>(
     requestedWhatIf?.championship ?? (whatIfActive ? whatIfChampionship : 'drivers'),
   )
-  const [formula15, setFormula15] = useState(false)
   const [hidden, setHidden] = useState<Set<string>>(new Set())
   const scrollLockRef = useRef<number | null>(null)
 
-  const formula15Available = season >= FORMULA15_START && !whatIfActive && !whatIfBlocked
-  const formula15Active = formula15 && season >= FORMULA15_START && !whatIfActive
+  const formula15Active =
+    formula15Requested &&
+    !reverseRequested &&
+    season >= FORMULA15_START &&
+    !whatIfActive &&
+    !whatIfBlocked
+  const reverseActive = reverseRequested && !whatIfActive && !whatIfBlocked
 
   // Keep active scenario in sync with the URL while viewing the leaderboard
   useEffect(() => {
@@ -399,22 +379,44 @@ export function LeaderboardPage() {
     syncActiveWhatIfDraft(whatIfFromUrl)
   }, [whatIfFromUrl])
 
-  // What If and Formula 1.5 are mutually exclusive
+  // Drop invalid alt-mode params (What If active, pre-2021 Formula 1.5, or both modes)
   useEffect(() => {
-    if (whatIfActive || whatIfBlocked) setFormula15(false)
-  }, [whatIfActive, whatIfBlocked])
-
-  // Drop Formula 1.5 when navigating to a season before it exists
-  useEffect(() => {
-    if (season < FORMULA15_START) setFormula15(false)
-  }, [season])
+    const next = new URLSearchParams(searchParams)
+    let changed = false
+    if (formula15Requested && !formula15Active) {
+      next.delete('f15')
+      changed = true
+    }
+    if (reverseRequested && !reverseActive) {
+      next.delete('rev')
+      changed = true
+    }
+    if (formula15Requested && reverseRequested && reverseActive) {
+      // Prefer Reversed when both are present
+      next.delete('f15')
+      changed = true
+    }
+    if (!changed) return
+    const q = next.toString()
+    navigate(q ? `/leaderboard?${q}` : '/leaderboard', {
+      replace: true,
+      preventScrollReset: true,
+    })
+  }, [
+    formula15Requested,
+    formula15Active,
+    reverseRequested,
+    reverseActive,
+    searchParams,
+    navigate,
+  ])
 
   // Restore saved what-if when Leaderboard nav drops query params
   useEffect(() => {
     // Never overwrite an explicit What If URL (including blocked custom links)
     if (requestedWhatIf) return
     if (whatIfActive && whatIfFromUrl) return
-    if (formula15) return
+    if (formula15Requested || reverseRequested) return
     const draft = loadWhatIfDraft()
     if (!draft) return
     // Hosted site: only restore precomputed default scenarios
@@ -424,7 +426,7 @@ export function LeaderboardPage() {
       preventScrollReset: true,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps -- restore once when API/draft becomes available
-  }, [liveWhatIf, requestedWhatIf, formula15])
+  }, [liveWhatIf, requestedWhatIf, formula15Requested, reverseRequested])
 
   useEffect(() => {
     if (requestedWhatIf) {
@@ -444,15 +446,21 @@ export function LeaderboardPage() {
   }, [whatIfActive, whatIfSeason, whatIfQueryKeyStr])
 
   useEffect(() => {
-    if (formula15Active) setHidden(new Set())
-  }, [formula15Active, season])
+    if (formula15Active || reverseActive) setHidden(new Set())
+  }, [formula15Active, reverseActive, season])
+
+  useEffect(() => {
+    setLeaderboardSeason(season)
+  }, [season])
 
   const { data, isLoading, isFetching, error } = useQuery({
     queryKey: whatIfActive
       ? ['what-if', season, whatIfQueryKeyStr, liveWhatIf ? 'live' : 'hosted']
-      : formula15Active
-        ? ['formula15', season]
-        : ['leaderboard', season],
+      : reverseActive
+        ? ['reversed', season]
+        : formula15Active
+          ? ['formula15', season]
+          : ['leaderboard', season],
     queryFn: () => {
       if (whatIfFromUrl) {
         return api.whatIfDraft(
@@ -460,6 +468,7 @@ export function LeaderboardPage() {
           liveWhatIf,
         )
       }
+      if (reverseActive) return api.reversed(season)
       if (formula15Active) return api.formula15(season)
       return api.leaderboard(season)
     },
@@ -494,19 +503,6 @@ export function LeaderboardPage() {
     navigate('/leaderboard', { preventScrollReset: true })
   }
 
-  const setFormula15Mode = (next: boolean) => {
-    if (next === formula15) return
-    scrollLockRef.current = window.scrollY
-    setHidden(new Set())
-    if (next) {
-      clearWhatIfDraft()
-      if (whatIfActive || requestedWhatIf) {
-        navigate('/leaderboard', { preventScrollReset: true })
-      }
-    }
-    setFormula15(next)
-  }
-
   const setModeWithWhatIf = (next: 'drivers' | 'constructors') => {
     if (next === mode) return
     scrollLockRef.current = window.scrollY
@@ -526,15 +522,19 @@ export function LeaderboardPage() {
     const y = scrollLockRef.current
     scrollLockRef.current = null
     window.scrollTo(0, y)
-  }, [mode, formula15])
+  }, [mode, formula15Active, reverseActive])
 
   const applySeasonChange = async (next: number) => {
     if (next === season) return
     setHidden(new Set())
-    if (next < FORMULA15_START) setFormula15(false)
 
     if (!whatIfFromUrl) {
       setSeason(next)
+      if (formula15Requested && next < FORMULA15_START) {
+        navigate(reverseRequested ? '/leaderboard?rev=1' : '/leaderboard', {
+          preventScrollReset: true,
+        })
+      }
       return
     }
 
@@ -669,16 +669,22 @@ export function LeaderboardPage() {
     return notes.filter((note) => !note.includes('Grey markers'))
   }, [data?.notes, mode])
 
-  const modeLabel = mode === 'drivers' ? 'Drivers' : 'Constructors'
-  const championshipTitle = formula15Active
-    ? `Formula 1.5 ${modeLabel} Championship`
-    : `${modeLabel} Championship`
-  const standingsTitle = formula15Active
-    ? `${season} Formula 1.5 ${mode === 'drivers' ? 'Driver' : 'Constructor'} Standings`
-    : `${season} ${mode === 'drivers' ? 'Driver' : 'Constructor'} Standings`
-  const statsTitle = formula15Active
-    ? `${season} Formula 1.5 Season Statistics`
-    : `${season} Season Statistics`
+  const modeLabel = mode === 'drivers' ? "Drivers'" : "Constructors'"
+  const championshipTitle = reverseActive
+    ? `Reversed ${modeLabel} Championship`
+    : formula15Active
+      ? `Formula 1.5 ${modeLabel} Championship`
+      : `${modeLabel} Championship`
+  const standingsTitle = reverseActive
+    ? `${season} Reversed ${mode === 'drivers' ? 'Driver' : 'Constructor'} Standings`
+    : formula15Active
+      ? `${season} Formula 1.5 ${mode === 'drivers' ? 'Driver' : 'Constructor'} Standings`
+      : `${season} ${mode === 'drivers' ? 'Driver' : 'Constructor'} Standings`
+  const statsTitle = reverseActive
+    ? `${season} Reversed Season Statistics`
+    : formula15Active
+      ? `${season} Formula 1.5 Season Statistics`
+      : `${season} Season Statistics`
 
   const toggle = (id: string) =>
     setHidden((prev) => {
@@ -703,9 +709,17 @@ export function LeaderboardPage() {
     )
   }
 
-  const seasonIndex = SEASONS.indexOf(season)
-  const olderSeason = seasonIndex >= 0 && seasonIndex < SEASONS.length - 1 ? SEASONS[seasonIndex + 1] : null
-  const newerSeason = seasonIndex > 0 ? SEASONS[seasonIndex - 1] : null
+  const seasonOptions = formula15Active
+    ? SEASONS.filter((s) => s >= FORMULA15_START)
+    : SEASONS
+  const seasonIndex = seasonOptions.indexOf(season)
+  const olderCandidate =
+    seasonIndex >= 0 && seasonIndex < seasonOptions.length - 1 ? seasonOptions[seasonIndex + 1] : null
+  const olderSeason =
+    formula15Active && olderCandidate != null && olderCandidate < FORMULA15_START
+      ? null
+      : olderCandidate
+  const newerSeason = seasonIndex > 0 ? seasonOptions[seasonIndex - 1] : null
 
   const shiftSeason = (next: number | null) => {
     if (next == null) return
@@ -790,7 +804,7 @@ export function LeaderboardPage() {
         <div>
           <h1 className={whatIfActiveClause ? 'what-if-title' : undefined}>
             {championshipTitle}
-            {!formula15Active && whatIfClauseEl}
+            {!formula15Active && !reverseActive && whatIfClauseEl}
           </h1>
           {whatIfBlocked && (
             <p className="what-if-local-only lb-what-if-blocked" role="status">
@@ -807,15 +821,13 @@ export function LeaderboardPage() {
         <div className="controls-stack">
           <SeasonNav
             season={season}
+            seasons={seasonOptions}
             olderSeason={olderSeason}
             newerSeason={newerSeason}
             onShift={shiftSeason}
             onSelect={selectSeason}
           />
           <StandingsModeToggle mode={mode} onChange={setModeWithWhatIf} />
-          {formula15Available && (
-            <Formula15Toggle active={formula15Active} onChange={setFormula15Mode} />
-          )}
         </div>
       </header>
 
@@ -823,7 +835,7 @@ export function LeaderboardPage() {
         <div className="chart-panel leaderboard-chart">
           <ResponsiveContainer width="100%" height={520}>
             <LineChart
-              key={`${season}-${mode}-${formula15Active ? 'f15' : 'f1'}`}
+              key={`${season}-${mode}-${reverseActive ? 'rev' : formula15Active ? 'f15' : 'f1'}`}
               data={chartRows}
               margin={{ top: 12, right: 16, left: 8, bottom: 8 }}
             >
@@ -874,9 +886,7 @@ export function LeaderboardPage() {
 
         <aside className="standings-panel">
           <div className="standings-head">
-            <h3>
-              {standingsTitle}
-            </h3>
+            <h3>{standingsTitle}</h3>
           </div>
 
           <div className="standings-table-head">
@@ -927,6 +937,18 @@ export function LeaderboardPage() {
         </aside>
       </div>
 
+      {stages.length > 0 && series.length > 0 && (
+        <div className={isFetching ? 'is-fetching' : undefined}>
+          <RankingEvolutionChart
+            stages={stages}
+            series={series}
+            mode={mode}
+            hidden={hidden}
+            chartKey={`${season}-${mode}-${reverseActive ? 'rev' : formula15Active ? 'f15' : 'f1'}-rank`}
+          />
+        </div>
+      )}
+
       <section
         className={`lb-stats-section${isFetching ? ' is-fetching' : ''}`}
         aria-label={statsTitle}
@@ -934,11 +956,12 @@ export function LeaderboardPage() {
         <div className="lb-stats-head">
           <h3>
             {statsTitle}
-            {!formula15Active && whatIfStatsClauseEl}
+            {!formula15Active && !reverseActive && whatIfStatsClauseEl}
           </h3>
           <div className="lb-stats-controls">
             <SeasonNav
               season={season}
+              seasons={seasonOptions}
               olderSeason={olderSeason}
               newerSeason={newerSeason}
               onShift={shiftSeason}
@@ -946,18 +969,14 @@ export function LeaderboardPage() {
             />
             <div className="lb-stats-toggles">
               <StandingsModeToggle mode={mode} onChange={setModeWithWhatIf} className="lb-stats-toggle" />
-              {formula15Available && (
-                <Formula15Toggle
-                  active={formula15Active}
-                  onChange={setFormula15Mode}
-                  className="lb-stats-toggle"
-                />
-              )}
             </div>
           </div>
         </div>
         <div className="lb-stats-grid">
-          {STAT_CATEGORIES.map(({ key, label }) => {
+          {(reverseActive
+            ? STAT_CATEGORIES.filter((c) => c.key !== 'poles')
+            : STAT_CATEGORIES
+          ).map(({ key, label }) => {
             const leaders = topByStat(statRows, key)
             return (
               <div key={key} className="lb-stat-card">

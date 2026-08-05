@@ -1,8 +1,15 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState, useSyncExternalStore } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
+import {
+  getLeaderboardSeason,
+  subscribeLeaderboardSeason,
+} from '../lib/leaderboardSeason'
 import { useLiveWhatIfAvailable } from '../lib/useLiveWhatIfAvailable'
 import { isHostedWhatIfDraft } from '../lib/whatIfDefaults'
-import { leaderboardWhatIfHref, loadWhatIfDraft } from '../lib/whatIfStorage'
+import { clearWhatIfDraft, leaderboardWhatIfHref, loadWhatIfDraft } from '../lib/whatIfStorage'
+
+const FORMULA15_START = 2021
+const FORMULA15_END = 2026
 
 function GitHubIcon() {
   return (
@@ -31,21 +38,62 @@ function MenuIcon({ open }: { open: boolean }) {
   )
 }
 
+function ChevronIcon({ open }: { open: boolean }) {
+  return (
+    <svg
+      className={`nav-dropdown-chevron${open ? ' is-open' : ''}`}
+      viewBox="0 0 12 12"
+      width="10"
+      height="10"
+      aria-hidden
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M2.5 4.5L6 8l3.5-3.5" />
+    </svg>
+  )
+}
+
 export function Nav() {
   const location = useLocation()
   const navigate = useNavigate()
   const menuId = useId()
+  const dropdownId = useId()
   const rootRef = useRef<HTMLElement>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
   const menuToggleRef = useRef<HTMLButtonElement>(null)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [lbOpen, setLbOpen] = useState(false)
   const { available: liveWhatIf } = useLiveWhatIfAvailable()
+  const season = useSyncExternalStore(
+    subscribeLeaderboardSeason,
+    getLeaderboardSeason,
+    getLeaderboardSeason,
+  )
   const draft = loadWhatIfDraft()
   const leaderboardHref =
     liveWhatIf || isHostedWhatIfDraft(draft) ? leaderboardWhatIfHref(draft) : '/leaderboard'
-  const leaderboardActive = location.pathname === '/leaderboard'
+  const onLeaderboard =
+    location.pathname === '/' || location.pathname === '/leaderboard'
+  const formula15Active = onLeaderboard && new URLSearchParams(location.search).get('f15') === '1'
+  const reversedActive = onLeaderboard && new URLSearchParams(location.search).get('rev') === '1'
+  const leaderboardActive = onLeaderboard
+  const lbLabel = !onLeaderboard
+    ? 'Leaderboards'
+    : reversedActive
+      ? 'Reversed'
+      : formula15Active
+        ? 'Formula 1.5'
+        : 'Formula 1'
+  const formula15Disabled = onLeaderboard && !formula15Active && !reversedActive && season < FORMULA15_START
+  const normalLeaderboardActive = leaderboardActive && !formula15Active && !reversedActive
 
   useEffect(() => {
     setMenuOpen(false)
+    setLbOpen(false)
   }, [location.pathname, location.search])
 
   useEffect(() => {
@@ -56,12 +104,19 @@ export function Nav() {
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
+        if (lbOpen) {
+          setLbOpen(false)
+          return
+        }
         setMenuOpen(false)
         menuToggleRef.current?.focus()
       }
     }
     const onPointerDown = (e: MouseEvent) => {
-      if (!rootRef.current?.contains(e.target as Node)) setMenuOpen(false)
+      if (!rootRef.current?.contains(e.target as Node)) {
+        setMenuOpen(false)
+        setLbOpen(false)
+      }
     }
 
     document.addEventListener('keydown', onKeyDown)
@@ -75,12 +130,48 @@ export function Nav() {
       document.removeEventListener('keydown', onKeyDown)
       document.removeEventListener('mousedown', onPointerDown)
     }
-  }, [menuOpen])
+  }, [menuOpen, lbOpen])
+
+  useEffect(() => {
+    if (!lbOpen || menuOpen) return
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setLbOpen(false)
+    }
+    const onPointerDown = (e: MouseEvent) => {
+      if (!dropdownRef.current?.contains(e.target as Node)) setLbOpen(false)
+    }
+
+    document.addEventListener('keydown', onKeyDown)
+    document.addEventListener('mousedown', onPointerDown)
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+      document.removeEventListener('mousedown', onPointerDown)
+    }
+  }, [lbOpen, menuOpen])
 
   const goLeaderboard = (e: React.MouseEvent) => {
     e.preventDefault()
+    setLbOpen(false)
     setMenuOpen(false)
     navigate(leaderboardHref, { preventScrollReset: true })
+  }
+
+  const goFormula15 = (e: React.MouseEvent) => {
+    e.preventDefault()
+    if (formula15Disabled) return
+    clearWhatIfDraft()
+    setLbOpen(false)
+    setMenuOpen(false)
+    navigate('/leaderboard?f15=1', { preventScrollReset: true })
+  }
+
+  const goReversed = (e: React.MouseEvent) => {
+    e.preventDefault()
+    clearWhatIfDraft()
+    setLbOpen(false)
+    setMenuOpen(false)
+    navigate('/leaderboard?rev=1', { preventScrollReset: true })
   }
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
@@ -119,22 +210,75 @@ export function Nav() {
         </div>
 
         <nav id={menuId} className="nav-links" aria-label="Main">
-          <NavLink to="/" end className={linkClass} onClick={() => setMenuOpen(false)}>
-            Predictions
+          <div
+            ref={dropdownRef}
+            className={`nav-dropdown${lbOpen ? ' is-open' : ''}`}
+          >
+            <button
+              type="button"
+              className={leaderboardActive ? 'nav-link nav-dropdown-trigger active' : 'nav-link nav-dropdown-trigger'}
+              aria-expanded={lbOpen}
+              aria-controls={dropdownId}
+              aria-haspopup="menu"
+              onClick={() => setLbOpen((open) => !open)}
+            >
+              <span>{lbLabel}</span>
+              <ChevronIcon open={lbOpen} />
+            </button>
+            <div id={dropdownId} className="nav-dropdown-menu" role="menu" hidden={!lbOpen}>
+              <a
+                href={leaderboardHref}
+                role="menuitem"
+                className={normalLeaderboardActive ? 'nav-dropdown-item is-active' : 'nav-dropdown-item'}
+                onClick={goLeaderboard}
+              >
+                Formula 1
+              </a>
+              {formula15Disabled ? (
+                <div
+                  className="nav-dropdown-item is-disabled"
+                  role="menuitem"
+                  aria-disabled="true"
+                >
+                  <span>Formula 1.5</span>
+                  <span className="nav-dropdown-tag">for {FORMULA15_START}–{FORMULA15_END}</span>
+                </div>
+              ) : (
+                <a
+                  href="/leaderboard?f15=1"
+                  role="menuitem"
+                  className={
+                    formula15Active
+                      ? 'nav-dropdown-item nav-dropdown-item-stack is-active'
+                      : 'nav-dropdown-item nav-dropdown-item-stack'
+                  }
+                  onClick={goFormula15}
+                >
+                  <span>Formula 1.5</span>
+                  <span className="nav-dropdown-tag">for {FORMULA15_START}–{FORMULA15_END}</span>
+                </a>
+              )}
+              <a
+                href="/leaderboard?rev=1"
+                role="menuitem"
+                className={
+                  reversedActive
+                    ? 'nav-dropdown-item nav-dropdown-item-stack is-active'
+                    : 'nav-dropdown-item nav-dropdown-item-stack'
+                }
+                onClick={goReversed}
+              >
+                <span>Reversed</span>
+                <span className="nav-dropdown-tag">excludes DNFs</span>
+              </a>
+            </div>
+          </div>
+          <NavLink to="/replays" className={linkClass} onClick={() => setMenuOpen(false)}>
+            Replays
           </NavLink>
           <NavLink to="/podiumigami" className={linkClass} onClick={() => setMenuOpen(false)}>
             Podiumigami
           </NavLink>
-          <NavLink to="/replays" className={linkClass} onClick={() => setMenuOpen(false)}>
-            Replays
-          </NavLink>
-          <a
-            href={leaderboardHref}
-            className={leaderboardActive ? 'nav-link active' : 'nav-link'}
-            onClick={goLeaderboard}
-          >
-            Leaderboard
-          </a>
           <NavLink to="/what-if" className={linkClass} onClick={() => setMenuOpen(false)}>
             What If?
           </NavLink>

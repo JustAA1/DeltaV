@@ -16,36 +16,6 @@ export interface DriversResponse {
   races?: Record<string, string>
 }
 
-export interface PredictionEntry {
-  driver_code: string
-  driver_name: string
-  team: string
-  predicted_position: number
-  confidence: number
-}
-
-export interface RacePrediction {
-  round: number
-  season: number
-  event_name: string
-  upcoming?: boolean
-  metrics?: {
-    spearman: number
-    podium_hit_rate: number
-    mean_position_error: number
-    winner_correct: boolean
-  }
-  predictions: PredictionEntry[]
-  actual?: ActualResult[]
-}
-
-export interface ActualResult {
-  driver_code: string
-  name: string
-  team: string
-  position: number
-}
-
 export interface LeaderboardEntity {
   name: string
   code?: string
@@ -172,11 +142,6 @@ export interface WhatIfRequest {
     id?: string
   }[]
   championship?: 'drivers' | 'constructors'
-}
-
-export interface RacesResponse {
-  season: number
-  races: { round: number; event_name: string; season: number }[]
 }
 
 export interface ChartPoint {

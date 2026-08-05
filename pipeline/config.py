@@ -5,10 +5,10 @@ from __future__ import annotations
 from pathlib import Path
 
 SEASONS: list[int] = list(range(2018, 2027))  # 2018–2026
-INGEST_SEASONS: list[int] = list(range(2020, 2027))  # race data for ML + leaderboards
+INGEST_SEASONS: list[int] = list(range(2020, 2027))  # race data for leaderboards / replays / what-if
 LEADERBOARD_SEASONS: list[int] = list(range(1980, 2027))
 CURRENT_SEASON: int = 2026
-BACKTEST_SEASON: int = 2026
+BACKTEST_SEASON: int = 2026  # default season for local What If API
 DEFAULT_TEAM_COLOR: str = "#888888"
 
 # Midfield-only championship (big 4 removed + races rescored).
@@ -265,8 +265,6 @@ DATA_DIR = str(_PIPELINE_ROOT / "data")
 CACHE_DIR = str(_PIPELINE_ROOT / "data" / "cache")
 OUTPUTS_DIR = str(_PIPELINE_ROOT / "outputs")
 PARQUET_PATH = str(_PIPELINE_ROOT / "data" / "sessions.parquet")
-FEATURES_PATH = str(_PIPELINE_ROOT / "data" / "features.parquet")
-MODEL_PATH = str(_PIPELINE_ROOT / "outputs" / "model.json")
 SITE_PUBLIC_DIR = str(_PIPELINE_ROOT.parent / "site" / "public")
 
 

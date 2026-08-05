@@ -10,7 +10,7 @@ from typing import Any
 
 import pandas as pd
 
-from backtest import build_leaderboard_from_sessions
+from leaderboard import build_leaderboard_from_sessions
 from config import (
     CURRENT_SEASON,
     FORMULA15_START,
@@ -465,6 +465,148 @@ def write_formula15_leaderboards(
     with open(path, "w", encoding="utf-8") as f:
         json.dump(payload, f, indent=2)
     logger.info("Wrote Formula 1.5 leaderboards → %s", path)
+    return payload
+
+
+def _is_dnf_row(status: object) -> bool:
+    from season_stats import _is_dnf
+
+    return _is_dnf(str(status or ""))
+
+
+def _reverse_race_sessions(season_df: pd.DataFrame) -> pd.DataFrame:
+    """Reverse classified R/S finishers and rescore; DNFs keep 0 points / no place."""
+    year = int(season_df["year"].iloc[0])
+    parts: list[pd.DataFrame] = []
+
+    for (_, _), grp in season_df.groupby(["round", "session"], sort=True):
+        grp = grp.copy()
+        session_type = str(grp["session"].iloc[0])
+        schedule = (
+            _sprint_points_schedule(year)
+            if session_type == "S"
+            else _race_points_schedule(year)
+        )
+        if not schedule:
+            schedule = _race_points_schedule(year)
+
+        multiplier = _session_multiplier(grp, schedule)
+        dnf_mask = grp["status"].map(_is_dnf_row)
+        classified = grp[~dnf_mask].sort_values("position", kind="mergesort").copy()
+        dnfs = grp[dnf_mask].copy()
+
+        if not classified.empty:
+            n = len(classified)
+            # Best original finish → last reversed place; last classified → P1.
+            classified["position"] = list(range(n, 0, -1))
+            classified["points"] = [
+                _points_at(schedule, int(pos), multiplier) for pos in classified["position"]
+            ]
+            classified["points"] = classified["points"].apply(_round_pts)
+            parts.append(classified)
+
+        if not dnfs.empty:
+            dnfs["points"] = 0.0
+            dnfs["position"] = pd.NA
+            parts.append(dnfs)
+
+    if not parts:
+        return pd.DataFrame(columns=season_df.columns)
+    return pd.concat(parts, ignore_index=True)
+
+
+def compute_reversed(
+    season: int,
+    sessions: pd.DataFrame | None = None,
+) -> dict[str, Any]:
+    """Championship with classified finishing order reversed (DNFs excluded from the flip)."""
+    if season not in LEADERBOARD_SEASONS:
+        raise ValueError(f"Season {season} is not available")
+
+    if sessions is None:
+        from ingest import load_sessions
+
+        sessions = load_sessions()
+
+    season_rs = sessions[
+        (sessions["year"] == season) & (sessions["session"].isin(["R", "S"]))
+    ].copy()
+    if season_rs.empty:
+        raise ValueError(f"No session data for season {season}")
+
+    reversed_rs = _reverse_race_sessions(season_rs)
+    other = sessions[
+        ~((sessions["year"] == season) & (sessions["session"].isin(["R", "S"])))
+    ]
+    combined = pd.concat([other, reversed_rs], ignore_index=True)
+
+    leaderboard = build_leaderboard_from_sessions(combined, season)
+    note = (
+        "Finishing order reversed among classified drivers (last → first). "
+        "DNFs are excluded from the reverse and score 0 points."
+    )
+    notes = list(leaderboard.get("notes") or [])
+    notes.insert(0, note)
+    leaderboard["notes"] = notes
+    return leaderboard
+
+
+def build_reversed_leaderboards(
+    sessions: pd.DataFrame | None = None,
+    *,
+    existing_path: str | None = None,
+) -> dict[str, Any]:
+    """Build reversed standings; freeze completed seasons, refresh current."""
+    if sessions is None:
+        from ingest import load_sessions
+
+        sessions = load_sessions()
+
+    path = existing_path or os.path.join(OUTPUTS_DIR, "reversed.json")
+    seasons_out: dict[str, Any] = {}
+    if os.path.isfile(path):
+        try:
+            with open(path, encoding="utf-8") as f:
+                prior = json.load(f)
+            seasons_out = dict(prior.get("seasons") or {})
+        except (OSError, json.JSONDecodeError) as exc:
+            logger.warning("Could not load existing reversed file: %s", exc)
+
+    years = sorted({int(y) for y in sessions["year"].unique() if int(y) in LEADERBOARD_SEASONS})
+    for year in years:
+        key = str(year)
+        if year < CURRENT_SEASON and key in seasons_out and seasons_out[key].get("drivers"):
+            logger.info("Reversed %d: kept frozen standings", year)
+            continue
+        try:
+            lb = compute_reversed(year, sessions=sessions)
+        except ValueError as exc:
+            logger.warning("Reversed %d skipped: %s", year, exc)
+            continue
+        if not lb.get("drivers"):
+            logger.warning("No reversed data for %d", year)
+            continue
+        seasons_out[key] = lb
+        logger.info(
+            "Reversed %d: %d drivers, %d stages",
+            year,
+            len(lb["drivers"]),
+            len(lb.get("stages") or []),
+        )
+
+    return {"seasons": seasons_out}
+
+
+def write_reversed_leaderboards(
+    sessions: pd.DataFrame | None = None,
+) -> dict[str, Any]:
+    """Compute and write reversed.json under OUTPUTS_DIR."""
+    payload = build_reversed_leaderboards(sessions)
+    path = os.path.join(OUTPUTS_DIR, "reversed.json")
+    os.makedirs(OUTPUTS_DIR, exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(payload, f, indent=2)
+    logger.info("Wrote reversed leaderboards → %s", path)
     return payload
 
 

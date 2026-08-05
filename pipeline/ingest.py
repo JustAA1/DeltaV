@@ -13,7 +13,7 @@ from config import CACHE_DIR, CURRENT_SEASON, DATA_DIR, INGEST_SEASONS, PARQUET_
 logger = logging.getLogger(__name__)
 
 SESSION_TYPES = ["FP1", "FP2", "FP3", "Q", "S", "R"]
-# Historical seasons used for model features (need quali + race)
+# Historical seasons used for leaderboards / what-if (need quali + race)
 SESSION_TYPES_HISTORICAL = ["Q", "S", "R"]
 # Pre-2024 seasons only needed for championship leaderboards
 SESSION_TYPES_LEADERBOARD = ["R", "S"]

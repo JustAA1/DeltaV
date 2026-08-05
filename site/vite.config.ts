@@ -5,9 +5,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      // Static JSON lives in public/api/*.json for Predictions / Leaderboard / Podiumigami.
+      // Static JSON lives in public/api/*.json for Leaderboard / Replays / Podiumigami / What If.
       // Live What If (+ health probe) hit the local api/ server.
-      // Do NOT proxy '/api/predict' — it would steal '/api/predictions_*.json'.
       '/api/health': {
         target: 'http://127.0.0.1:8000',
         changeOrigin: true,

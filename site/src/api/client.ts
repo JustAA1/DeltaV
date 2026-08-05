@@ -4,9 +4,7 @@ import type {
   PointsWhatIfRequest,
   PointsSystemChangesResponse,
   PodiumigamiResponse,
-  RacePrediction,
   RaceReplay,
-  RacesResponse,
   ReplaysIndex,
   SeasonLeaderboard,
   WhatIfOptions,
@@ -37,6 +35,7 @@ interface LeaderboardFile {
 
 let leaderboardFilePromise: Promise<LeaderboardFile> | null = null
 let formula15FilePromise: Promise<LeaderboardFile> | null = null
+let reversedFilePromise: Promise<LeaderboardFile> | null = null
 
 function loadLeaderboardFile() {
   if (!leaderboardFilePromise) {
@@ -58,13 +57,18 @@ function loadFormula15File() {
   return formula15FilePromise
 }
 
+function loadReversedFile() {
+  if (!reversedFilePromise) {
+    reversedFilePromise = fetchJson<LeaderboardFile>('/api/reversed.json').catch((err) => {
+      reversedFilePromise = null
+      throw err
+    })
+  }
+  return reversedFilePromise
+}
+
 export const api = {
   drivers: () => fetchJson<DriversResponse>('/api/drivers.json'),
-
-  races: () => fetchJson<RacesResponse>('/api/races.json'),
-
-  predictions: (round: number) =>
-    fetchJson<RacePrediction>(`/api/predictions_${round}.json`),
 
   replaysIndex: () => fetchJson<ReplaysIndex>('/api/replays_index.json'),
 
@@ -86,6 +90,13 @@ export const api = {
     const data = await loadFormula15File()
     const lb = data.seasons?.[String(season)]
     if (!lb) throw new Error(`No Formula 1.5 leaderboard for season ${season}`)
+    return lb
+  },
+
+  reversed: async (season = 2026) => {
+    const data = await loadReversedFile()
+    const lb = data.seasons?.[String(season)]
+    if (!lb) throw new Error(`No reversed leaderboard for season ${season}`)
     return lb
   },
 

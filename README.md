@@ -1,49 +1,35 @@
 # DeltaV
 
-Formula 1 race predictions, championship standings, race replays, podium history, and “What If?” alternate standings.
+Formula 1 championship standings, race replays, podium history, and “What If?” alternate standings.
 
 
-| Folder      | Role                                               |
-| ----------- | -------------------------------------------------- |
-| `site/`     | React (Vite) UI — host on **Vercel**               |
-| `api/`      | FastAPI — **local only** (What If compute)         |
-| `pipeline/` | Ingest, features, XGBoost model, weekly precompute |
+| Folder      | Role                                             |
+| ----------- | ------------------------------------------------ |
+| `site/`     | React (Vite) UI — host on **Vercel**             |
+| `api/`      | FastAPI — **local only** (What If compute)       |
+| `pipeline/` | Ingest, leaderboards, replays, podiumigami, sync |
 
-
----
-
-## How predictions work
-
-DeltaV ranks the full grid for each race with an **XGBoost learning-to-rank** model (`rank:pairwise`).
-
-1. **Ingest** — The data is gathered with FastF1, as it pulls practice, quali, race, and sprint sessions into parquet.
-2. **Features** — One row per driver per race, built only from information available *before* that race (no leakage). Signals include:
-  - recent finish / quali form (3- and 5-race windows)
-  - constructor quali gap and race pace
-  - track history (avg finish / quali at that circuit)
-  - grid penalties, DNF rate, tire-stint habits, practice pace gap
-3. **Train** — Walk-forward over the season: for each round, train on all earlier races, then predict that race. Older seasons are down-weighted heavily so the current car regulation era dominates.
-4. **Predict** — The booster scores every driver in the race group; scores are turned into a predicted finishing order.
-
-Precomputed prediction JSON lives in `site/public/api/` so the public site stays static.
 
 ---
 
 ## Site features
 
-- **Predictions** — Full-grid order for each 2026 round so far, with predicted-vs-actual when the race is done and a forecast for the next event.
+- **Leaderboard** — Progressive drivers’ / constructors’ championship chart (1980–2026), plus **Formula 1.5** (midfield-only, 2021–2026) and **Reversed** (classified finishing order flipped; DNFs excluded).
 - **Replays** — Track-map playback of completed 2026 races:
   - Play/pause, scrubber, and speed controls (1×–20×)
   - Live running order with gaps, tyre compounds, and pit counts
   - Race-control feed and per-driver overlays (stints, grid→live delta)
 - **Podiumigami** — Unique podium combinations across F1 history (recent, yearly + all-time stats). Heavily inspired by [NFL Scorigami](https://www.youtube.com/watch?v=9l5C8cGMueY) with tracking first-time outcomes.
-- **Leaderboard** — Progressive drivers’ / constructors’ championship chart (1980–2026), plus a **Formula 1.5** mode that rescores midfield standings with Mercedes, Red Bull, Ferrari, and McLaren removed.
 - **What If?** — Guided scenarios:
   - *Remove from grid* — e.g. “What if Mercedes didn’t race in 2026?”
   - *Swap points system* — e.g. “What if 2021 had the points system from 2007?”
   - Currently, the defaults (Mercedes 2026 / 2021←2007) work on the live site as they are in static JSON, however, custom scenarios need the local API and can only be accessed when running the site locally.
 
+Precomputed JSON lives in `site/public/api/` so the public site stays static.
+
 ---
+
+
 
 ## Run locally
 
@@ -73,7 +59,18 @@ Open [http://localhost:5173](http://localhost:5173) → **What If?** → change 
 
 ---
 
-## Future plans
 
-- Improve the predictive model (better features, tuning, and evaluation).
-- Add more unconventional statistics beyond the current tabs.
+
+## Pipeline
+
+Refresh static site data from FastF1 (leaderboards, Formula 1.5, replays, podiumigami, hosted What If defaults):
+
+```bash
+cd pipeline
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python precompute.py
+```
+
+Useful flags: `--skip-ingest`, `--skip-assets`, `--skip-replays`, `--current-only`, `--max-round N`.
