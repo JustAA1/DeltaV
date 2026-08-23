@@ -35,7 +35,7 @@ export function RaceSwitcher({ races, round, session = 'R', season }: RaceSwitch
         className="race-switcher-arrow"
         onClick={() => go(prev)}
         disabled={!prev}
-        aria-label={prev ? `Previous: ${prev.event_name}` : 'No earlier session'}
+        aria-label={prev ? `Previous: ${prev.event_name}` : 'No previous session'}
         title={prev ? `Previous · ${prev.event_name}` : ''}
       >
         ←
@@ -71,7 +71,7 @@ export function RaceSwitcher({ races, round, session = 'R', season }: RaceSwitch
         className="race-switcher-arrow"
         onClick={() => go(next)}
         disabled={!next}
-        aria-label={next ? `Next: ${next.event_name}` : 'No later session'}
+        aria-label={next ? `Next: ${next.event_name}` : 'No next session'}
         title={next ? `Next · ${next.event_name}` : ''}
       >
         →

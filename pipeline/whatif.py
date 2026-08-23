@@ -13,6 +13,7 @@ import pandas as pd
 from leaderboard import build_leaderboard_from_sessions
 from config import (
     CURRENT_SEASON,
+    FORMULA15_NOTES,
     FORMULA15_START,
     FORMULA15_TEAMS,
     LEADERBOARD_SEASONS,
@@ -407,6 +408,11 @@ def compute_formula15(
         sessions=sessions,
     )
     leaderboard.pop("what_if", None)
+    extra = FORMULA15_NOTES.get(season) or []
+    if extra:
+        notes = list(leaderboard.get("notes") or [])
+        notes.extend(extra)
+        leaderboard["notes"] = notes
     return leaderboard
 
 

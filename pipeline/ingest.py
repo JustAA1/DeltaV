@@ -8,7 +8,15 @@ from pathlib import Path
 
 import pandas as pd
 
-from config import CACHE_DIR, CURRENT_SEASON, DATA_DIR, INGEST_SEASONS, PARQUET_PATH
+from config import (
+    CACHE_DIR,
+    CURRENT_SEASON,
+    DATA_DIR,
+    INGEST_SEASONS,
+    PARQUET_PATH,
+    POINTS_SYSTEM,
+    SPRINT_POINTS_SYSTEM,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -43,17 +51,35 @@ def _safe_session_attr(session, attr: str, default=None):
         return default
 
 
+def _points_from_result(session_type: str, position: int, raw_points) -> float:
+    """Use FastF1 Points when present; otherwise map finishing order to the schedule.
+
+    Recent sessions often lack Ergast results, so FastF1 leaves Points as NaN even
+    when Position is known. Fall back to the current race/sprint points tables.
+    """
+    try:
+        if raw_points is not None and not pd.isna(raw_points):
+            return float(raw_points)
+    except (TypeError, ValueError):
+        pass
+    schedule = SPRINT_POINTS_SYSTEM if session_type == "S" else POINTS_SYSTEM
+    if session_type in ("R", "S") and position >= 1 and position <= len(schedule):
+        return float(schedule[position - 1])
+    return 0.0
+
+
 def _session_rows(year: int, rnd: int, session_type: str, *, results_only: bool = False) -> list[dict]:
     import fastf1
 
     rows: list[dict] = []
     try:
         session = fastf1.get_session(year, rnd, session_type)
+        # Race-control messages help FastF1 derive results when Ergast is empty.
         session.load(
             laps=not results_only,
             telemetry=False,
             weather=False,
-            messages=False,
+            messages=session_type in ("R", "S"),
         )
     except Exception as exc:
         logger.debug("Skip %d R%d %s: %s", year, rnd, session_type, exc)
@@ -89,7 +115,7 @@ def _session_rows(year: int, rnd: int, session_type: str, *, results_only: bool 
                     "grid_position": _safe_int(r.get("GridPosition")),
                     "position": position,
                     "status": str(r.get("Status", "") or ""),
-                    "points": float(r.get("Points", 0) or 0),
+                    "points": _points_from_result(session_type, position, r.get("Points")),
                     "q1": _safe_float(r.get("Q1")),
                     "q2": _safe_float(r.get("Q2")),
                     "q3": _safe_float(r.get("Q3")),

@@ -1191,7 +1191,47 @@ def _build_stints_and_pits(
     return stints, pits
 
 
-def _build_flags(track_status: pd.DataFrame | None, t0: float, duration_s: int) -> list[dict[str, Any]]:
+def _session_abort_restarts(
+    session_status: pd.DataFrame | None, t0: float
+) -> list[tuple[float, float]]:
+    """(abort, restart) race-relative times from session status Aborted → Started."""
+    if session_status is None or len(session_status) == 0:
+        return []
+    rows: list[tuple[float, str]] = []
+    for _, row in session_status.iterrows():
+        t = _td_seconds(row.get("Time"))
+        if t is None:
+            continue
+        status = str(row.get("Status") or "").strip()
+        if status:
+            rows.append((t - t0, status))
+    rows.sort(key=lambda r: r[0])
+
+    pairs: list[tuple[float, float]] = []
+    i = 0
+    while i < len(rows):
+        t_abort, status = rows[i]
+        if status != "Aborted":
+            i += 1
+            continue
+        restart: float | None = None
+        for j in range(i + 1, len(rows)):
+            t_next, st = rows[j]
+            if st == "Started":
+                restart = t_next
+                break
+        if restart is not None and restart > t_abort:
+            pairs.append((t_abort, restart))
+        i += 1
+    return pairs
+
+
+def _build_flags(
+    track_status: pd.DataFrame | None,
+    t0: float,
+    duration_s: int,
+    session_status: pd.DataFrame | None = None,
+) -> list[dict[str, Any]]:
     if track_status is None or len(track_status) == 0:
         return []
     rows = []
@@ -1204,6 +1244,10 @@ def _build_flags(track_status: pd.DataFrame | None, t0: float, duration_s: int) 
     rows.sort(key=lambda r: r[0])
     if not rows:
         return []
+
+    # Red-flag track status often clears while cars are still waiting in pit lane.
+    # Session Aborted→Started covers that suspended period through the restart.
+    red_restarts = _session_abort_restarts(session_status, t0)
 
     flags: list[dict[str, Any]] = []
     i = 0
@@ -1233,6 +1277,12 @@ def _build_flags(track_status: pd.DataFrame | None, t0: float, duration_s: int) 
                 continue
             break
         t_end = rows[j][0] if j < len(rows) else float(duration_s)
+        if kind == "RED" and red_restarts:
+            for abort_t, restart_t in red_restarts:
+                # Match this red window to the abort/restart that covers it.
+                if abort_t <= t_end + 5.0 and restart_t > t_start:
+                    t_end = max(t_end, restart_t)
+                    break
         # Skip windows entirely before lights out or after race end
         if t_end > 0 and t_start < duration_s:
             flags.append(
@@ -1438,7 +1488,8 @@ def build_replay(
     }
     stints, pits = _build_stints_and_pits(laps, t0)
     track_status = getattr(session, "track_status", None)
-    flags = _build_flags(track_status, t0, duration_s)
+    session_status = getattr(session, "session_status", None)
+    flags = _build_flags(track_status, t0, duration_s, session_status=session_status)
     lap_markers = _build_lap_markers(laps, t0)
     feed = _build_feed(session, t0, duration_s)
 

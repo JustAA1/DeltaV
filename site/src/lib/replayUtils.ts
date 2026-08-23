@@ -60,11 +60,11 @@ export function sessionOf(race: { session?: string | null }): 'R' | 'S' {
   return race.session === 'S' ? 'S' : 'R'
 }
 
-/** Sprint before race on the same weekend. */
+/** Most recent first; race before sprint on the same weekend. */
 export function sortReplays<T extends { round: number; session?: string | null }>(races: T[]): T[] {
   return [...races].sort((a, b) => {
-    if (a.round !== b.round) return a.round - b.round
-    return (sessionOf(a) === 'S' ? 0 : 1) - (sessionOf(b) === 'S' ? 0 : 1)
+    if (a.round !== b.round) return b.round - a.round
+    return (sessionOf(a) === 'R' ? 0 : 1) - (sessionOf(b) === 'R' ? 0 : 1)
   })
 }
 

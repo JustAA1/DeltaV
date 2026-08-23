@@ -19,6 +19,12 @@ FORMULA15_TEAMS: list[str] = [
     "Ferrari",
     "McLaren",
 ]
+# Formula 1.5-only notes (not shown on the main championship chart).
+FORMULA15_NOTES: dict[int, list[str]] = {
+    2026: [
+        "Netherlands: Liam Lawson raced for Red Bull Racing at the Dutch Grand Prix and Sprint.",
+    ],
+}
 
 # Drivers' championship dropped-scores (constructors counted all from 1979+).
 # 1981–1990: best 11 overall. 1980: best 5 from each half of a 14-race season.
