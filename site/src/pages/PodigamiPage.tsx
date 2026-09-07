@@ -6,10 +6,10 @@ import { PodiumDisplay } from '../components/PodiumDisplay'
 import { TopTriosPodium, TrioRankListModal } from '../components/TrioPodium'
 import { countryFlag } from '../lib/countryFlag'
 import type {
-  PodiumigamiCombo,
-  PodiumigamiRace,
-  PodiumigamiResponse,
-  PodiumigamiSeasonStats,
+  PodigamiCombo,
+  PodigamiRace,
+  PodigamiResponse,
+  PodigamiSeasonStats,
 } from '../types'
 
 const SEASONS = Array.from({ length: 2026 - 1980 + 1 }, (_, i) => 2026 - i)
@@ -131,21 +131,21 @@ function StatCard({
   hint?: string
   onClick?: () => void
 }) {
-  const className = onClick ? 'podiumigami-stat is-clickable' : 'podiumigami-stat'
+  const className = onClick ? 'podigami-stat is-clickable' : 'podigami-stat'
   if (onClick) {
     return (
       <button type="button" className={className} onClick={onClick}>
-        <span className="podiumigami-stat-label">{label}</span>
-        <span className="podiumigami-stat-value">{value}</span>
-        {hint && <span className="podiumigami-stat-hint">{hint}</span>}
+        <span className="podigami-stat-label">{label}</span>
+        <span className="podigami-stat-value">{value}</span>
+        {hint && <span className="podigami-stat-hint">{hint}</span>}
       </button>
     )
   }
   return (
     <div className={className}>
-      <span className="podiumigami-stat-label">{label}</span>
-      <span className="podiumigami-stat-value">{value}</span>
-      {hint && <span className="podiumigami-stat-hint">{hint}</span>}
+      <span className="podigami-stat-label">{label}</span>
+      <span className="podigami-stat-value">{value}</span>
+      {hint && <span className="podigami-stat-hint">{hint}</span>}
     </div>
   )
 }
@@ -154,45 +154,45 @@ function lastOccurredLabel(year: number, eventName: string): string {
   return `Last occurred at the ${year} ${eventName}`
 }
 
-function RaceCard({ race }: { race: PodiumigamiRace }) {
+function RaceCard({ race }: { race: PodigamiRace }) {
   const flag = countryFlag(race.country)
   const prior =
-    !race.is_podiumigami &&
+    !race.is_podigami &&
     race.last_occurred_year != null &&
     race.last_occurred_event
       ? lastOccurredLabel(race.last_occurred_year, race.last_occurred_event)
       : null
   return (
-    <article className="podiumigami-race-row is-compact">
-      <div className="podiumigami-race-meta">
+    <article className="podigami-race-row is-compact">
+      <div className="podigami-race-meta">
         {flag && (
-          <span className="podiumigami-race-flag" aria-hidden>
+          <span className="podigami-race-flag" aria-hidden>
             {flag}
           </span>
         )}
-        <span className="podiumigami-race-event">{race.event_name}</span>
-        <span className="podiumigami-race-year">{race.year}</span>
-        {race.is_podiumigami ? (
-          <span className="podiumigami-gold-badge">Podiumigami</span>
+        <span className="podigami-race-event">{race.event_name}</span>
+        <span className="podigami-race-year">{race.year}</span>
+        {race.is_podigami ? (
+          <span className="podigami-gold-badge">Podigami</span>
         ) : (
-          <span className="podiumigami-race-badge">×{race.trio_count}</span>
+          <span className="podigami-race-badge">×{race.trio_count}</span>
         )}
       </div>
-      <PodiumDisplay podium={race.podium} size="compact" className="podiumigami-race-podium" />
-      {prior && <p className="podiumigami-last-occurred">{prior}</p>}
+      <PodiumDisplay podium={race.podium} size="compact" className="podigami-race-podium" />
+      {prior && <p className="podigami-last-occurred">{prior}</p>}
     </article>
   )
 }
 
-function chunkRaces(races: PodiumigamiRace[], size: number): PodiumigamiRace[][] {
-  const pages: PodiumigamiRace[][] = []
+function chunkRaces(races: PodigamiRace[], size: number): PodigamiRace[][] {
+  const pages: PodigamiRace[][] = []
   for (let i = 0; i < races.length; i += size) {
     pages.push(races.slice(i, i + size))
   }
   return pages
 }
 
-function RaceCarousel({ races, title }: { races: PodiumigamiRace[]; title: string }) {
+function RaceCarousel({ races, title }: { races: PodigamiRace[]; title: string }) {
   const pageSize = useRacePageSize()
   const [page, setPage] = useState(0)
   const pages = useMemo(() => chunkRaces(races, pageSize), [races, pageSize])
@@ -210,33 +210,33 @@ function RaceCarousel({ races, title }: { races: PodiumigamiRace[]; title: strin
   const to = Math.min(races.length, from + pages[pageIndex]!.length - 1)
 
   return (
-    <section className="podiumigami-races">
-      <div className="podiumigami-races-head">
+    <section className="podigami-races">
+      <div className="podigami-races-head">
         <h2>{title}</h2>
         {races.length > pageSize && (
-          <span className="podiumigami-races-range">
+          <span className="podigami-races-range">
             {from}–{to} of {races.length}
           </span>
         )}
       </div>
-      <div className="podiumigami-race-carousel">
+      <div className="podigami-race-carousel">
         {canPrev && (
           <button
             type="button"
-            className="podiumigami-carousel-arrow is-prev"
+            className="podigami-carousel-arrow is-prev"
             onClick={() => setPage((p) => Math.max(0, p - 1))}
             aria-label="Previous podiums"
           >
             ‹
           </button>
         )}
-        <div className="podiumigami-race-viewport">
+        <div className="podigami-race-viewport">
           <div
-            className="podiumigami-race-track"
+            className="podigami-race-track"
             style={{ transform: `translate3d(-${pageIndex * 100}%, 0, 0)` }}
           >
             {pages.map((pageRaces, i) => (
-              <div key={i} className="podiumigami-race-page" aria-hidden={i !== pageIndex}>
+              <div key={i} className="podigami-race-page" aria-hidden={i !== pageIndex}>
                 {pageRaces.map((race) => (
                   <RaceCard key={`${race.year}-${race.round}`} race={race} />
                 ))}
@@ -247,7 +247,7 @@ function RaceCarousel({ races, title }: { races: PodiumigamiRace[]; title: strin
         {canNext && (
           <button
             type="button"
-            className="podiumigami-carousel-arrow is-next"
+            className="podigami-carousel-arrow is-next"
             onClick={() => setPage((p) => Math.min(pages.length - 1, p + 1))}
             aria-label="Next podiums"
           >
@@ -259,18 +259,18 @@ function RaceCarousel({ races, title }: { races: PodiumigamiRace[]; title: strin
   )
 }
 
-function HeroPodiumigami({ race }: { race: PodiumigamiRace }) {
+function HeroPodigami({ race }: { race: PodigamiRace }) {
   const narrow = useIsNarrow()
   return (
-    <section className="podiumigami-hero">
-      <div className="podiumigami-hero-head">
-        <span className="podiumigami-hero-label">Most recent podiumigami</span>
+    <section className="podigami-hero">
+      <div className="podigami-hero-head">
+        <span className="podigami-hero-label">Most recent podigami</span>
         <h2>
-          {race.event_name} <span className="podiumigami-hero-year">{race.year}</span>
+          {race.event_name} <span className="podigami-hero-year">{race.year}</span>
         </h2>
         <p>First time this driver trio had ever shared a podium.</p>
       </div>
-      <span className="podiumigami-gold-badge hero-badge">Podiumigami</span>
+      <span className="podigami-gold-badge hero-badge">Podigami</span>
       <PodiumDisplay podium={race.podium} size={narrow ? 'compact' : 'large'} />
     </section>
   )
@@ -280,13 +280,13 @@ function YearlyPanel({
   seasonStats,
   onOpenRanked,
 }: {
-  seasonStats: PodiumigamiSeasonStats
-  onOpenRanked: (title: string, trios: PodiumigamiCombo[]) => void
+  seasonStats: PodigamiSeasonStats
+  onOpenRanked: (title: string, trios: PodigamiCombo[]) => void
 }) {
   return (
-    <div className="podiumigami-panel">
-      <div className="podiumigami-feature">
-        <div className="podiumigami-feature-head">
+    <div className="podigami-panel">
+      <div className="podigami-feature">
+        <div className="podigami-feature-head">
           <h2>Most common trios — {seasonStats.year}</h2>
           <p>Top three driver trios this season (finishing order ignored).</p>
         </div>
@@ -298,11 +298,11 @@ function YearlyPanel({
         />
       </div>
 
-      <div className="podiumigami-stat-grid">
+      <div className="podigami-stat-grid">
         <StatCard label="Races" value={seasonStats.total_races} />
         <StatCard
-          label="Podiumigamis"
-          value={seasonStats.podiumigamis}
+          label="Podigamis"
+          value={seasonStats.podigamis}
           hint="First-time trios this year"
           onClick={() =>
             onOpenRanked(`All trios — ${seasonStats.year}`, seasonStats.all_trios_ranked)
@@ -319,18 +319,18 @@ function AllTimePanel({
   data,
   onOpenRanked,
 }: {
-  data: PodiumigamiResponse
-  onOpenRanked: (title: string, trios: PodiumigamiCombo[]) => void
+  data: PodigamiResponse
+  onOpenRanked: (title: string, trios: PodigamiCombo[]) => void
 }) {
   const at = data.all_time
-  const oneTimePct = at.podiumigamis
-    ? Math.round((at.one_time_only / at.podiumigamis) * 100)
+  const oneTimePct = at.podigamis
+    ? Math.round((at.one_time_only / at.podigamis) * 100)
     : 0
 
   return (
-    <div className="podiumigami-panel">
-      <div className="podiumigami-feature">
-        <div className="podiumigami-feature-head">
+    <div className="podigami-panel">
+      <div className="podigami-feature">
+        <div className="podigami-feature-head">
           <h2>Most common trios since 1980</h2>
           <p>Top three driver trios of all time (finishing order ignored).</p>
         </div>
@@ -340,31 +340,31 @@ function AllTimePanel({
         />
       </div>
 
-      <div className="podiumigami-stat-grid">
+      <div className="podigami-stat-grid">
         <StatCard label="Total races" value={at.total_races} />
         <StatCard
-          label="Podiumigamis"
-          value={at.podiumigamis}
+          label="Podigamis"
+          value={at.podigamis}
           hint="Click to see all ranked"
           onClick={() => onOpenRanked('All trios since 1980', at.all_trios_ranked)}
         />
         <StatCard label="One-time only" value={at.one_time_only} hint={`${oneTimePct}% of trios`} />
       </div>
 
-      <div className="podiumigami-list-card">
+      <div className="podigami-list-card">
         <h3>By decade</h3>
-        <p className="podiumigami-section-desc">Click a decade to see its most common trios.</p>
-        <div className="podiumigami-decade-grid">
+        <p className="podigami-section-desc">Click a decade to see its most common trios.</p>
+        <div className="podigami-decade-grid">
           {at.decade_breakdown.map((row) => (
             <button
               key={row.decade}
               type="button"
-              className="podiumigami-decade is-clickable"
+              className="podigami-decade is-clickable"
               onClick={() => onOpenRanked(`Most common trios — ${row.decade}`, row.all_trios_ranked)}
             >
-              <span className="podiumigami-decade-label">{row.decade}</span>
+              <span className="podigami-decade-label">{row.decade}</span>
               <span>{row.races} races</span>
-              <span>{row.podiumigamis} podiumigamis</span>
+              <span>{row.podigamis} podigamis</span>
             </button>
           ))}
         </div>
@@ -375,14 +375,14 @@ function AllTimePanel({
   )
 }
 
-export function PodiumigamiPage() {
+export function PodigamiPage() {
   const [scope, setScope] = useState<Scope>('yearly')
   const [season, setSeason] = useState(DEFAULT_SEASON)
-  const [modal, setModal] = useState<{ title: string; trios: PodiumigamiCombo[] } | null>(null)
+  const [modal, setModal] = useState<{ title: string; trios: PodigamiCombo[] } | null>(null)
 
   const { data: fullData, isLoading: fullLoading, isError, refetch } = useQuery({
-    queryKey: ['podiumigami'],
-    queryFn: () => api.podiumigami(),
+    queryKey: ['podigami'],
+    queryFn: () => api.podigami(),
   })
 
   const seasonStats = useMemo(() => {
@@ -392,7 +392,7 @@ export function PodiumigamiPage() {
   // Only the yearly view shows a hero; all-time leads with its own panels
   const hero = useMemo(() => {
     if (scope !== 'yearly') return null
-    return seasonStats?.hero ?? seasonStats?.races.find((r) => r.is_podiumigami) ?? null
+    return seasonStats?.hero ?? seasonStats?.races.find((r) => r.is_podigami) ?? null
   }, [scope, seasonStats])
 
   useEffect(() => {
@@ -410,10 +410,10 @@ export function PodiumigamiPage() {
     return (
       <section className="page">
         <header className="page-header">
-          <h1>Podiumigami</h1>
+          <h1>Podigami</h1>
         </header>
         <p className="page-empty" role="alert">
-          Could not load podiumigami data.{' '}
+          Could not load podigami data.{' '}
           <button type="button" className="what-if-clear" onClick={() => void refetch()}>
             Retry
           </button>
@@ -422,13 +422,13 @@ export function PodiumigamiPage() {
     )
   }
 
-  const openRanked = (title: string, trios: PodiumigamiCombo[]) => setModal({ title, trios })
+  const openRanked = (title: string, trios: PodigamiCombo[]) => setModal({ title, trios })
 
   return (
-    <section className="page podiumigami-page">
+    <section className="page podigami-page">
       <header className="page-header">
         <div>
-          <h1>Podiumigami</h1>
+          <h1>Podigami</h1>
           <p className="page-subtitle">
             First-time driver trios on the Formula 1 podium since 1980 — finishing order does not
             matter.
@@ -440,7 +440,7 @@ export function PodiumigamiPage() {
         </div>
       </header>
 
-      {hero && <HeroPodiumigami race={hero} />}
+      {hero && <HeroPodigami race={hero} />}
 
       {scope === 'yearly' ? (
         seasonStats ? (
@@ -452,8 +452,8 @@ export function PodiumigamiPage() {
         <AllTimePanel data={fullData} onOpenRanked={openRanked} />
       )}
 
-      <p className="podiumigami-footnote">
-        Podiumigami stats cover Formula 1 Grands Prix from 1980 onward. A podiumigami is the first
+      <p className="podigami-footnote">
+        Podigami stats cover Formula 1 Grands Prix from 1980 onward. A podigami is the first
         time a given trio of drivers share a podium; finishing order does not matter.
       </p>
 

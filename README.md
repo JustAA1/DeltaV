@@ -7,7 +7,7 @@ Formula 1 championship standings, race replays, podium history, and “What If?�
 | ----------- | ------------------------------------------------ |
 | `site/`     | React (Vite) UI — host on **Vercel**             |
 | `api/`      | FastAPI — **local only** (What If compute)       |
-| `pipeline/` | Ingest, leaderboards, replays, podiumigami, sync |
+| `pipeline/` | Ingest, leaderboards, replays, podigami, sync |
 
 
 ---
@@ -19,7 +19,7 @@ Formula 1 championship standings, race replays, podium history, and “What If?�
   - Play/pause, scrubber, and speed controls (1×–20×)
   - Live running order with gaps, tyre compounds, and pit counts
   - Race-control feed and per-driver overlays (stints, grid→live delta)
-- **Podiumigami** — Unique podium combinations across F1 history (recent, yearly + all-time stats). Heavily inspired by [NFL Scorigami](https://www.youtube.com/watch?v=9l5C8cGMueY) with tracking first-time outcomes.
+- **Podigami** — Unique podium combinations across F1 history (recent, yearly + all-time stats). Heavily inspired by [NFL Scorigami](https://www.youtube.com/watch?v=9l5C8cGMueY) with tracking first-time outcomes.
 - **What If?** — Guided scenarios:
   - *Remove from grid* — e.g. “What if Mercedes didn’t race in 2026?”
   - *Swap points system* — e.g. “What if 2021 had the points system from 2007?”
@@ -63,7 +63,7 @@ Open [http://localhost:5173](http://localhost:5173) → **What If?** → change 
 
 ## Pipeline
 
-Refresh static site data from FastF1 (leaderboards, Formula 1.5, replays, podiumigami, hosted What If defaults):
+Refresh static site data from FastF1 (leaderboards, Formula 1.5, replays, podigami, hosted What If defaults):
 
 ```bash
 cd pipeline

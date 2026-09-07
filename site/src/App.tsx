@@ -1,7 +1,7 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Nav } from './components/Nav'
 import { LeaderboardPage } from './pages/LeaderboardPage'
-import { PodiumigamiPage } from './pages/PodiumigamiPage'
+import { PodigamiPage } from './pages/PodigamiPage'
 import { ReplayDetailPage } from './pages/ReplayDetailPage'
 import { ReplaysPage } from './pages/ReplaysPage'
 import { WhatIfPage } from './pages/WhatIfPage'
@@ -18,7 +18,8 @@ function App() {
           <Route path="/replays" element={<ReplaysPage />} />
           <Route path="/replays/:season/:round/sprint" element={<ReplayDetailPage />} />
           <Route path="/replays/:season/:round" element={<ReplayDetailPage />} />
-          <Route path="/podiumigami" element={<PodiumigamiPage />} />
+          <Route path="/podigami" element={<PodigamiPage />} />
+          <Route path="/podiumigami" element={<Navigate to="/podigami" replace />} />
           <Route path="/what-if" element={<WhatIfPage />} />
         </Routes>
       </main>

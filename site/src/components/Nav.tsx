@@ -276,8 +276,8 @@ export function Nav() {
           <NavLink to="/replays" className={linkClass} onClick={() => setMenuOpen(false)}>
             Replays
           </NavLink>
-          <NavLink to="/podiumigami" className={linkClass} onClick={() => setMenuOpen(false)}>
-            Podiumigami
+          <NavLink to="/podigami" className={linkClass} onClick={() => setMenuOpen(false)}>
+            Podigami
           </NavLink>
           <NavLink to="/what-if" className={linkClass} onClick={() => setMenuOpen(false)}>
             What If?

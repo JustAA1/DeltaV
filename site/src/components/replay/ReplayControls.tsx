@@ -111,7 +111,7 @@ export function ReplayControls({
 
         <div className="replay-scrubber-body">
           <div className="replay-scrubber-rail" aria-hidden>
-            {/* Elapsed fill — the classic red progress behind the flag bands. */}
+            {/* Elapsed fill behind the flag bands. */}
             <span
               className="replay-scrubber-played"
               style={{ width: `${Math.min(100, (Math.max(0, t) / span) * 100)}%` }}

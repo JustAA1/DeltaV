@@ -772,6 +772,78 @@ button.nav-link-button {
   flex-shrink: 0;
 }
 
+.lb-results-section {
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  width: 100%;
+}
+
+.lb-results-head h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.lb-results-sub {
+  margin: 0.35rem 0 0.9rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.lb-results-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11.5rem, 1fr));
+  gap: 0.55rem;
+}
+
+.lb-results-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.4rem;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.86rem;
+}
+
+.lb-results-link:hover {
+  border-color: #3b82f6;
+  background: color-mix(in srgb, #3b82f6 10%, var(--surface));
+}
+
+.lb-results-round {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.lb-results-name {
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lb-results-go {
+  color: #3b82f6;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
 @media (max-width: 960px) {
   .lb-stats-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1404,8 +1476,8 @@ button.nav-link-button {
   margin-bottom: 1rem;
 }
 
-/* ── Podiumigami ── */
-.podiumigami-page .podiumigami-hero {
+/* ── Podigami ── */
+.podigami-page .podigami-hero {
   margin-bottom: 2rem;
   padding: 1.5rem;
   background: var(--surface);
@@ -1413,11 +1485,11 @@ button.nav-link-button {
   border-radius: 14px;
 }
 
-.podiumigami-hero-head {
+.podigami-hero-head {
   margin-bottom: 1.25rem;
 }
 
-.podiumigami-hero-label {
+.podigami-hero-label {
   display: block;
   font-size: 0.75rem;
   font-weight: 600;
@@ -1427,57 +1499,57 @@ button.nav-link-button {
   margin-bottom: 0.35rem;
 }
 
-.podiumigami-hero-head h2 {
+.podigami-hero-head h2 {
   margin: 0 0 0.35rem;
   font-size: 1.35rem;
 }
 
-.podiumigami-hero-year {
+.podigami-hero-year {
   color: var(--muted);
   font-weight: 600;
 }
 
-.podiumigami-hero-head p {
+.podigami-hero-head p {
   margin: 0;
   color: var(--muted);
   font-size: 0.92rem;
 }
 
-.podiumigami-panel {
+.podigami-panel {
   display: flex;
   flex-direction: column;
   gap: 1.75rem;
 }
 
-.podiumigami-feature {
+.podigami-feature {
   padding: 1.25rem;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 14px;
 }
 
-.podiumigami-feature-head {
+.podigami-feature-head {
   margin-bottom: 1rem;
 }
 
-.podiumigami-feature-head h2 {
+.podigami-feature-head h2 {
   margin: 0 0 0.25rem;
   font-size: 1.15rem;
 }
 
-.podiumigami-feature-head p {
+.podigami-feature-head p {
   margin: 0;
   color: var(--muted);
   font-size: 0.9rem;
 }
 
-.podiumigami-stat-grid {
+.podigami-stat-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 0.85rem;
 }
 
-.podiumigami-stat {
+.podigami-stat {
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
@@ -1490,17 +1562,17 @@ button.nav-link-button {
   font: inherit;
 }
 
-.podiumigami-stat.is-clickable {
+.podigami-stat.is-clickable {
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s;
 }
 
-.podiumigami-stat.is-clickable:hover {
+.podigami-stat.is-clickable:hover {
   border-color: #ffd70066;
   background: var(--surface-2);
 }
 
-.podiumigami-stat-label {
+.podigami-stat-label {
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.05em;
@@ -1508,30 +1580,30 @@ button.nav-link-button {
   color: var(--muted);
 }
 
-.podiumigami-stat-value {
+.podigami-stat-value {
   font-size: 1.1rem;
   font-weight: 700;
   line-height: 1.25;
 }
 
-.podiumigami-stat-hint {
+.podigami-stat-hint {
   font-size: 0.8rem;
   color: var(--muted);
 }
 
-.podiumigami-list-card {
+.podigami-list-card {
   padding: 1.1rem 1.25rem;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 12px;
 }
 
-.podiumigami-list-card h3 {
+.podigami-list-card h3 {
   margin: 0 0 0.75rem;
   font-size: 1rem;
 }
 
-.podiumigami-rank-list {
+.podigami-rank-list {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -1540,7 +1612,7 @@ button.nav-link-button {
   gap: 0.45rem;
 }
 
-.podiumigami-rank-list li {
+.podigami-rank-list li {
   display: grid;
   grid-template-columns: 1.75rem 1fr auto;
   align-items: center;
@@ -1548,31 +1620,31 @@ button.nav-link-button {
   font-size: 0.92rem;
 }
 
-.podiumigami-rank {
+.podigami-rank {
   color: var(--muted);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
 
-.podiumigami-rank-name {
+.podigami-rank-name {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.podiumigami-rank-count {
+.podigami-rank-count {
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
 
-.podiumigami-decade-grid {
+.podigami-decade-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 0.65rem;
 }
 
-.podiumigami-decade {
+.podigami-decade {
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
@@ -1586,34 +1658,34 @@ button.nav-link-button {
   text-align: left;
 }
 
-.podiumigami-decade.is-clickable {
+.podigami-decade.is-clickable {
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s;
 }
 
-.podiumigami-decade.is-clickable:hover {
+.podigami-decade.is-clickable:hover {
   border-color: #ffd700;
   background: rgba(255, 215, 0, 0.06);
 }
 
-.podiumigami-decade-label {
+.podigami-decade-label {
   font-weight: 700;
   color: var(--text);
   font-size: 0.95rem;
 }
 
-.podiumigami-section-desc {
+.podigami-section-desc {
   margin: 0 0 0.75rem;
   color: var(--muted);
   font-size: 0.85rem;
 }
 
-.podiumigami-races h2 {
+.podigami-races h2 {
   margin: 0;
   font-size: 1.15rem;
 }
 
-.podiumigami-races-head {
+.podigami-races-head {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -1621,28 +1693,28 @@ button.nav-link-button {
   margin-bottom: 0.65rem;
 }
 
-.podiumigami-races-range {
+.podigami-races-range {
   font-size: 0.8rem;
   color: var(--muted);
 }
 
-.podiumigami-race-carousel {
+.podigami-race-carousel {
   position: relative;
 }
 
-.podiumigami-race-viewport {
+.podigami-race-viewport {
   overflow: hidden;
   width: 100%;
 }
 
-.podiumigami-race-track {
+.podigami-race-track {
   display: flex;
   width: 100%;
   transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
 }
 
-.podiumigami-race-page {
+.podigami-race-page {
   flex: 0 0 100%;
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -1651,7 +1723,7 @@ button.nav-link-button {
   box-sizing: border-box;
 }
 
-.podiumigami-carousel-arrow {
+.podigami-carousel-arrow {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -1672,61 +1744,61 @@ button.nav-link-button {
   justify-content: center;
 }
 
-.podiumigami-race-carousel:hover .podiumigami-carousel-arrow,
-.podiumigami-carousel-arrow:focus-visible {
+.podigami-race-carousel:hover .podigami-carousel-arrow,
+.podigami-carousel-arrow:focus-visible {
   opacity: 1;
 }
 
-.podiumigami-carousel-arrow:hover {
+.podigami-carousel-arrow:hover {
   background: var(--surface-2);
   border-color: #ffd70066;
 }
 
-.podiumigami-carousel-arrow.is-prev {
+.podigami-carousel-arrow.is-prev {
   left: -0.35rem;
 }
 
-.podiumigami-carousel-arrow.is-next {
+.podigami-carousel-arrow.is-next {
   right: -0.35rem;
 }
 
 @media (max-width: 1100px) {
-  .podiumigami-race-page {
+  .podigami-race-page {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 720px) {
-  .podiumigami-race-page {
+  .podigami-race-page {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .podiumigami-carousel-arrow {
+  .podigami-carousel-arrow {
     opacity: 0.85;
   }
 }
 
 /* Phones: one race card at a time so the three podium slots actually fit */
 @media (max-width: 640px) {
-  .podiumigami-race-page {
+  .podigami-race-page {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .podiumigami-race-row.is-compact {
+  .podigami-race-row.is-compact {
     padding: 0.7rem 0.75rem 0.8rem;
   }
 
-  .podiumigami-race-podium {
+  .podigami-race-podium {
     gap: 0.35rem;
   }
 
-  .podiumigami-race-podium .podium-card,
+  .podigami-race-podium .podium-card,
   .podium-card-compact {
     min-width: 0;
     padding: 0.45rem 0.3rem 0.5rem !important;
   }
 
-  .podiumigami-race-podium .podium-card h3,
+  .podigami-race-podium .podium-card h3,
   .podium-card-compact h3 {
     font-size: 0.72rem !important;
     overflow: hidden;
@@ -1735,7 +1807,7 @@ button.nav-link-button {
     max-width: 100%;
   }
 
-  .podiumigami-race-row.is-compact .podiumigami-last-occurred {
+  .podigami-race-row.is-compact .podigami-last-occurred {
     font-size: 0.68rem;
     overflow-wrap: anywhere;
   }
@@ -1803,7 +1875,7 @@ button.nav-link-button {
     font-size: 0.78rem;
   }
 
-  .top-trios-podium .podiumigami-gold-badge,
+  .top-trios-podium .podigami-gold-badge,
   .top-trios-podium .podium-badge {
     grid-area: meta;
     margin: 0;
@@ -1811,7 +1883,7 @@ button.nav-link-button {
     align-self: center;
   }
 
-  .top-trio-slot .podiumigami-last-occurred {
+  .top-trio-slot .podigami-last-occurred {
     grid-area: where;
     max-width: none;
     text-align: left;
@@ -1822,36 +1894,36 @@ button.nav-link-button {
     grid-column: 1 / -1;
   }
 
-  .podiumigami-hero .podium {
+  .podigami-hero .podium {
     gap: 0.4rem;
   }
 
-  .podiumigami-hero .podium-card {
+  .podigami-hero .podium-card {
     min-width: 0;
     padding-left: 0.45rem;
     padding-right: 0.45rem;
   }
 
-  .podiumigami-hero .podiumigami-race-podium,
-  .podiumigami-hero .podium.podium {
+  .podigami-hero .podigami-race-podium,
+  .podigami-hero .podium.podium {
     margin-bottom: 0;
   }
 
   /* Keep carousel arrows from covering P3 */
-  .podiumigami-carousel-arrow.is-prev {
+  .podigami-carousel-arrow.is-prev {
     left: 0.15rem;
   }
 
-  .podiumigami-carousel-arrow.is-next {
+  .podigami-carousel-arrow.is-next {
     right: 0.15rem;
   }
 
-  .podiumigami-race-viewport {
+  .podigami-race-viewport {
     padding-inline: 0.15rem;
   }
 }
 
-.podiumigami-race-row {
+.podigami-race-row {
   padding: 1rem;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -1859,11 +1931,11 @@ button.nav-link-button {
   min-width: 0;
 }
 
-.podiumigami-race-row.is-compact {
+.podigami-race-row.is-compact {
   padding: 0.55rem 0.6rem 0.65rem;
 }
 
-.podiumigami-race-meta {
+.podigami-race-meta {
   display: flex;
   align-items: center;
   gap: 0.4rem;
@@ -1871,17 +1943,17 @@ button.nav-link-button {
   flex-wrap: wrap;
 }
 
-.podiumigami-race-flag {
+.podigami-race-flag {
   font-size: 1.05rem;
   line-height: 1;
   flex-shrink: 0;
 }
 
-.podiumigami-race-row.is-compact .podiumigami-race-meta {
+.podigami-race-row.is-compact .podigami-race-meta {
   margin-bottom: 0.35rem;
 }
 
-.podiumigami-race-event {
+.podigami-race-event {
   font-weight: 600;
   min-width: 0;
   overflow: hidden;
@@ -1890,17 +1962,17 @@ button.nav-link-button {
   flex: 1 1 auto;
 }
 
-.podiumigami-race-row.is-compact .podiumigami-race-event {
+.podigami-race-row.is-compact .podigami-race-event {
   font-size: 0.8rem;
 }
 
-.podiumigami-race-year {
+.podigami-race-year {
   color: var(--muted);
   font-size: 0.78rem;
   flex-shrink: 0;
 }
 
-.podiumigami-race-badge {
+.podigami-race-badge {
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.03em;
@@ -1912,18 +1984,18 @@ button.nav-link-button {
   flex-shrink: 0;
 }
 
-.podiumigami-last-occurred {
+.podigami-last-occurred {
   margin: 0.4rem 0 0;
   font-size: 0.72rem;
   line-height: 1.35;
   color: var(--muted);
 }
 
-.podiumigami-race-row.is-compact .podiumigami-last-occurred {
+.podigami-race-row.is-compact .podigami-last-occurred {
   margin-top: 0.35rem;
 }
 
-.podiumigami-gold-badge {
+.podigami-gold-badge {
   font-size: 0.62rem;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -1936,21 +2008,21 @@ button.nav-link-button {
   flex-shrink: 0;
 }
 
-.podiumigami-hero .hero-badge {
+.podigami-hero .hero-badge {
   display: inline-block;
   margin-bottom: 0.85rem;
 }
 
-.podiumigami-race-podium {
+.podigami-race-podium {
   margin-bottom: 0;
   gap: 0.3rem;
 }
 
-.podiumigami-race-podium .podium-card {
+.podigami-race-podium .podium-card {
   padding: 0.4rem 0.2rem 0.45rem;
 }
 
-.podiumigami-race-podium .podium-card h3 {
+.podigami-race-podium .podium-card h3 {
   font-size: 0.68rem;
 }
 
@@ -2009,7 +2081,7 @@ button.nav-link-button {
   min-height: 8rem;
 }
 
-.top-trio-slot .podiumigami-last-occurred {
+.top-trio-slot .podigami-last-occurred {
   margin-top: 0.35rem;
   max-width: 11rem;
   text-align: center;
@@ -2146,7 +2218,7 @@ button.nav-link-button {
   gap: 0.2rem;
 }
 
-.trio-rank-body .podiumigami-last-occurred {
+.trio-rank-body .podigami-last-occurred {
   margin: 0;
   font-size: 0.68rem;
 }
@@ -2180,7 +2252,7 @@ button.nav-link-button {
   padding-top: 0.2rem;
 }
 
-.podiumigami-footnote {
+.podigami-footnote {
   margin-top: 2.5rem;
   padding-top: 1rem;
   border-top: 1px solid var(--border);
@@ -2734,7 +2806,7 @@ button.nav-link-button {
   top: 0;
   left: 0;
   bottom: 0;
-  background: #e10600;
+  background: #3b82f6;
   border-radius: 999px 0 0 999px;
 }
 
@@ -2743,7 +2815,7 @@ button.nav-link-button {
   top: 0;
   bottom: 0;
   min-width: 2px;
-  /* Keep flag colour readable over the red played fill */
+  /* Keep flag colour readable over the played fill */
   mix-blend-mode: normal;
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25);
 }
@@ -2785,7 +2857,7 @@ button.nav-link-button {
   height: 0.95rem;
   margin-top: calc((0.55rem - 0.95rem) / 2);
   border-radius: 50%;
-  background: #e10600;
+  background: #3b82f6;
   border: 2px solid #fff;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
   cursor: grab;
@@ -2795,7 +2867,7 @@ button.nav-link-button {
   width: 0.95rem;
   height: 0.95rem;
   border-radius: 50%;
-  background: #e10600;
+  background: #3b82f6;
   border: 2px solid #fff;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
   cursor: grab;
@@ -2867,11 +2939,11 @@ button.nav-link-button {
 }
 
 @media (max-width: 720px) {
-  .podiumigami-race-podium .podium-card h3 {
+  .podigami-race-podium .podium-card h3 {
     font-size: 0.7rem;
   }
 
-  .podiumigami-stat-grid {
+  .podigami-stat-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 

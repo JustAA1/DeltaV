@@ -26,14 +26,6 @@
       "image": "/drivers/bortoleto-gabriel.png"
     },
     {
-      "code": "HAD",
-      "name": "Isack Hadjar",
-      "team": "Red Bull Racing",
-      "number": 6,
-      "color": "#3671C6",
-      "image": "/drivers/hadjar-isack.png"
-    },
-    {
       "code": "GAS",
       "name": "Pierre Gasly",
       "team": "Alpine",
@@ -82,6 +74,14 @@
       "image": "/drivers/stroll-lance.png"
     },
     {
+      "code": "TSU",
+      "name": "Yuki Tsunoda",
+      "team": "Racing Bulls",
+      "number": 22,
+      "color": "#6692FF",
+      "image": "/drivers/tsunoda-yuki.png"
+    },
+    {
       "code": "ALB",
       "name": "Alexander Albon",
       "team": "Williams",
@@ -100,9 +100,9 @@
     {
       "code": "LAW",
       "name": "Liam Lawson",
-      "team": "Racing Bulls",
+      "team": "Red Bull Racing",
       "number": 30,
-      "color": "#6692FF",
+      "color": "#3671C6",
       "image": "/drivers/lawson-liam.png"
     },
     {

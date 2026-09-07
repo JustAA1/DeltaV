@@ -430,6 +430,12 @@ def write_leaderboards(sessions: pd.DataFrame | None = None) -> dict:
 
     os.makedirs(OUTPUTS_DIR, exist_ok=True)
     leaderboard = build_all_leaderboards(sessions)
+    try:
+        from f1_results_links import attach_official_results
+
+        attach_official_results(leaderboard)
+    except Exception as exc:
+        logger.warning("Official F1 result links failed: %s", exc)
     path = os.path.join(OUTPUTS_DIR, "leaderboard.json")
     with open(path, "w", encoding="utf-8") as f:
         json.dump(leaderboard, f, indent=2)

@@ -33,7 +33,7 @@ import {
   whatIfQueryKey,
   whatIfSearchParams,
 } from '../lib/whatIfStorage'
-import type { ChartSeries, LeaderboardStage, SeasonStatRow } from '../types'
+import type { ChartSeries, LeaderboardStage, OfficialRaceResultLink, SeasonStatRow } from '../types'
 
 const SEASONS = Array.from({ length: 2026 - 1980 + 1 }, (_, i) => 2026 - i)
 const FORMULA15_START = 2021
@@ -663,6 +663,18 @@ export function LeaderboardPage() {
     return mode === 'drivers' ? data.stats.drivers : data.stats.constructors
   }, [data?.stats, mode])
 
+  const officialResults = useMemo((): OfficialRaceResultLink[] => {
+    return data?.official_results ?? []
+  }, [data?.official_results])
+
+  const resultLabelByRound = useMemo(() => {
+    const labels = new Map<number, string>()
+    for (const st of stages) {
+      if (st.kind === 'race') labels.set(st.round, st.label)
+    }
+    return labels
+  }, [stages])
+
   const chartNotes = useMemo(() => {
     const notes = data?.notes ?? []
     if (mode === 'drivers') return notes
@@ -685,6 +697,8 @@ export function LeaderboardPage() {
     : formula15Active
       ? `${season} Formula 1.5 Season Statistics`
       : `${season} Season Statistics`
+  const showOfficialRaceResults =
+    !formula15Active && !reverseActive && !whatIfActive && mode === 'drivers'
 
   const toggle = (id: string) =>
     setHidden((prev) => {
@@ -1009,6 +1023,38 @@ export function LeaderboardPage() {
           })}
         </div>
       </section>
+
+      {showOfficialRaceResults && officialResults.length > 0 && (
+        <section className="lb-results-section" aria-label={`${season} race results`}>
+          <div className="lb-results-head">
+            <h3>{season} Race Results</h3>
+            <p className="lb-results-sub">
+              Official Formula 1 race results. Opens formula1.com for that Grand Prix.
+            </p>
+          </div>
+          <ul className="lb-results-grid">
+            {officialResults.map((race) => {
+              const label = resultLabelByRound.get(race.round) ?? race.name.replace(/ Grand Prix$/i, '')
+              return (
+                <li key={race.round}>
+                  <a
+                    className="lb-results-link"
+                    href={race.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span className="lb-results-round">R{race.round}</span>
+                    <span className="lb-results-name">{label}</span>
+                    <span className="lb-results-go" aria-hidden>
+                      ↗
+                    </span>
+                  </a>
+                </li>
+              )
+            })}
+          </ul>
+        </section>
+      )}
     </section>
   )
 }

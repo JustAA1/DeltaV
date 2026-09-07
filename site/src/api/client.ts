@@ -3,7 +3,7 @@ import type {
   DriversResponse,
   PointsWhatIfRequest,
   PointsSystemChangesResponse,
-  PodiumigamiResponse,
+  PodigamiResponse,
   RaceReplay,
   ReplaysIndex,
   SeasonLeaderboard,
@@ -100,11 +100,11 @@ export const api = {
     return lb
   },
 
-  podiumigami: async (season?: number) => {
-    const data = await fetchJson<PodiumigamiResponse>('/api/podiums.json')
+  podigami: async (season?: number) => {
+    const data = await fetchJson<PodigamiResponse>('/api/podiums.json')
     if (season == null) return data
     const seasonStats = data.by_season?.[String(season)]
-    if (!seasonStats) throw new Error(`No podiumigami data for season ${season}`)
+    if (!seasonStats) throw new Error(`No podigami data for season ${season}`)
     return {
       from_year: data.from_year,
       hero: data.hero,

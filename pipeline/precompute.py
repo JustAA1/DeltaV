@@ -23,18 +23,18 @@ def _step(n: int, total: int, label: str) -> None:
 
 
 def _finish_outputs() -> None:
-    """Ensure podiumigami + site/public/api are up to date after any output write."""
+    """Ensure podigami + site/public/api are up to date after any output write."""
     try:
         from ingest import load_sessions
-        from podiumigami import write_podiumigami
+        from podigami import write_podigami
 
         sessions = load_sessions()
         if not sessions.empty:
-            write_podiumigami(sessions)
+            write_podigami(sessions)
         else:
-            logger.warning("No sessions for podiumigami; skipping")
+            logger.warning("No sessions for podigami; skipping")
     except Exception as exc:
-        logger.warning("Podiumigami refresh failed: %s", exc)
+        logger.warning("Podigami refresh failed: %s", exc)
 
     from sync_site_api import sync_site_api
 

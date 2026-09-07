@@ -76,7 +76,17 @@ export interface SeasonLeaderboard {
   drivers: LeaderboardEntity[]
   constructors: LeaderboardEntity[]
   stats?: SeasonStats
+  /** Official formula1.com race-result links for completed Grands Prix. */
+  official_results?: OfficialRaceResultLink[]
   what_if?: WhatIfMeta
+}
+
+export interface OfficialRaceResultLink {
+  round: number
+  name: string
+  f1_id: number
+  slug: string
+  url: string
 }
 
 export interface RemoveWhatIfMeta {
@@ -174,7 +184,7 @@ export interface PodiumDriver {
   image?: string | null
 }
 
-export interface PodiumigamiTrioDriver {
+export interface PodigamiTrioDriver {
   code: string
   name: string
   team: string
@@ -183,67 +193,67 @@ export interface PodiumigamiTrioDriver {
   position?: number
 }
 
-export interface PodiumigamiRace {
+export interface PodigamiRace {
   year: number
   round: number
   event_name: string
   country?: string
   podium: PodiumDriver[]
   key: string
-  is_podiumigami: boolean
+  is_podigami: boolean
   occurrence: number
   occurrence_in_year: number
   trio_count: number
-  /** Prior occurrence of this trio (null on first-ever / podiumigami). */
+  /** Prior occurrence of this trio (null on first-ever / podigami). */
   last_occurred_year?: number | null
   last_occurred_event?: string | null
 }
 
-export interface PodiumigamiCombo {
+export interface PodigamiCombo {
   key: string
   count: number
-  is_podiumigami: boolean
+  is_podigami: boolean
   podium: PodiumDriver[]
-  drivers: PodiumigamiTrioDriver[]
+  drivers: PodigamiTrioDriver[]
   first_year?: number | null
   last_year?: number | null
   last_event_name?: string | null
 }
 
-export interface PodiumigamiSeasonStats {
+export interface PodigamiSeasonStats {
   year: number
   total_races: number
-  podiumigamis: number
-  top_trios: PodiumigamiCombo[]
-  all_trios_ranked: PodiumigamiCombo[]
-  races: PodiumigamiRace[]
-  hero?: PodiumigamiRace | null
+  podigamis: number
+  top_trios: PodigamiCombo[]
+  all_trios_ranked: PodigamiCombo[]
+  races: PodigamiRace[]
+  hero?: PodigamiRace | null
 }
 
-export interface PodiumigamiDecadeStats {
+export interface PodigamiDecadeStats {
   decade: string
   races: number
-  podiumigamis: number
-  top_trios: PodiumigamiCombo[]
-  all_trios_ranked: PodiumigamiCombo[]
+  podigamis: number
+  top_trios: PodigamiCombo[]
+  all_trios_ranked: PodigamiCombo[]
 }
 
-export interface PodiumigamiAllTime {
+export interface PodigamiAllTime {
   total_races: number
-  podiumigamis: number
+  podigamis: number
   one_time_only: number
-  top_trios: PodiumigamiCombo[]
-  all_trios_ranked: PodiumigamiCombo[]
-  decade_breakdown: PodiumigamiDecadeStats[]
-  recent_races: PodiumigamiRace[]
+  top_trios: PodigamiCombo[]
+  all_trios_ranked: PodigamiCombo[]
+  decade_breakdown: PodigamiDecadeStats[]
+  recent_races: PodigamiRace[]
 }
 
-export interface PodiumigamiResponse {
+export interface PodigamiResponse {
   from_year: number
-  hero: PodiumigamiRace | null
-  all_time: PodiumigamiAllTime
-  by_season: Record<string, PodiumigamiSeasonStats>
-  season?: PodiumigamiSeasonStats
+  hero: PodigamiRace | null
+  all_time: PodigamiAllTime
+  by_season: Record<string, PodigamiSeasonStats>
+  season?: PodigamiSeasonStats
 }
 
 /* ── Race replays ── */

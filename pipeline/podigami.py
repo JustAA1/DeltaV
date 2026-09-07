@@ -1,4 +1,4 @@
-"""Podiumigami: first-time unordered driver trios on the podium since 1980."""
+"""Podigami: first-time unordered driver trios on the podium since 1980."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ from config import LEADERBOARD_SEASONS, OUTPUTS_DIR, get_team_color, normalize_t
 
 logger = logging.getLogger(__name__)
 
-PODIUMIGAMI_FROM_YEAR = 1980
+PODIGAMI_FROM_YEAR = 1980
 
 
 def _driver_entry(row: pd.Series) -> dict[str, Any]:
@@ -67,7 +67,7 @@ def _ranked_trios(
     """Rank trios by count desc, then most recent occurrence.
 
     Driver order for each trio comes from its most recent race (P1–P2–P3).
-    ``is_podiumigami`` is always based on all-time uniqueness (once ever), not
+    ``is_podigami`` is always based on all-time uniqueness (once ever), not
     season-local counts.
     """
     last_seen: dict[str, tuple[int, int]] = {}
@@ -103,7 +103,7 @@ def _ranked_trios(
             {
                 "key": key,
                 "count": count,
-                "is_podiumigami": lifetime_count == 1,
+                "is_podigami": lifetime_count == 1,
                 "podium": podium,
                 "drivers": _drivers_from_podium(podium),
                 "first_year": first_year.get(key),
@@ -120,15 +120,15 @@ def _country_from_group(grp: pd.DataFrame) -> str:
     return str(grp["country"].dropna().iloc[0]).strip()
 
 
-def build_podiumigami(sessions: pd.DataFrame | None = None) -> dict[str, Any]:
-    """Build full podiumigami dataset from race sessions."""
+def build_podigami(sessions: pd.DataFrame | None = None) -> dict[str, Any]:
+    """Build full podigami dataset from race sessions."""
     if sessions is None:
         from ingest import load_sessions
 
         sessions = load_sessions()
 
     if sessions is None or sessions.empty:
-        return {"from_year": PODIUMIGAMI_FROM_YEAR, "hero": None, "all_time": {}, "by_season": {}}
+        return {"from_year": PODIGAMI_FROM_YEAR, "hero": None, "all_time": {}, "by_season": {}}
 
     races_df = sessions[
         (sessions["year"].isin(LEADERBOARD_SEASONS))
@@ -157,7 +157,7 @@ def build_podiumigami(sessions: pd.DataFrame | None = None) -> dict[str, Any]:
     decade_race_lists: dict[str, list[dict]] = defaultdict(list)
     season_races: dict[int, list[dict]] = defaultdict(list)
     season_trio: dict[int, Counter[str]] = defaultdict(Counter)
-    season_podiumigamis: dict[int, int] = defaultdict(int)
+    season_podigamis: dict[int, int] = defaultdict(int)
 
     all_races: list[dict] = []
     hero: dict | None = None
@@ -171,7 +171,7 @@ def build_podiumigami(sessions: pd.DataFrame | None = None) -> dict[str, Any]:
 
         occurrence = trio_counts[key] + 1
         trio_counts[key] += 1
-        is_podiumigami = occurrence == 1
+        is_podigami = occurrence == 1
         prev = prior_race.get(key)
 
         decade = f"{(year // 10) * 10}s"
@@ -179,8 +179,8 @@ def build_podiumigami(sessions: pd.DataFrame | None = None) -> dict[str, Any]:
         decade_unique[decade].add(key)
         decade_trio[decade][key] += 1
         season_trio[year][key] += 1
-        if is_podiumigami:
-            season_podiumigamis[year] += 1
+        if is_podigami:
+            season_podigamis[year] += 1
 
         race_rec = {
             "year": year,
@@ -189,7 +189,7 @@ def build_podiumigami(sessions: pd.DataFrame | None = None) -> dict[str, Any]:
             "country": country,
             "podium": podium,
             "key": key,
-            "is_podiumigami": is_podiumigami,
+            "is_podigami": is_podigami,
             "occurrence": occurrence,
             "occurrence_in_year": season_trio[year][key],
             "trio_count": 0,  # filled after final counts known
@@ -200,7 +200,7 @@ def build_podiumigami(sessions: pd.DataFrame | None = None) -> dict[str, Any]:
         season_races[year].append(race_rec)
         decade_race_lists[decade].append(race_rec)
         prior_race[key] = (year, rnd, event)
-        if is_podiumigami:
+        if is_podigami:
             hero = race_rec
 
     # Attach final all-time trio counts for list badges
@@ -221,7 +221,7 @@ def build_podiumigami(sessions: pd.DataFrame | None = None) -> dict[str, Any]:
             {
                 "decade": decade,
                 "races": decade_races[decade],
-                "podiumigamis": len(decade_unique[decade]),
+                "podigamis": len(decade_unique[decade]),
                 "top_trios": decade_ranked[:3],
                 "all_trios_ranked": decade_ranked,
             }
@@ -229,7 +229,7 @@ def build_podiumigami(sessions: pd.DataFrame | None = None) -> dict[str, Any]:
 
     all_time = {
         "total_races": len(all_races),
-        "podiumigamis": len(trio_counts),
+        "podigamis": len(trio_counts),
         "one_time_only": sum(1 for c in trio_counts.values() if c == 1),
         "top_trios": top_trios,
         "all_trios_ranked": all_trios_ranked,
@@ -249,47 +249,47 @@ def build_podiumigami(sessions: pd.DataFrame | None = None) -> dict[str, Any]:
         by_season[str(year)] = {
             "year": year,
             "total_races": len(year_races),
-            "podiumigamis": season_podiumigamis[year],
+            "podigamis": season_podigamis[year],
             "top_trios": year_ranked[:3],
             "all_trios_ranked": year_ranked,
             "races": list(reversed(year_races)),
-            # Most recent podiumigami in this season (races chronological; last True wins)
+            # Most recent podigami in this season (races chronological; last True wins)
             "hero": next(
-                (r for r in reversed(year_races) if r["is_podiumigami"]),
+                (r for r in reversed(year_races) if r["is_podigami"]),
                 None,
             ),
         }
 
     return {
-        "from_year": PODIUMIGAMI_FROM_YEAR,
+        "from_year": PODIGAMI_FROM_YEAR,
         "hero": hero,
         "all_time": all_time,
         "by_season": by_season,
     }
 
 
-def write_podiumigami(sessions: pd.DataFrame | None = None) -> dict[str, Any]:
-    data = build_podiumigami(sessions)
+def write_podigami(sessions: pd.DataFrame | None = None) -> dict[str, Any]:
+    data = build_podigami(sessions)
     path = os.path.join(OUTPUTS_DIR, "podiums.json")
     os.makedirs(OUTPUTS_DIR, exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2)
     logger.info(
-        "Podiumigami: %d races, %d podiumigamis, hero %s",
+        "Podigami: %d races, %d podigamis, hero %s",
         data.get("all_time", {}).get("total_races", 0),
-        data.get("all_time", {}).get("podiumigamis", 0),
+        data.get("all_time", {}).get("podigamis", 0),
         f"{data['hero']['year']} R{data['hero']['round']}" if data.get("hero") else "none",
     )
     return data
 
 
-def slice_podiumigami(data: dict[str, Any], season: int | None = None) -> dict[str, Any]:
+def slice_podigami(data: dict[str, Any], season: int | None = None) -> dict[str, Any]:
     """Return API payload, optionally scoped to one season."""
     if season is None:
         return data
     key = str(season)
     if key not in data.get("by_season", {}):
-        raise ValueError(f"No podiumigami data for season {season}")
+        raise ValueError(f"No podigami data for season {season}")
     return {
         "from_year": data["from_year"],
         "hero": data.get("hero"),

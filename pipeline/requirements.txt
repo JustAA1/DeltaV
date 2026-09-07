@@ -1,4 +1,4 @@
-# DeltaV pipeline — ingest, leaderboards, replays, podiumigami, what-if
+# DeltaV pipeline — ingest, leaderboards, replays, podigami, what-if
 fastf1>=3.8.1
 pandas>=2.2.0
 numpy>=1.26.0

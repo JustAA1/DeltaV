@@ -5,7 +5,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      // Static JSON lives in public/api/*.json for Leaderboard / Replays / Podiumigami / What If.
+      // Static JSON lives in public/api/*.json for Leaderboard / Replays / Podigami / What If.
       // Live What If (+ health probe) hit the local api/ server.
       '/api/health': {
         target: 'http://127.0.0.1:8000',

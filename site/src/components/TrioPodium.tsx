@@ -1,5 +1,5 @@
 import { DriverAvatar } from './DriverAvatar'
-import type { PodiumigamiCombo, PodiumigamiTrioDriver } from '../types'
+import type { PodigamiCombo, PodigamiTrioDriver } from '../types'
 
 function lastName(full: string): string {
   const parts = full.trim().split(/\s+/)
@@ -12,10 +12,10 @@ function displayCode(code: string, name: string): string {
 }
 
 /** Where this trio showed up — "Occurred" for first-time, "Last occurred" for repeats. */
-function occurrenceLabel(trio: PodiumigamiCombo): string | null {
+function occurrenceLabel(trio: PodigamiCombo): string | null {
   if (trio.last_year == null || !trio.last_event_name) return null
   const gp = `${trio.last_year} ${trio.last_event_name}`
-  return trio.is_podiumigami ? `Occurred during the ${gp}` : `Last occurred at the ${gp}`
+  return trio.is_podigami ? `Occurred during the ${gp}` : `Last occurred at the ${gp}`
 }
 
 export function TrioIcons({
@@ -25,7 +25,7 @@ export function TrioIcons({
   /** Two-up / one-down cluster — denser on narrow cards. */
   layout = 'row',
 }: {
-  drivers: PodiumigamiTrioDriver[]
+  drivers: PodigamiTrioDriver[]
   size?: number
   showNames?: boolean
   layout?: 'row' | 'triangle'
@@ -58,7 +58,7 @@ export function TopTriosPodium({
   trios,
   onOpenAll,
 }: {
-  trios: PodiumigamiCombo[]
+  trios: PodigamiCombo[]
   onOpenAll?: () => void
 }) {
   const slots = [
@@ -72,7 +72,7 @@ export function TopTriosPodium({
       type="button"
       className="top-trios-podium-btn"
       onClick={onOpenAll}
-      aria-label="View all ranked podiumigamis"
+      aria-label="View all ranked podigamis"
     >
       <div className="podium top-trios-podium">
         {slots.map(({ rank, trio }) => {
@@ -91,12 +91,12 @@ export function TopTriosPodium({
                   size={rank === 1 ? 36 : rank === 2 ? 30 : 26}
                   layout="triangle"
                 />
-                {trio.is_podiumigami ? (
-                  <span className="podiumigami-gold-badge">Podiumigami</span>
+                {trio.is_podigami ? (
+                  <span className="podigami-gold-badge">Podigami</span>
                 ) : (
                   <span className="podium-badge">×{trio.count}</span>
                 )}
-                {where && <p className="podiumigami-last-occurred">{where}</p>}
+                {where && <p className="podigami-last-occurred">{where}</p>}
               </>
             ) : (
               <p className="top-trio-empty">—</p>
@@ -116,7 +116,7 @@ export function TrioRankListModal({
   onClose,
 }: {
   title: string
-  trios: PodiumigamiCombo[]
+  trios: PodigamiCombo[]
   onClose: () => void
 }) {
   return (
@@ -142,11 +142,11 @@ export function TrioRankListModal({
                 <span className="trio-rank-pos">{i + 1}</span>
                 <div className="trio-rank-body">
                   <TrioIcons drivers={trio.drivers} size={24} />
-                  {where && <p className="podiumigami-last-occurred">{where}</p>}
+                  {where && <p className="podigami-last-occurred">{where}</p>}
                 </div>
                 <div className="trio-rank-meta">
-                  {trio.is_podiumigami ? (
-                    <span className="podiumigami-gold-badge">Podiumigami</span>
+                  {trio.is_podigami ? (
+                    <span className="podigami-gold-badge">Podigami</span>
                   ) : (
                     <span className="trio-rank-count">×{trio.count}</span>
                   )}
