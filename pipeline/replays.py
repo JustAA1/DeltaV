@@ -26,7 +26,15 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from config import CACHE_DIR, CURRENT_SEASON, OUTPUTS_DIR, RACES_2026, SPRINT_ROUNDS_2026, get_team_color
+from config import (
+    CACHE_DIR,
+    CURRENT_SEASON,
+    OUTPUTS_DIR,
+    RACES_2026,
+    SPRINT_ROUNDS_2026,
+    display_event_name,
+    get_team_color,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -1375,7 +1383,11 @@ def build_replay(
         return None
 
     event = getattr(session, "event", None)
-    event_name = getattr(event, "EventName", "") if event is not None else RACES_2026.get(round_num, "")
+    event_name = display_event_name(
+        season,
+        round_num,
+        getattr(event, "EventName", "") if event is not None else "",
+    )
     if sess == "S" and event_name and "sprint" not in event_name.lower():
         event_name = f"{event_name} Sprint"
     circuit = getattr(event, "Location", "") if event is not None else ""

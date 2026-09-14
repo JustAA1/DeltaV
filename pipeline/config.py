@@ -249,7 +249,7 @@ RACES_2026: dict[int, str] = {
     11: "Hungarian Grand Prix",
     12: "Dutch Grand Prix",
     13: "Italian Grand Prix",
-    14: "Spanish Grand Prix",
+    14: "Madrid Grand Prix",
     15: "Azerbaijan Grand Prix",
     16: "Singapore Grand Prix",
     17: "United States Grand Prix",
@@ -272,6 +272,13 @@ CACHE_DIR = str(_PIPELINE_ROOT / "data" / "cache")
 OUTPUTS_DIR = str(_PIPELINE_ROOT / "outputs")
 PARQUET_PATH = str(_PIPELINE_ROOT / "data" / "sessions.parquet")
 SITE_PUBLIC_DIR = str(_PIPELINE_ROOT.parent / "site" / "public")
+
+
+def display_event_name(year: int, rnd: int, fallback: str = "") -> str:
+    """Prefer the canonical 2026 calendar name when FastF1 still uses an old title."""
+    if year == CURRENT_SEASON and rnd in RACES_2026:
+        return RACES_2026[rnd]
+    return fallback or f"Round {rnd}"
 
 
 def normalize_team(team: str) -> str:

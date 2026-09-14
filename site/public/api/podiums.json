@@ -40,7 +40,7 @@
     "last_occurred_event": null
   },
   "all_time": {
-    "total_races": 834,
+    "total_races": 835,
     "podigamis": 445,
     "one_time_only": 306,
     "top_trios": [
@@ -3527,6 +3527,66 @@
         "last_event_name": "Portuguese Grand Prix"
       },
       {
+        "key": "ANT|NOR|VER",
+        "count": 3,
+        "is_podigami": false,
+        "podium": [
+          {
+            "position": 1,
+            "code": "ANT",
+            "name": "Kimi Antonelli",
+            "team": "Mercedes",
+            "color": "#27F4D2",
+            "image": "/drivers/antonelli-kimi.png"
+          },
+          {
+            "position": 2,
+            "code": "VER",
+            "name": "Max Verstappen",
+            "team": "Red Bull Racing",
+            "color": "#3671C6",
+            "image": "/drivers/verstappen-max.png"
+          },
+          {
+            "position": 3,
+            "code": "NOR",
+            "name": "Lando Norris",
+            "team": "McLaren",
+            "color": "#FF8000",
+            "image": "/drivers/norris-lando.png"
+          }
+        ],
+        "drivers": [
+          {
+            "code": "ANT",
+            "name": "Kimi Antonelli",
+            "team": "Mercedes",
+            "color": "#27F4D2",
+            "image": "/drivers/antonelli-kimi.png",
+            "position": 1
+          },
+          {
+            "code": "VER",
+            "name": "Max Verstappen",
+            "team": "Red Bull Racing",
+            "color": "#3671C6",
+            "image": "/drivers/verstappen-max.png",
+            "position": 2
+          },
+          {
+            "code": "NOR",
+            "name": "Lando Norris",
+            "team": "McLaren",
+            "color": "#FF8000",
+            "image": "/drivers/norris-lando.png",
+            "position": 3
+          }
+        ],
+        "first_year": 2025,
+        "last_year": 2026,
+        "last_event_name": "Madrid Grand Prix"
+      },
+      {
         "key": "NOR|RUS|VER",
         "count": 3,
         "is_podigami": false,
@@ -5505,66 +5565,6 @@
         "first_year": 1980,
         "last_year": 1980,
         "last_event_name": "United States Grand Prix"
-      },
-      {
-        "key": "ANT|NOR|VER",
-        "count": 2,
-        "is_podigami": false,
-        "podium": [
-          {
-            "position": 1,
-            "code": "NOR",
-            "name": "Lando Norris",
-            "team": "McLaren",
-            "color": "#FF8000",
-            "image": "/drivers/norris-lando.png"
-          },
-          {
-            "position": 2,
-            "code": "VER",
-            "name": "Max Verstappen",
-            "team": "Red Bull Racing",
-            "color": "#3671C6",
-            "image": "/drivers/verstappen-max.png"
-          },
-          {
-            "position": 3,
-            "code": "ANT",
-            "name": "Kimi Antonelli",
-            "team": "Mercedes",
-            "color": "#27F4D2",
-            "image": "/drivers/antonelli-kimi.png"
-          }
-        ],
-        "drivers": [
-          {
-            "code": "NOR",
-            "name": "Lando Norris",
-            "team": "McLaren",
-            "color": "#FF8000",
-            "image": "/drivers/norris-lando.png",
-            "position": 1
-          },
-          {
-            "code": "VER",
-            "name": "Max Verstappen",
-            "team": "Red Bull Racing",
-            "color": "#3671C6",
-            "image": "/drivers/verstappen-max.png",
-            "position": 2
-          },
-          {
-            "code": "ANT",
-            "name": "Kimi Antonelli",
-            "team": "Mercedes",
-            "color": "#27F4D2",
-            "image": "/drivers/antonelli-kimi.png",
-            "position": 3
-          }
-        ],
-        "first_year": 2025,
-        "last_year": 2026,
-        "last_event_name": "Hungarian Grand Prix"
       },
       {
         "key": "LEC|PIA|VER",
@@ -52046,7 +52046,7 @@
       },
       {
         "decade": "2020s",
-        "races": 144,
+        "races": 145,
         "podigamis": 67,
         "top_trios": [
           {
@@ -52952,6 +52952,66 @@
             "last_event_name": "Mexico City Grand Prix"
           },
           {
+            "key": "ANT|NOR|VER",
+            "count": 3,
+            "is_podigami": false,
+            "podium": [
+              {
+                "position": 1,
+                "code": "ANT",
+                "name": "Kimi Antonelli",
+                "team": "Mercedes",
+                "color": "#27F4D2",
+                "image": "/drivers/antonelli-kimi.png"
+              },
+              {
+                "position": 2,
+                "code": "VER",
+                "name": "Max Verstappen",
+                "team": "Red Bull Racing",
+                "color": "#3671C6",
+                "image": "/drivers/verstappen-max.png"
+              },
+              {
+                "position": 3,
+                "code": "NOR",
+                "name": "Lando Norris",
+                "team": "McLaren",
+                "color": "#FF8000",
+                "image": "/drivers/norris-lando.png"
+              }
+            ],
+            "drivers": [
+              {
+                "code": "ANT",
+                "name": "Kimi Antonelli",
+                "team": "Mercedes",
+                "color": "#27F4D2",
+                "image": "/drivers/antonelli-kimi.png",
+                "position": 1
+              },
+              {
+                "code": "VER",
+                "name": "Max Verstappen",
+                "team": "Red Bull Racing",
+                "color": "#3671C6",
+                "image": "/drivers/verstappen-max.png",
+                "position": 2
+              },
+              {
+                "code": "NOR",
+                "name": "Lando Norris",
+                "team": "McLaren",
+                "color": "#FF8000",
+                "image": "/drivers/norris-lando.png",
+                "position": 3
+              }
+            ],
+            "first_year": 2025,
+            "last_year": 2026,
+            "last_event_name": "Madrid Grand Prix"
+          },
+          {
             "key": "NOR|RUS|VER",
             "count": 3,
             "is_podigami": false,
@@ -53430,66 +53490,6 @@
             "first_year": 2021,
             "last_year": 2022,
             "last_event_name": "Canadian Grand Prix"
-          },
-          {
-            "key": "ANT|NOR|VER",
-            "count": 2,
-            "is_podigami": false,
-            "podium": [
-              {
-                "position": 1,
-                "code": "NOR",
-                "name": "Lando Norris",
-                "team": "McLaren",
-                "color": "#FF8000",
-                "image": "/drivers/norris-lando.png"
-              },
-              {
-                "position": 2,
-                "code": "VER",
-                "name": "Max Verstappen",
-                "team": "Red Bull Racing",
-                "color": "#3671C6",
-                "image": "/drivers/verstappen-max.png"
-              },
-              {
-                "position": 3,
-                "code": "ANT",
-                "name": "Kimi Antonelli",
-                "team": "Mercedes",
-                "color": "#27F4D2",
-                "image": "/drivers/antonelli-kimi.png"
-              }
-            ],
-            "drivers": [
-              {
-                "code": "NOR",
-                "name": "Lando Norris",
-                "team": "McLaren",
-                "color": "#FF8000",
-                "image": "/drivers/norris-lando.png",
-                "position": 1
-              },
-              {
-                "code": "VER",
-                "name": "Max Verstappen",
-                "team": "Red Bull Racing",
-                "color": "#3671C6",
-                "image": "/drivers/verstappen-max.png",
-                "position": 2
-              },
-              {
-                "code": "ANT",
-                "name": "Kimi Antonelli",
-                "team": "Mercedes",
-                "color": "#27F4D2",
-                "image": "/drivers/antonelli-kimi.png",
-                "position": 3
-              }
-            ],
-            "first_year": 2025,
-            "last_year": 2026,
-            "last_event_name": "Hungarian Grand Prix"
           },
           {
             "key": "LEC|PIA|VER",
@@ -56257,6 +56257,45 @@
     "recent_races": [
       {
         "year": 2026,
+        "round": 14,
+        "event_name": "Madrid Grand Prix",
+        "country": "Spain",
+        "podium": [
+          {
+            "position": 1,
+            "code": "ANT",
+            "name": "Kimi Antonelli",
+            "team": "Mercedes",
+            "color": "#27F4D2",
+            "image": "/drivers/antonelli-kimi.png"
+          },
+          {
+            "position": 2,
+            "code": "VER",
+            "name": "Max Verstappen",
+            "team": "Red Bull Racing",
+            "color": "#3671C6",
+            "image": "/drivers/verstappen-max.png"
+          },
+          {
+            "position": 3,
+            "code": "NOR",
+            "name": "Lando Norris",
+            "team": "McLaren",
+            "color": "#FF8000",
+            "image": "/drivers/norris-lando.png"
+          }
+        ],
+        "key": "ANT|NOR|VER",
+        "is_podigami": false,
+        "occurrence": 3,
+        "occurrence_in_year": 2,
+        "trio_count": 3,
+        "last_occurred_year": 2026,
+        "last_occurred_event": "Hungarian Grand Prix"
+      },
+      {
+        "year": 2026,
         "round": 13,
         "event_name": "Italian Grand Prix",
         "country": "Italy",
@@ -56368,7 +56407,7 @@
         "is_podigami": false,
         "occurrence": 2,
         "occurrence_in_year": 1,
-        "trio_count": 2,
+        "trio_count": 3,
         "last_occurred_year": 2025,
         "last_occurred_event": "S\u00e3o Paulo Grand Prix"
       },
@@ -56914,7 +56953,7 @@
         "is_podigami": true,
         "occurrence": 1,
         "occurrence_in_year": 1,
-        "trio_count": 2,
+        "trio_count": 3,
         "last_occurred_year": null,
         "last_occurred_event": null
       },
@@ -57385,45 +57424,6 @@
         "trio_count": 5,
         "last_occurred_year": 2025,
         "last_occurred_event": "Monaco Grand Prix"
-      },
-      {
-        "year": 2025,
-        "round": 8,
-        "event_name": "Monaco Grand Prix",
-        "country": "Monaco",
-        "podium": [
-          {
-            "position": 1,
-            "code": "NOR",
-            "name": "Lando Norris",
-            "team": "McLaren",
-            "color": "#FF8000",
-            "image": "/drivers/norris-lando.png"
-          },
-          {
-            "position": 2,
-            "code": "LEC",
-            "name": "Charles Leclerc",
-            "team": "Ferrari",
-            "color": "#E8002D",
-            "image": "/drivers/leclerc-charles.png"
-          },
-          {
-            "position": 3,
-            "code": "PIA",
-            "name": "Oscar Piastri",
-            "team": "McLaren",
-            "color": "#FF8000",
-            "image": "/drivers/piastri-oscar.png"
-          }
-        ],
-        "key": "LEC|NOR|PIA",
-        "is_podigami": false,
-        "occurrence": 2,
-        "occurrence_in_year": 1,
-        "trio_count": 5,
-        "last_occurred_year": 2024,
-        "last_occurred_event": "Italian Grand Prix"
       }
     ]
   },
@@ -134482,7 +134482,7 @@
           "is_podigami": true,
           "occurrence": 1,
           "occurrence_in_year": 1,
-          "trio_count": 2,
+          "trio_count": 3,
           "last_occurred_year": null,
           "last_occurred_event": null
         },
@@ -135309,9 +135309,69 @@
     },
     "2026": {
       "year": 2026,
-      "total_races": 13,
+      "total_races": 14,
       "podigamis": 10,
       "top_trios": [
+        {
+          "key": "ANT|NOR|VER",
+          "count": 2,
+          "is_podigami": false,
+          "podium": [
+            {
+              "position": 1,
+              "code": "ANT",
+              "name": "Kimi Antonelli",
+              "team": "Mercedes",
+              "color": "#27F4D2",
+              "image": "/drivers/antonelli-kimi.png"
+            },
+            {
+              "position": 2,
+              "code": "VER",
+              "name": "Max Verstappen",
+              "team": "Red Bull Racing",
+              "color": "#3671C6",
+              "image": "/drivers/verstappen-max.png"
+            },
+            {
+              "position": 3,
+              "code": "NOR",
+              "name": "Lando Norris",
+              "team": "McLaren",
+              "color": "#FF8000",
+              "image": "/drivers/norris-lando.png"
+            }
+          ],
+          "drivers": [
+            {
+              "code": "ANT",
+              "name": "Kimi Antonelli",
+              "team": "Mercedes",
+              "color": "#27F4D2",
+              "image": "/drivers/antonelli-kimi.png",
+              "position": 1
+            },
+            {
+              "code": "VER",
+              "name": "Max Verstappen",
+              "team": "Red Bull Racing",
+              "color": "#3671C6",
+              "image": "/drivers/verstappen-max.png",
+              "position": 2
+            },
+            {
+              "code": "NOR",
+              "name": "Lando Norris",
+              "team": "McLaren",
+              "color": "#FF8000",
+              "image": "/drivers/norris-lando.png",
+              "position": 3
+            }
+          ],
+          "first_year": 2026,
+          "last_year": 2026,
+          "last_event_name": "Madrid Grand Prix"
+        },
         {
           "key": "ANT|RUS|VER",
           "count": 2,
@@ -135431,70 +135491,70 @@
           "first_year": 2026,
           "last_year": 2026,
           "last_event_name": "Dutch Grand Prix"
-        },
-        {
-          "key": "ANT|NOR|VER",
-          "count": 1,
-          "is_podigami": false,
-          "podium": [
-            {
-              "position": 1,
-              "code": "NOR",
-              "name": "Lando Norris",
-              "team": "McLaren",
-              "color": "#FF8000",
-              "image": "/drivers/norris-lando.png"
-            },
-            {
-              "position": 2,
-              "code": "VER",
-              "name": "Max Verstappen",
-              "team": "Red Bull Racing",
-              "color": "#3671C6",
-              "image": "/drivers/verstappen-max.png"
-            },
-            {
-              "position": 3,
-              "code": "ANT",
-              "name": "Kimi Antonelli",
-              "team": "Mercedes",
-              "color": "#27F4D2",
-              "image": "/drivers/antonelli-kimi.png"
-            }
-          ],
-          "drivers": [
-            {
-              "code": "NOR",
-              "name": "Lando Norris",
-              "team": "McLaren",
-              "color": "#FF8000",
-              "image": "/drivers/norris-lando.png",
-              "position": 1
-            },
-            {
-              "code": "VER",
-              "name": "Max Verstappen",
-              "team": "Red Bull Racing",
-              "color": "#3671C6",
-              "image": "/drivers/verstappen-max.png",
-              "position": 2
-            },
-            {
-              "code": "ANT",
-              "name": "Kimi Antonelli",
-              "team": "Mercedes",
-              "color": "#27F4D2",
-              "image": "/drivers/antonelli-kimi.png",
-              "position": 3
-            }
-          ],
-          "first_year": 2026,
-          "last_year": 2026,
-          "last_event_name": "Hungarian Grand Prix"
         }
       ],
       "all_trios_ranked": [
         {
+          "key": "ANT|NOR|VER",
+          "count": 2,
+          "is_podigami": false,
+          "podium": [
+            {
+              "position": 1,
+              "code": "ANT",
+              "name": "Kimi Antonelli",
+              "team": "Mercedes",
+              "color": "#27F4D2",
+              "image": "/drivers/antonelli-kimi.png"
+            },
+            {
+              "position": 2,
+              "code": "VER",
+              "name": "Max Verstappen",
+              "team": "Red Bull Racing",
+              "color": "#3671C6",
+              "image": "/drivers/verstappen-max.png"
+            },
+            {
+              "position": 3,
+              "code": "NOR",
+              "name": "Lando Norris",
+              "team": "McLaren",
+              "color": "#FF8000",
+              "image": "/drivers/norris-lando.png"
+            }
+          ],
+          "drivers": [
+            {
+              "code": "ANT",
+              "name": "Kimi Antonelli",
+              "team": "Mercedes",
+              "color": "#27F4D2",
+              "image": "/drivers/antonelli-kimi.png",
+              "position": 1
+            },
+            {
+              "code": "VER",
+              "name": "Max Verstappen",
+              "team": "Red Bull Racing",
+              "color": "#3671C6",
+              "image": "/drivers/verstappen-max.png",
+              "position": 2
+            },
+            {
+              "code": "NOR",
+              "name": "Lando Norris",
+              "team": "McLaren",
+              "color": "#FF8000",
+              "image": "/drivers/norris-lando.png",
+              "position": 3
+            }
+          ],
+          "first_year": 2026,
+          "last_year": 2026,
+          "last_event_name": "Madrid Grand Prix"
+        },
+        {
           "key": "ANT|RUS|VER",
           "count": 2,
           "is_podigami": false,
@@ -135613,66 +135673,6 @@
           "first_year": 2026,
           "last_year": 2026,
           "last_event_name": "Dutch Grand Prix"
-        },
-        {
-          "key": "ANT|NOR|VER",
-          "count": 1,
-          "is_podigami": false,
-          "podium": [
-            {
-              "position": 1,
-              "code": "NOR",
-              "name": "Lando Norris",
-              "team": "McLaren",
-              "color": "#FF8000",
-              "image": "/drivers/norris-lando.png"
-            },
-            {
-              "position": 2,
-              "code": "VER",
-              "name": "Max Verstappen",
-              "team": "Red Bull Racing",
-              "color": "#3671C6",
-              "image": "/drivers/verstappen-max.png"
-            },
-            {
-              "position": 3,
-              "code": "ANT",
-              "name": "Kimi Antonelli",
-              "team": "Mercedes",
-              "color": "#27F4D2",
-              "image": "/drivers/antonelli-kimi.png"
-            }
-          ],
-          "drivers": [
-            {
-              "code": "NOR",
-              "name": "Lando Norris",
-              "team": "McLaren",
-              "color": "#FF8000",
-              "image": "/drivers/norris-lando.png",
-              "position": 1
-            },
-            {
-              "code": "VER",
-              "name": "Max Verstappen",
-              "team": "Red Bull Racing",
-              "color": "#3671C6",
-              "image": "/drivers/verstappen-max.png",
-              "position": 2
-            },
-            {
-              "code": "ANT",
-              "name": "Kimi Antonelli",
-              "team": "Mercedes",
-              "color": "#27F4D2",
-              "image": "/drivers/antonelli-kimi.png",
-              "position": 3
-            }
-          ],
-          "first_year": 2026,
-          "last_year": 2026,
-          "last_event_name": "Hungarian Grand Prix"
         },
         {
           "key": "ANT|LEC|VER",
@@ -136218,6 +136218,45 @@
       "races": [
         {
           "year": 2026,
+          "round": 14,
+          "event_name": "Madrid Grand Prix",
+          "country": "Spain",
+          "podium": [
+            {
+              "position": 1,
+              "code": "ANT",
+              "name": "Kimi Antonelli",
+              "team": "Mercedes",
+              "color": "#27F4D2",
+              "image": "/drivers/antonelli-kimi.png"
+            },
+            {
+              "position": 2,
+              "code": "VER",
+              "name": "Max Verstappen",
+              "team": "Red Bull Racing",
+              "color": "#3671C6",
+              "image": "/drivers/verstappen-max.png"
+            },
+            {
+              "position": 3,
+              "code": "NOR",
+              "name": "Lando Norris",
+              "team": "McLaren",
+              "color": "#FF8000",
+              "image": "/drivers/norris-lando.png"
+            }
+          ],
+          "key": "ANT|NOR|VER",
+          "is_podigami": false,
+          "occurrence": 3,
+          "occurrence_in_year": 2,
+          "trio_count": 3,
+          "last_occurred_year": 2026,
+          "last_occurred_event": "Hungarian Grand Prix"
+        },
+        {
+          "year": 2026,
           "round": 13,
           "event_name": "Italian Grand Prix",
           "country": "Italy",
@@ -136329,7 +136368,7 @@
           "is_podigami": false,
           "occurrence": 2,
           "occurrence_in_year": 1,
-          "trio_count": 2,
+          "trio_count": 3,
           "last_occurred_year": 2025,
           "last_occurred_event": "S\u00e3o Paulo Grand Prix"
         },

@@ -24,6 +24,8 @@ const STAGE_COUNTRY: Record<string, string> = {
   Monaco: 'Monaco',
   Canada: 'Canada',
   Spain: 'Spain',
+  Barcelona: 'Spain',
+  Madrid: 'Spain',
   Austria: 'Austria',
   Britain: 'United Kingdom',
   Hungary: 'Hungary',

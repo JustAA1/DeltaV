@@ -17,6 +17,7 @@ from config import (
     LEADERBOARD_SEASONS,
     OUTPUTS_DIR,
     RACES_2026,
+    display_event_name,
     get_team_color,
     normalize_team,
 )
@@ -36,7 +37,8 @@ _EVENT_SHORT: dict[str, str] = {
     "Monaco": "Monaco",
     "Canadian": "Canada",
     "Spanish": "Spain",
-    "Barcelona": "Spain",
+    "Barcelona": "Barcelona",
+    "Madrid": "Madrid",
     "Austrian": "Austria",
     "British": "Britain",
     "Hungarian": "Hungary",
@@ -206,10 +208,14 @@ def build_leaderboard_from_sessions(
 
     rounds_sorted = sorted(int(r) for r in scoring["round"].unique())
     race_names = {
-        str(rnd): (
-            scoring[scoring["round"] == rnd]["event_name"].dropna().iloc[0]
-            if scoring[scoring["round"] == rnd]["event_name"].notna().any()
-            else RACES_2026.get(rnd, f"Round {rnd}")
+        str(rnd): display_event_name(
+            season,
+            rnd,
+            (
+                scoring[scoring["round"] == rnd]["event_name"].dropna().iloc[0]
+                if scoring[scoring["round"] == rnd]["event_name"].notna().any()
+                else RACES_2026.get(rnd, f"Round {rnd}")
+            ),
         )
         for rnd in rounds_sorted
     }

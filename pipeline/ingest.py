@@ -16,6 +16,7 @@ from config import (
     PARQUET_PATH,
     POINTS_SYSTEM,
     SPRINT_POINTS_SYSTEM,
+    display_event_name,
 )
 
 logger = logging.getLogger(__name__)
@@ -86,7 +87,11 @@ def _session_rows(year: int, rnd: int, session_type: str, *, results_only: bool 
         return rows
 
     event = _safe_session_attr(session, "event")
-    event_name = getattr(event, "EventName", "") if event is not None else ""
+    event_name = display_event_name(
+        year,
+        rnd,
+        getattr(event, "EventName", "") if event is not None else "",
+    )
     circuit = getattr(event, "Location", "") if event is not None else ""
     country = getattr(event, "Country", "") if event is not None else ""
 
