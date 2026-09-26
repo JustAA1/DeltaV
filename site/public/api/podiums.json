@@ -2,36 +2,36 @@
   "from_year": 1980,
   "hero": {
     "year": 2026,
-    "round": 12,
-    "event_name": "Dutch Grand Prix",
-    "country": "Netherlands",
+    "round": 15,
+    "event_name": "Azerbaijan Grand Prix",
+    "country": "Azerbaijan",
     "podium": [
       {
         "position": 1,
-        "code": "NOR",
-        "name": "Lando Norris",
-        "team": "McLaren",
-        "color": "#FF8000",
-        "image": "/drivers/norris-lando.png"
-      },
-      {
-        "position": 2,
-        "code": "ANT",
-        "name": "Kimi Antonelli",
-        "team": "Mercedes",
-        "color": "#27F4D2",
-        "image": "/drivers/antonelli-kimi.png"
-      },
-      {
-        "position": 3,
         "code": "RUS",
         "name": "George Russell",
         "team": "Mercedes",
         "color": "#27F4D2",
         "image": "/drivers/russell-george.png"
+      },
+      {
+        "position": 2,
+        "code": "VER",
+        "name": "Max Verstappen",
+        "team": "Red Bull Racing",
+        "color": "#3671C6",
+        "image": "/drivers/verstappen-max.png"
+      },
+      {
+        "position": 3,
+        "code": "HAD",
+        "name": "Isack Hadjar",
+        "team": "Red Bull Racing",
+        "color": "#3671C6",
+        "image": "/drivers/hadjar-isack.png"
       }
     ],
-    "key": "ANT|NOR|RUS",
+    "key": "HAD|RUS|VER",
     "is_podigami": true,
     "occurrence": 1,
     "occurrence_in_year": 1,
@@ -40,9 +40,9 @@
     "last_occurred_event": null
   },
   "all_time": {
-    "total_races": 835,
-    "podigamis": 445,
-    "one_time_only": 306,
+    "total_races": 836,
+    "podigamis": 446,
+    "one_time_only": 307,
     "top_trios": [
       {
         "key": "BOT|HAM|VER",
@@ -8565,6 +8565,66 @@
         "first_year": 1980,
         "last_year": 1981,
         "last_event_name": "Austrian Grand Prix"
+      },
+      {
+        "key": "HAD|RUS|VER",
+        "count": 1,
+        "is_podigami": true,
+        "podium": [
+          {
+            "position": 1,
+            "code": "RUS",
+            "name": "George Russell",
+            "team": "Mercedes",
+            "color": "#27F4D2",
+            "image": "/drivers/russell-george.png"
+          },
+          {
+            "position": 2,
+            "code": "VER",
+            "name": "Max Verstappen",
+            "team": "Red Bull Racing",
+            "color": "#3671C6",
+            "image": "/drivers/verstappen-max.png"
+          },
+          {
+            "position": 3,
+            "code": "HAD",
+            "name": "Isack Hadjar",
+            "team": "Red Bull Racing",
+            "color": "#3671C6",
+            "image": "/drivers/hadjar-isack.png"
+          }
+        ],
+        "drivers": [
+          {
+            "code": "RUS",
+            "name": "George Russell",
+            "team": "Mercedes",
+            "color": "#27F4D2",
+            "image": "/drivers/russell-george.png",
+            "position": 1
+          },
+          {
+            "code": "VER",
+            "name": "Max Verstappen",
+            "team": "Red Bull Racing",
+            "color": "#3671C6",
+            "image": "/drivers/verstappen-max.png",
+            "position": 2
+          },
+          {
+            "code": "HAD",
+            "name": "Isack Hadjar",
+            "team": "Red Bull Racing",
+            "color": "#3671C6",
+            "image": "/drivers/hadjar-isack.png",
+            "position": 3
+          }
+        ],
+        "first_year": 2026,
+        "last_year": 2026,
+        "last_event_name": "Azerbaijan Grand Prix"
       },
       {
         "key": "ANT|NOR|RUS",
@@ -52046,8 +52106,8 @@
       },
       {
         "decade": "2020s",
-        "races": 145,
-        "podigamis": 67,
+        "races": 146,
+        "podigamis": 68,
         "top_trios": [
           {
             "key": "BOT|HAM|VER",
@@ -53729,6 +53789,66 @@
             ],
             "first_year": 2022,
             "last_year": 2022,
+            "last_event_name": "Azerbaijan Grand Prix"
+          },
+          {
+            "key": "HAD|RUS|VER",
+            "count": 1,
+            "is_podigami": true,
+            "podium": [
+              {
+                "position": 1,
+                "code": "RUS",
+                "name": "George Russell",
+                "team": "Mercedes",
+                "color": "#27F4D2",
+                "image": "/drivers/russell-george.png"
+              },
+              {
+                "position": 2,
+                "code": "VER",
+                "name": "Max Verstappen",
+                "team": "Red Bull Racing",
+                "color": "#3671C6",
+                "image": "/drivers/verstappen-max.png"
+              },
+              {
+                "position": 3,
+                "code": "HAD",
+                "name": "Isack Hadjar",
+                "team": "Red Bull Racing",
+                "color": "#3671C6",
+                "image": "/drivers/hadjar-isack.png"
+              }
+            ],
+            "drivers": [
+              {
+                "code": "RUS",
+                "name": "George Russell",
+                "team": "Mercedes",
+                "color": "#27F4D2",
+                "image": "/drivers/russell-george.png",
+                "position": 1
+              },
+              {
+                "code": "VER",
+                "name": "Max Verstappen",
+                "team": "Red Bull Racing",
+                "color": "#3671C6",
+                "image": "/drivers/verstappen-max.png",
+                "position": 2
+              },
+              {
+                "code": "HAD",
+                "name": "Isack Hadjar",
+                "team": "Red Bull Racing",
+                "color": "#3671C6",
+                "image": "/drivers/hadjar-isack.png",
+                "position": 3
+              }
+            ],
+            "first_year": 2026,
+            "last_year": 2026,
             "last_event_name": "Azerbaijan Grand Prix"
           },
           {
@@ -56257,6 +56377,45 @@
     "recent_races": [
       {
         "year": 2026,
+        "round": 15,
+        "event_name": "Azerbaijan Grand Prix",
+        "country": "Azerbaijan",
+        "podium": [
+          {
+            "position": 1,
+            "code": "RUS",
+            "name": "George Russell",
+            "team": "Mercedes",
+            "color": "#27F4D2",
+            "image": "/drivers/russell-george.png"
+          },
+          {
+            "position": 2,
+            "code": "VER",
+            "name": "Max Verstappen",
+            "team": "Red Bull Racing",
+            "color": "#3671C6",
+            "image": "/drivers/verstappen-max.png"
+          },
+          {
+            "position": 3,
+            "code": "HAD",
+            "name": "Isack Hadjar",
+            "team": "Red Bull Racing",
+            "color": "#3671C6",
+            "image": "/drivers/hadjar-isack.png"
+          }
+        ],
+        "key": "HAD|RUS|VER",
+        "is_podigami": true,
+        "occurrence": 1,
+        "occurrence_in_year": 1,
+        "trio_count": 1,
+        "last_occurred_year": null,
+        "last_occurred_event": null
+      },
+      {
+        "year": 2026,
         "round": 14,
         "event_name": "Madrid Grand Prix",
         "country": "Spain",
@@ -57385,45 +57544,6 @@
         "trio_count": 4,
         "last_occurred_year": null,
         "last_occurred_event": null
-      },
-      {
-        "year": 2025,
-        "round": 9,
-        "event_name": "Spanish Grand Prix",
-        "country": "Spain",
-        "podium": [
-          {
-            "position": 1,
-            "code": "PIA",
-            "name": "Oscar Piastri",
-            "team": "McLaren",
-            "color": "#FF8000",
-            "image": "/drivers/piastri-oscar.png"
-          },
-          {
-            "position": 2,
-            "code": "NOR",
-            "name": "Lando Norris",
-            "team": "McLaren",
-            "color": "#FF8000",
-            "image": "/drivers/norris-lando.png"
-          },
-          {
-            "position": 3,
-            "code": "LEC",
-            "name": "Charles Leclerc",
-            "team": "Ferrari",
-            "color": "#E8002D",
-            "image": "/drivers/leclerc-charles.png"
-          }
-        ],
-        "key": "LEC|NOR|PIA",
-        "is_podigami": false,
-        "occurrence": 3,
-        "occurrence_in_year": 2,
-        "trio_count": 5,
-        "last_occurred_year": 2025,
-        "last_occurred_event": "Monaco Grand Prix"
       }
     ]
   },
@@ -135309,8 +135429,8 @@
     },
     "2026": {
       "year": 2026,
-      "total_races": 14,
-      "podigamis": 10,
+      "total_races": 15,
+      "podigamis": 11,
       "top_trios": [
         {
           "key": "ANT|NOR|VER",
@@ -135433,64 +135553,64 @@
           "last_event_name": "Italian Grand Prix"
         },
         {
-          "key": "ANT|NOR|RUS",
+          "key": "HAD|RUS|VER",
           "count": 1,
           "is_podigami": true,
           "podium": [
             {
               "position": 1,
-              "code": "NOR",
-              "name": "Lando Norris",
-              "team": "McLaren",
-              "color": "#FF8000",
-              "image": "/drivers/norris-lando.png"
-            },
-            {
-              "position": 2,
-              "code": "ANT",
-              "name": "Kimi Antonelli",
-              "team": "Mercedes",
-              "color": "#27F4D2",
-              "image": "/drivers/antonelli-kimi.png"
-            },
-            {
-              "position": 3,
               "code": "RUS",
               "name": "George Russell",
               "team": "Mercedes",
               "color": "#27F4D2",
               "image": "/drivers/russell-george.png"
+            },
+            {
+              "position": 2,
+              "code": "VER",
+              "name": "Max Verstappen",
+              "team": "Red Bull Racing",
+              "color": "#3671C6",
+              "image": "/drivers/verstappen-max.png"
+            },
+            {
+              "position": 3,
+              "code": "HAD",
+              "name": "Isack Hadjar",
+              "team": "Red Bull Racing",
+              "color": "#3671C6",
+              "image": "/drivers/hadjar-isack.png"
             }
           ],
           "drivers": [
-            {
-              "code": "NOR",
-              "name": "Lando Norris",
-              "team": "McLaren",
-              "color": "#FF8000",
-              "image": "/drivers/norris-lando.png",
-              "position": 1
-            },
-            {
-              "code": "ANT",
-              "name": "Kimi Antonelli",
-              "team": "Mercedes",
-              "color": "#27F4D2",
-              "image": "/drivers/antonelli-kimi.png",
-              "position": 2
-            },
             {
               "code": "RUS",
               "name": "George Russell",
               "team": "Mercedes",
               "color": "#27F4D2",
               "image": "/drivers/russell-george.png",
+              "position": 1
+            },
+            {
+              "code": "VER",
+              "name": "Max Verstappen",
+              "team": "Red Bull Racing",
+              "color": "#3671C6",
+              "image": "/drivers/verstappen-max.png",
+              "position": 2
+            },
+            {
+              "code": "HAD",
+              "name": "Isack Hadjar",
+              "team": "Red Bull Racing",
+              "color": "#3671C6",
+              "image": "/drivers/hadjar-isack.png",
               "position": 3
             }
           ],
           "first_year": 2026,
           "last_year": 2026,
-          "last_event_name": "Dutch Grand Prix"
+          "last_event_name": "Azerbaijan Grand Prix"
         }
       ],
       "all_trios_ranked": [
@@ -135613,6 +135733,66 @@
           "first_year": 2026,
           "last_year": 2026,
           "last_event_name": "Italian Grand Prix"
+        },
+        {
+          "key": "HAD|RUS|VER",
+          "count": 1,
+          "is_podigami": true,
+          "podium": [
+            {
+              "position": 1,
+              "code": "RUS",
+              "name": "George Russell",
+              "team": "Mercedes",
+              "color": "#27F4D2",
+              "image": "/drivers/russell-george.png"
+            },
+            {
+              "position": 2,
+              "code": "VER",
+              "name": "Max Verstappen",
+              "team": "Red Bull Racing",
+              "color": "#3671C6",
+              "image": "/drivers/verstappen-max.png"
+            },
+            {
+              "position": 3,
+              "code": "HAD",
+              "name": "Isack Hadjar",
+              "team": "Red Bull Racing",
+              "color": "#3671C6",
+              "image": "/drivers/hadjar-isack.png"
+            }
+          ],
+          "drivers": [
+            {
+              "code": "RUS",
+              "name": "George Russell",
+              "team": "Mercedes",
+              "color": "#27F4D2",
+              "image": "/drivers/russell-george.png",
+              "position": 1
+            },
+            {
+              "code": "VER",
+              "name": "Max Verstappen",
+              "team": "Red Bull Racing",
+              "color": "#3671C6",
+              "image": "/drivers/verstappen-max.png",
+              "position": 2
+            },
+            {
+              "code": "HAD",
+              "name": "Isack Hadjar",
+              "team": "Red Bull Racing",
+              "color": "#3671C6",
+              "image": "/drivers/hadjar-isack.png",
+              "position": 3
+            }
+          ],
+          "first_year": 2026,
+          "last_year": 2026,
+          "last_event_name": "Azerbaijan Grand Prix"
         },
         {
           "key": "ANT|NOR|RUS",
@@ -136218,6 +136398,45 @@
       "races": [
         {
           "year": 2026,
+          "round": 15,
+          "event_name": "Azerbaijan Grand Prix",
+          "country": "Azerbaijan",
+          "podium": [
+            {
+              "position": 1,
+              "code": "RUS",
+              "name": "George Russell",
+              "team": "Mercedes",
+              "color": "#27F4D2",
+              "image": "/drivers/russell-george.png"
+            },
+            {
+              "position": 2,
+              "code": "VER",
+              "name": "Max Verstappen",
+              "team": "Red Bull Racing",
+              "color": "#3671C6",
+              "image": "/drivers/verstappen-max.png"
+            },
+            {
+              "position": 3,
+              "code": "HAD",
+              "name": "Isack Hadjar",
+              "team": "Red Bull Racing",
+              "color": "#3671C6",
+              "image": "/drivers/hadjar-isack.png"
+            }
+          ],
+          "key": "HAD|RUS|VER",
+          "is_podigami": true,
+          "occurrence": 1,
+          "occurrence_in_year": 1,
+          "trio_count": 1,
+          "last_occurred_year": null,
+          "last_occurred_event": null
+        },
+        {
+          "year": 2026,
           "round": 14,
           "event_name": "Madrid Grand Prix",
           "country": "Spain",
@@ -136765,36 +136984,36 @@
       ],
       "hero": {
         "year": 2026,
-        "round": 12,
-        "event_name": "Dutch Grand Prix",
-        "country": "Netherlands",
+        "round": 15,
+        "event_name": "Azerbaijan Grand Prix",
+        "country": "Azerbaijan",
         "podium": [
           {
             "position": 1,
-            "code": "NOR",
-            "name": "Lando Norris",
-            "team": "McLaren",
-            "color": "#FF8000",
-            "image": "/drivers/norris-lando.png"
-          },
-          {
-            "position": 2,
-            "code": "ANT",
-            "name": "Kimi Antonelli",
-            "team": "Mercedes",
-            "color": "#27F4D2",
-            "image": "/drivers/antonelli-kimi.png"
-          },
-          {
-            "position": 3,
             "code": "RUS",
             "name": "George Russell",
             "team": "Mercedes",
             "color": "#27F4D2",
             "image": "/drivers/russell-george.png"
+          },
+          {
+            "position": 2,
+            "code": "VER",
+            "name": "Max Verstappen",
+            "team": "Red Bull Racing",
+            "color": "#3671C6",
+            "image": "/drivers/verstappen-max.png"
+          },
+          {
+            "position": 3,
+            "code": "HAD",
+            "name": "Isack Hadjar",
+            "team": "Red Bull Racing",
+            "color": "#3671C6",
+            "image": "/drivers/hadjar-isack.png"
           }
         ],
-        "key": "ANT|NOR|RUS",
+        "key": "HAD|RUS|VER",
         "is_podigami": true,
         "occurrence": 1,
         "occurrence_in_year": 1,
