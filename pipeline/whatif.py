@@ -393,6 +393,50 @@ def compute_what_if(
     return leaderboard
 
 
+def _join_phrases(parts: list[str]) -> str:
+    if len(parts) <= 1:
+        return "".join(parts)
+    return f"{', '.join(parts[:-1])} and {parts[-1]}"
+
+
+def _formula15_guest_drive_notes(season: int, sessions: pd.DataFrame) -> list[str]:
+    """Notes for midfield drivers who raced some weekends for a big-4 team.
+
+    Those weekends are removed from their Formula 1.5 tally along with the team.
+    """
+    big = set(FORMULA15_TEAMS)
+    df = sessions[
+        (sessions["year"] == season)
+        & (sessions["session"].isin(["R", "S"]))
+        & (sessions["position"].notna())
+    ].copy()
+    if df.empty:
+        return []
+    df["team_norm"] = df["team"].fillna("").apply(normalize_team)
+
+    notes: list[str] = []
+    for _, grp in df.groupby("driver_code", sort=True):
+        on_big = grp[grp["team_norm"].isin(big)]
+        off_big = grp[~grp["team_norm"].isin(big)]
+        # Only midfield regulars (most weekends outside the big 4) get a note.
+        if on_big.empty or off_big["round"].nunique() <= on_big["round"].nunique():
+            continue
+        name = str(grp["driver_name"].dropna().iloc[-1]) if grp["driver_name"].notna().any() else ""
+        for team, team_rows in on_big.groupby("team_norm", sort=False):
+            events: list[str] = []
+            for rnd, rnd_rows in team_rows.groupby("round", sort=True):
+                sessions_run = set(rnd_rows["session"])
+                event = str(rnd_rows["event_name"].dropna().iloc[0]) if rnd_rows["event_name"].notna().any() else f"Round {rnd}"
+                if sessions_run == {"R", "S"}:
+                    events.append(f"the {event} and Sprint")
+                elif sessions_run == {"S"}:
+                    events.append(f"the {event} Sprint")
+                else:
+                    events.append(f"the {event}")
+            notes.append(f"{name} raced for {team} at {_join_phrases(events)}.")
+    return notes
+
+
 def compute_formula15(
     season: int,
     sessions: pd.DataFrame | None = None,
@@ -400,6 +444,10 @@ def compute_formula15(
     """Rescored midfield championship with the big 4 teams removed."""
     if season < FORMULA15_START or season > CURRENT_SEASON:
         raise ValueError(f"Formula 1.5 is not available for season {season}")
+    if sessions is None:
+        from ingest import load_sessions
+
+        sessions = load_sessions()
     leaderboard = compute_what_if(
         season=season,
         remove_type="team",
@@ -408,7 +456,7 @@ def compute_formula15(
         sessions=sessions,
     )
     leaderboard.pop("what_if", None)
-    extra = FORMULA15_NOTES.get(season) or []
+    extra = _formula15_guest_drive_notes(season, sessions) + list(FORMULA15_NOTES.get(season) or [])
     if extra:
         notes = list(leaderboard.get("notes") or [])
         notes.extend(extra)

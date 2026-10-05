@@ -19,12 +19,9 @@ FORMULA15_TEAMS: list[str] = [
     "Ferrari",
     "McLaren",
 ]
-# Formula 1.5-only notes (not shown on the main championship chart).
-FORMULA15_NOTES: dict[int, list[str]] = {
-    2026: [
-        "Netherlands: Liam Lawson raced for Red Bull Racing at the Dutch Grand Prix and Sprint.",
-    ],
-}
+# Extra Formula 1.5-only notes (not shown on the main championship chart).
+# Midfield drivers' guest drives for a big-4 team are noted automatically.
+FORMULA15_NOTES: dict[int, list[str]] = {}
 
 # Drivers' championship dropped-scores (constructors counted all from 1979+).
 # 1981–1990: best 11 overall. 1980: best 5 from each half of a 14-race season.
@@ -234,7 +231,8 @@ TEAM_ALIASES: dict[str, str] = {
     "Leyton House": "March",
 }
 
-# 2026 calendar (round -> event name). Bahrain & Saudi were cancelled (22 races).
+# 2026 calendar (round -> event name). Saudi was cancelled; Bahrain was moved to
+# Kuala Lumpur as round 16 (23 races).
 RACES_2026: dict[int, str] = {
     1: "Australian Grand Prix",
     2: "Chinese Grand Prix",
@@ -251,17 +249,18 @@ RACES_2026: dict[int, str] = {
     13: "Italian Grand Prix",
     14: "Madrid Grand Prix",
     15: "Azerbaijan Grand Prix",
-    16: "Singapore Grand Prix",
-    17: "United States Grand Prix",
-    18: "Mexico City Grand Prix",
-    19: "São Paulo Grand Prix",
-    20: "Las Vegas Grand Prix",
-    21: "Qatar Grand Prix",
-    22: "Abu Dhabi Grand Prix",
+    16: "Bahrain Grand Prix",
+    17: "Singapore Grand Prix",
+    18: "United States Grand Prix",
+    19: "Mexico City Grand Prix",
+    20: "São Paulo Grand Prix",
+    21: "Las Vegas Grand Prix",
+    22: "Qatar Grand Prix",
+    23: "Abu Dhabi Grand Prix",
 }
 
 # Sprint weekends in 2026 (round numbers with a sprint race)
-SPRINT_ROUNDS_2026: list[int] = [2, 4, 5, 9, 12, 16]
+SPRINT_ROUNDS_2026: list[int] = [2, 4, 5, 9, 12, 17]
 
 POINTS_SYSTEM = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1]
 SPRINT_POINTS_SYSTEM = [8, 7, 6, 5, 4, 3, 2, 1]
