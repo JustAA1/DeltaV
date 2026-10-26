@@ -16,32 +16,63 @@ export const DEFAULT_WHAT_IF_TEAM_COLOR = '#27F4D2'
 export const DEFAULT_POINTS_SEASON = 2021
 export const DEFAULT_POINTS_FROM = 2007
 
-/** Static precomputed payloads for hosted default scenarios (no live API). */
-export const DEFAULT_REMOVE_WHAT_IF_PATH = '/api/whatif_remove_2026_mercedes.json'
+/** Static precomputed payloads for hosted scenarios (no live API). */
 export const DEFAULT_POINTS_WHAT_IF_PATH = '/api/whatif_points_2021_from_2007.json'
 
-export function isDefaultRemoveSelection(
+interface HostedRemoveWhatIf {
+  season: number
+  removeType: 'driver' | 'team'
+  /** Team name or driver code. */
+  value: string
+  path: string
+}
+
+/** Keep in sync with HOSTED_REMOVE_WHAT_IFS in pipeline/sync_site_api.py. */
+export const HOSTED_REMOVE_WHAT_IFS: HostedRemoveWhatIf[] = [
+  {
+    season: DEFAULT_WHAT_IF_SEASON,
+    removeType: 'team',
+    value: DEFAULT_WHAT_IF_TEAM,
+    path: '/api/whatif_remove_2026_mercedes.json',
+  },
+  {
+    season: 2026,
+    removeType: 'driver',
+    value: 'ANT',
+    path: '/api/whatif_remove_2026_antonelli.json',
+  },
+]
+
+function findHostedRemove(
+  season: number,
+  entityType: 'driver' | 'team',
+  selectedValues: string[],
+): HostedRemoveWhatIf | undefined {
+  if (selectedValues.length !== 1) return undefined
+  const value = selectedValues[0].trim().toLowerCase()
+  return HOSTED_REMOVE_WHAT_IFS.find(
+    (h) => h.season === season && h.removeType === entityType && h.value.toLowerCase() === value,
+  )
+}
+
+export function isHostedRemoveSelection(
   season: number,
   entityType: 'driver' | 'team',
   selectedValues: string[],
 ): boolean {
-  if (season !== DEFAULT_WHAT_IF_SEASON || entityType !== 'team' || selectedValues.length !== 1) {
-    return false
-  }
-  const value = selectedValues[0].trim().toLowerCase()
-  return value === DEFAULT_WHAT_IF_TEAM.toLowerCase()
+  return findHostedRemove(season, entityType, selectedValues) !== undefined
 }
 
 export function isDefaultPointsSelection(season: number, pointsFrom: number): boolean {
   return season === DEFAULT_POINTS_SEASON && pointsFrom === DEFAULT_POINTS_FROM
 }
 
-export function isDefaultRemoveDraft(draft: RemoveWhatIfDraft): boolean {
-  return isDefaultRemoveSelection(
-    draft.season,
-    draft.removeType,
-    draft.removes.map((r) => (draft.removeType === 'driver' ? r.id ?? r.name : r.name)),
-  )
+function removeDraftValues(draft: RemoveWhatIfDraft): string[] {
+  return draft.removes.map((r) => (draft.removeType === 'driver' ? r.id ?? r.name : r.name))
+}
+
+export function isHostedRemoveDraft(draft: RemoveWhatIfDraft): boolean {
+  return isHostedRemoveSelection(draft.season, draft.removeType, removeDraftValues(draft))
 }
 
 export function isDefaultPointsDraft(draft: PointsWhatIfDraft): boolean {
@@ -52,13 +83,12 @@ export function isDefaultPointsDraft(draft: PointsWhatIfDraft): boolean {
 export function isHostedWhatIfDraft(draft: WhatIfDraft | null | undefined): boolean {
   if (!draft) return false
   if (draft.kind === 'points') return isDefaultPointsDraft(draft)
-  return isDefaultRemoveDraft(draft)
+  return isHostedRemoveDraft(draft)
 }
 
 export function hostedWhatIfPath(draft: WhatIfDraft): string | null {
-  if (draft.kind === 'points' && isDefaultPointsDraft(draft)) return DEFAULT_POINTS_WHAT_IF_PATH
-  if (draft.kind === 'remove' && isDefaultRemoveDraft(draft)) return DEFAULT_REMOVE_WHAT_IF_PATH
-  return null
+  if (draft.kind === 'points') return isDefaultPointsDraft(draft) ? DEFAULT_POINTS_WHAT_IF_PATH : null
+  return findHostedRemove(draft.season, draft.removeType, removeDraftValues(draft))?.path ?? null
 }
 
 export async function loadHostedWhatIf(draft: WhatIfDraft): Promise<SeasonLeaderboard> {

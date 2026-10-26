@@ -40,7 +40,7 @@
     "last_occurred_event": null
   },
   "all_time": {
-    "total_races": 838,
+    "total_races": 839,
     "podigamis": 446,
     "one_time_only": 305,
     "top_trios": [
@@ -3527,6 +3527,66 @@
         "last_event_name": "Portuguese Grand Prix"
       },
       {
+        "key": "ANT|LEC|VER",
+        "count": 3,
+        "is_podigami": false,
+        "podium": [
+          {
+            "position": 1,
+            "code": "ANT",
+            "name": "Andrea Kimi Antonelli",
+            "team": "Mercedes",
+            "color": "#27F4D2",
+            "image": "/drivers/antonelli-kimi.png"
+          },
+          {
+            "position": 2,
+            "code": "LEC",
+            "name": "Charles Leclerc",
+            "team": "Ferrari",
+            "color": "#E8002D",
+            "image": "/drivers/leclerc-charles.png"
+          },
+          {
+            "position": 3,
+            "code": "VER",
+            "name": "Max Verstappen",
+            "team": "Red Bull Racing",
+            "color": "#3671C6",
+            "image": "/drivers/verstappen-max.png"
+          }
+        ],
+        "drivers": [
+          {
+            "code": "ANT",
+            "name": "Andrea Kimi Antonelli",
+            "team": "Mercedes",
+            "color": "#27F4D2",
+            "image": "/drivers/antonelli-kimi.png",
+            "position": 1
+          },
+          {
+            "code": "LEC",
+            "name": "Charles Leclerc",
+            "team": "Ferrari",
+            "color": "#E8002D",
+            "image": "/drivers/leclerc-charles.png",
+            "position": 2
+          },
+          {
+            "code": "VER",
+            "name": "Max Verstappen",
+            "team": "Red Bull Racing",
+            "color": "#3671C6",
+            "image": "/drivers/verstappen-max.png",
+            "position": 3
+          }
+        ],
+        "first_year": 2026,
+        "last_year": 2026,
+        "last_event_name": "United States Grand Prix"
+      },
+      {
         "key": "ANT|NOR|VER",
         "count": 3,
         "is_podigami": false,
@@ -5565,66 +5625,6 @@
         "first_year": 1980,
         "last_year": 1980,
         "last_event_name": "United States Grand Prix"
-      },
-      {
-        "key": "ANT|LEC|VER",
-        "count": 2,
-        "is_podigami": false,
-        "podium": [
-          {
-            "position": 1,
-            "code": "VER",
-            "name": "Max Verstappen",
-            "team": "Red Bull Racing",
-            "color": "#3671C6",
-            "image": "/drivers/verstappen-max.png"
-          },
-          {
-            "position": 2,
-            "code": "LEC",
-            "name": "Charles Leclerc",
-            "team": "Ferrari",
-            "color": "#E8002D",
-            "image": "/drivers/leclerc-charles.png"
-          },
-          {
-            "position": 3,
-            "code": "ANT",
-            "name": "Kimi Antonelli",
-            "team": "Mercedes",
-            "color": "#27F4D2",
-            "image": "/drivers/antonelli-kimi.png"
-          }
-        ],
-        "drivers": [
-          {
-            "code": "VER",
-            "name": "Max Verstappen",
-            "team": "Red Bull Racing",
-            "color": "#3671C6",
-            "image": "/drivers/verstappen-max.png",
-            "position": 1
-          },
-          {
-            "code": "LEC",
-            "name": "Charles Leclerc",
-            "team": "Ferrari",
-            "color": "#E8002D",
-            "image": "/drivers/leclerc-charles.png",
-            "position": 2
-          },
-          {
-            "code": "ANT",
-            "name": "Kimi Antonelli",
-            "team": "Mercedes",
-            "color": "#27F4D2",
-            "image": "/drivers/antonelli-kimi.png",
-            "position": 3
-          }
-        ],
-        "first_year": 2026,
-        "last_year": 2026,
-        "last_event_name": "Singapore Grand Prix"
       },
       {
         "key": "ANT|HAM|VER",
@@ -52106,7 +52106,7 @@
       },
       {
         "decade": "2020s",
-        "races": 148,
+        "races": 149,
         "podigamis": 68,
         "top_trios": [
           {
@@ -53012,6 +53012,66 @@
             "last_event_name": "Mexico City Grand Prix"
           },
           {
+            "key": "ANT|LEC|VER",
+            "count": 3,
+            "is_podigami": false,
+            "podium": [
+              {
+                "position": 1,
+                "code": "ANT",
+                "name": "Andrea Kimi Antonelli",
+                "team": "Mercedes",
+                "color": "#27F4D2",
+                "image": "/drivers/antonelli-kimi.png"
+              },
+              {
+                "position": 2,
+                "code": "LEC",
+                "name": "Charles Leclerc",
+                "team": "Ferrari",
+                "color": "#E8002D",
+                "image": "/drivers/leclerc-charles.png"
+              },
+              {
+                "position": 3,
+                "code": "VER",
+                "name": "Max Verstappen",
+                "team": "Red Bull Racing",
+                "color": "#3671C6",
+                "image": "/drivers/verstappen-max.png"
+              }
+            ],
+            "drivers": [
+              {
+                "code": "ANT",
+                "name": "Andrea Kimi Antonelli",
+                "team": "Mercedes",
+                "color": "#27F4D2",
+                "image": "/drivers/antonelli-kimi.png",
+                "position": 1
+              },
+              {
+                "code": "LEC",
+                "name": "Charles Leclerc",
+                "team": "Ferrari",
+                "color": "#E8002D",
+                "image": "/drivers/leclerc-charles.png",
+                "position": 2
+              },
+              {
+                "code": "VER",
+                "name": "Max Verstappen",
+                "team": "Red Bull Racing",
+                "color": "#3671C6",
+                "image": "/drivers/verstappen-max.png",
+                "position": 3
+              }
+            ],
+            "first_year": 2026,
+            "last_year": 2026,
+            "last_event_name": "United States Grand Prix"
+          },
+          {
             "key": "ANT|NOR|VER",
             "count": 3,
             "is_podigami": false,
@@ -53550,66 +53610,6 @@
             "first_year": 2021,
             "last_year": 2022,
             "last_event_name": "Canadian Grand Prix"
-          },
-          {
-            "key": "ANT|LEC|VER",
-            "count": 2,
-            "is_podigami": false,
-            "podium": [
-              {
-                "position": 1,
-                "code": "VER",
-                "name": "Max Verstappen",
-                "team": "Red Bull Racing",
-                "color": "#3671C6",
-                "image": "/drivers/verstappen-max.png"
-              },
-              {
-                "position": 2,
-                "code": "LEC",
-                "name": "Charles Leclerc",
-                "team": "Ferrari",
-                "color": "#E8002D",
-                "image": "/drivers/leclerc-charles.png"
-              },
-              {
-                "position": 3,
-                "code": "ANT",
-                "name": "Kimi Antonelli",
-                "team": "Mercedes",
-                "color": "#27F4D2",
-                "image": "/drivers/antonelli-kimi.png"
-              }
-            ],
-            "drivers": [
-              {
-                "code": "VER",
-                "name": "Max Verstappen",
-                "team": "Red Bull Racing",
-                "color": "#3671C6",
-                "image": "/drivers/verstappen-max.png",
-                "position": 1
-              },
-              {
-                "code": "LEC",
-                "name": "Charles Leclerc",
-                "team": "Ferrari",
-                "color": "#E8002D",
-                "image": "/drivers/leclerc-charles.png",
-                "position": 2
-              },
-              {
-                "code": "ANT",
-                "name": "Kimi Antonelli",
-                "team": "Mercedes",
-                "color": "#27F4D2",
-                "image": "/drivers/antonelli-kimi.png",
-                "position": 3
-              }
-            ],
-            "first_year": 2026,
-            "last_year": 2026,
-            "last_event_name": "Singapore Grand Prix"
           },
           {
             "key": "ANT|HAM|VER",
@@ -56377,6 +56377,45 @@
     "recent_races": [
       {
         "year": 2026,
+        "round": 18,
+        "event_name": "United States Grand Prix",
+        "country": "United States",
+        "podium": [
+          {
+            "position": 1,
+            "code": "ANT",
+            "name": "Andrea Kimi Antonelli",
+            "team": "Mercedes",
+            "color": "#27F4D2",
+            "image": "/drivers/antonelli-kimi.png"
+          },
+          {
+            "position": 2,
+            "code": "LEC",
+            "name": "Charles Leclerc",
+            "team": "Ferrari",
+            "color": "#E8002D",
+            "image": "/drivers/leclerc-charles.png"
+          },
+          {
+            "position": 3,
+            "code": "VER",
+            "name": "Max Verstappen",
+            "team": "Red Bull Racing",
+            "color": "#3671C6",
+            "image": "/drivers/verstappen-max.png"
+          }
+        ],
+        "key": "ANT|LEC|VER",
+        "is_podigami": false,
+        "occurrence": 3,
+        "occurrence_in_year": 3,
+        "trio_count": 3,
+        "last_occurred_year": 2026,
+        "last_occurred_event": "Singapore Grand Prix"
+      },
+      {
+        "year": 2026,
         "round": 17,
         "event_name": "Singapore Grand Prix",
         "country": "Singapore",
@@ -56410,7 +56449,7 @@
         "is_podigami": false,
         "occurrence": 2,
         "occurrence_in_year": 2,
-        "trio_count": 2,
+        "trio_count": 3,
         "last_occurred_year": 2026,
         "last_occurred_event": "Belgian Grand Prix"
       },
@@ -56683,7 +56722,7 @@
         "is_podigami": true,
         "occurrence": 1,
         "occurrence_in_year": 1,
-        "trio_count": 2,
+        "trio_count": 3,
         "last_occurred_year": null,
         "last_occurred_event": null
       },
@@ -57505,45 +57544,6 @@
         "trio_count": 5,
         "last_occurred_year": 2025,
         "last_occurred_event": "Austrian Grand Prix"
-      },
-      {
-        "year": 2025,
-        "round": 12,
-        "event_name": "British Grand Prix",
-        "country": "United Kingdom",
-        "podium": [
-          {
-            "position": 1,
-            "code": "NOR",
-            "name": "Lando Norris",
-            "team": "McLaren",
-            "color": "#FF8000",
-            "image": "/drivers/norris-lando.png"
-          },
-          {
-            "position": 2,
-            "code": "PIA",
-            "name": "Oscar Piastri",
-            "team": "McLaren",
-            "color": "#FF8000",
-            "image": "/drivers/piastri-oscar.png"
-          },
-          {
-            "position": 3,
-            "code": "HUL",
-            "name": "Nico Hulkenberg",
-            "team": "Kick Sauber",
-            "color": "#52E252",
-            "image": "/drivers/hulkenberg-nico.png"
-          }
-        ],
-        "key": "HUL|NOR|PIA",
-        "is_podigami": true,
-        "occurrence": 1,
-        "occurrence_in_year": 1,
-        "trio_count": 1,
-        "last_occurred_year": null,
-        "last_occurred_event": null
       }
     ]
   },
@@ -135429,21 +135429,21 @@
     },
     "2026": {
       "year": 2026,
-      "total_races": 17,
+      "total_races": 18,
       "podigamis": 11,
       "top_trios": [
         {
           "key": "ANT|LEC|VER",
-          "count": 2,
+          "count": 3,
           "is_podigami": false,
           "podium": [
             {
               "position": 1,
-              "code": "VER",
-              "name": "Max Verstappen",
-              "team": "Red Bull Racing",
-              "color": "#3671C6",
-              "image": "/drivers/verstappen-max.png"
+              "code": "ANT",
+              "name": "Andrea Kimi Antonelli",
+              "team": "Mercedes",
+              "color": "#27F4D2",
+              "image": "/drivers/antonelli-kimi.png"
             },
             {
               "position": 2,
@@ -135455,20 +135455,20 @@
             },
             {
               "position": 3,
-              "code": "ANT",
-              "name": "Kimi Antonelli",
-              "team": "Mercedes",
-              "color": "#27F4D2",
-              "image": "/drivers/antonelli-kimi.png"
-            }
-          ],
-          "drivers": [
-            {
               "code": "VER",
               "name": "Max Verstappen",
               "team": "Red Bull Racing",
               "color": "#3671C6",
-              "image": "/drivers/verstappen-max.png",
+              "image": "/drivers/verstappen-max.png"
+            }
+          ],
+          "drivers": [
+            {
+              "code": "ANT",
+              "name": "Andrea Kimi Antonelli",
+              "team": "Mercedes",
+              "color": "#27F4D2",
+              "image": "/drivers/antonelli-kimi.png",
               "position": 1
             },
             {
@@ -135480,17 +135480,17 @@
               "position": 2
             },
             {
-              "code": "ANT",
-              "name": "Kimi Antonelli",
-              "team": "Mercedes",
-              "color": "#27F4D2",
-              "image": "/drivers/antonelli-kimi.png",
+              "code": "VER",
+              "name": "Max Verstappen",
+              "team": "Red Bull Racing",
+              "color": "#3671C6",
+              "image": "/drivers/verstappen-max.png",
               "position": 3
             }
           ],
           "first_year": 2026,
           "last_year": 2026,
-          "last_event_name": "Singapore Grand Prix"
+          "last_event_name": "United States Grand Prix"
         },
         {
           "key": "ANT|HAM|VER",
@@ -135616,16 +135616,16 @@
       "all_trios_ranked": [
         {
           "key": "ANT|LEC|VER",
-          "count": 2,
+          "count": 3,
           "is_podigami": false,
           "podium": [
             {
               "position": 1,
-              "code": "VER",
-              "name": "Max Verstappen",
-              "team": "Red Bull Racing",
-              "color": "#3671C6",
-              "image": "/drivers/verstappen-max.png"
+              "code": "ANT",
+              "name": "Andrea Kimi Antonelli",
+              "team": "Mercedes",
+              "color": "#27F4D2",
+              "image": "/drivers/antonelli-kimi.png"
             },
             {
               "position": 2,
@@ -135637,20 +135637,20 @@
             },
             {
               "position": 3,
-              "code": "ANT",
-              "name": "Kimi Antonelli",
-              "team": "Mercedes",
-              "color": "#27F4D2",
-              "image": "/drivers/antonelli-kimi.png"
-            }
-          ],
-          "drivers": [
-            {
               "code": "VER",
               "name": "Max Verstappen",
               "team": "Red Bull Racing",
               "color": "#3671C6",
-              "image": "/drivers/verstappen-max.png",
+              "image": "/drivers/verstappen-max.png"
+            }
+          ],
+          "drivers": [
+            {
+              "code": "ANT",
+              "name": "Andrea Kimi Antonelli",
+              "team": "Mercedes",
+              "color": "#27F4D2",
+              "image": "/drivers/antonelli-kimi.png",
               "position": 1
             },
             {
@@ -135662,17 +135662,17 @@
               "position": 2
             },
             {
-              "code": "ANT",
-              "name": "Kimi Antonelli",
-              "team": "Mercedes",
-              "color": "#27F4D2",
-              "image": "/drivers/antonelli-kimi.png",
+              "code": "VER",
+              "name": "Max Verstappen",
+              "team": "Red Bull Racing",
+              "color": "#3671C6",
+              "image": "/drivers/verstappen-max.png",
               "position": 3
             }
           ],
           "first_year": 2026,
           "last_year": 2026,
-          "last_event_name": "Singapore Grand Prix"
+          "last_event_name": "United States Grand Prix"
         },
         {
           "key": "ANT|HAM|VER",
@@ -136398,6 +136398,45 @@
       "races": [
         {
           "year": 2026,
+          "round": 18,
+          "event_name": "United States Grand Prix",
+          "country": "United States",
+          "podium": [
+            {
+              "position": 1,
+              "code": "ANT",
+              "name": "Andrea Kimi Antonelli",
+              "team": "Mercedes",
+              "color": "#27F4D2",
+              "image": "/drivers/antonelli-kimi.png"
+            },
+            {
+              "position": 2,
+              "code": "LEC",
+              "name": "Charles Leclerc",
+              "team": "Ferrari",
+              "color": "#E8002D",
+              "image": "/drivers/leclerc-charles.png"
+            },
+            {
+              "position": 3,
+              "code": "VER",
+              "name": "Max Verstappen",
+              "team": "Red Bull Racing",
+              "color": "#3671C6",
+              "image": "/drivers/verstappen-max.png"
+            }
+          ],
+          "key": "ANT|LEC|VER",
+          "is_podigami": false,
+          "occurrence": 3,
+          "occurrence_in_year": 3,
+          "trio_count": 3,
+          "last_occurred_year": 2026,
+          "last_occurred_event": "Singapore Grand Prix"
+        },
+        {
+          "year": 2026,
           "round": 17,
           "event_name": "Singapore Grand Prix",
           "country": "Singapore",
@@ -136431,7 +136470,7 @@
           "is_podigami": false,
           "occurrence": 2,
           "occurrence_in_year": 2,
-          "trio_count": 2,
+          "trio_count": 3,
           "last_occurred_year": 2026,
           "last_occurred_event": "Belgian Grand Prix"
         },
@@ -136704,7 +136743,7 @@
           "is_podigami": true,
           "occurrence": 1,
           "occurrence_in_year": 1,
-          "trio_count": 2,
+          "trio_count": 3,
           "last_occurred_year": null,
           "last_occurred_event": null
         },

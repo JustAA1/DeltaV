@@ -33,29 +33,39 @@ def write_points_system_changes_json(dest_dir: Path | None = None) -> Path:
     return path
 
 
-def write_hosted_what_if_defaults(dest_dir: Path | None = None) -> Path | None:
-    """Refresh the hosted remove-from-grid What If default (Mercedes, current season).
+# Hosted remove-from-grid scenarios for the current season: (file, remove type, identifiers).
+# Keep in sync with HOSTED_REMOVE_WHAT_IFS in site/src/lib/whatIfDefaults.ts.
+HOSTED_REMOVE_WHAT_IFS: tuple[tuple[str, str, list[str]], ...] = (
+    ("whatif_remove_2026_mercedes.json", "team", ["Mercedes"]),
+    ("whatif_remove_2026_antonelli.json", "driver", ["ANT"]),
+)
+
+
+def write_hosted_what_if_defaults(dest_dir: Path | None = None) -> list[Path]:
+    """Refresh the hosted remove-from-grid What If scenarios (current season).
 
     The 2021←2007 points-system payload is historical and not rewritten here.
     """
     out_dir = SITE_API_DIR if dest_dir is None else Path(dest_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    try:
-        from whatif import compute_what_if
+    from whatif import compute_what_if
 
-        payload = compute_what_if(
-            season=CURRENT_SEASON,
-            remove_type="team",
-            identifiers=["Mercedes"],
-        )
-    except Exception as exc:
-        logger.warning("Hosted What If refresh failed: %s", exc)
-        return None
-
-    path = out_dir / "whatif_remove_2026_mercedes.json"
-    path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-    logger.info("Wrote hosted What If → %s", path)
-    return path
+    written: list[Path] = []
+    for filename, remove_type, identifiers in HOSTED_REMOVE_WHAT_IFS:
+        try:
+            payload = compute_what_if(
+                season=CURRENT_SEASON,
+                remove_type=remove_type,
+                identifiers=identifiers,
+            )
+        except Exception as exc:
+            logger.warning("Hosted What If refresh failed for %s: %s", filename, exc)
+            continue
+        path = out_dir / filename
+        path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+        logger.info("Wrote hosted What If → %s", path)
+        written.append(path)
+    return written
 
 
 def sync_replays() -> int:
@@ -106,8 +116,7 @@ def sync_site_api() -> None:
             shutil.copy2(path, SITE_API_DIR / name)
             copied += 1
 
-    if write_hosted_what_if_defaults(SITE_API_DIR) is not None:
-        copied += 1
+    copied += len(write_hosted_what_if_defaults(SITE_API_DIR))
 
     copied += sync_replays()
 

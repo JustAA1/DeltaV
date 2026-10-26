@@ -11,7 +11,7 @@ import {
   DEFAULT_WHAT_IF_TEAM,
   DEFAULT_WHAT_IF_TEAM_COLOR,
   isDefaultPointsSelection,
-  isDefaultRemoveSelection,
+  isHostedRemoveSelection,
 } from '../lib/whatIfDefaults'
 import { useLiveWhatIfAvailable } from '../lib/useLiveWhatIfAvailable'
 import {
@@ -345,12 +345,12 @@ export function WhatIfPage() {
   }, [pointsSystemKeys, pointsSeason, pointsFrom])
 
   const canSubmitRemove = removals.length > 0
-  const removeIsDefault = isDefaultRemoveSelection(season, entityType, selectedValues)
+  const removeIsHosted = isHostedRemoveSelection(season, entityType, selectedValues)
   const pointsIsDefault = isDefaultPointsSelection(pointsSeason, pointsFrom)
-  const removeCanRun = liveWhatIf || removeIsDefault
+  const removeCanRun = liveWhatIf || removeIsHosted
   const pointsCanRun = liveWhatIf || pointsIsDefault
-  // Notice only when leaving hosted defaults (and live API isn't serving customs)
-  const showLocalOnlyWarning = (!removeIsDefault || !pointsIsDefault) && !liveWhatIf
+  // Notice only when leaving hosted scenarios (and live API isn't serving customs)
+  const showLocalOnlyWarning = (!removeIsHosted || !pointsIsDefault) && !liveWhatIf
 
   const markRemoveTouched = () => {
     removeFormTouched.current = true

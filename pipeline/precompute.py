@@ -119,7 +119,7 @@ def main() -> int:
             logger.warning("Replay build failed (continuing): %s", exc)
 
     step += 1
-    _step(step, total_steps, "Sync site/public/api (+ Mercedes 2026 What If)")
+    _step(step, total_steps, "Sync site/public/api (+ hosted 2026 What Ifs)")
     _finish_outputs()
 
     elapsed = time.monotonic() - started
