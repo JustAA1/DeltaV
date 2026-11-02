@@ -17,6 +17,7 @@ from config import (
     POINTS_SYSTEM,
     SPRINT_POINTS_SYSTEM,
     display_event_name,
+    normalize_team,
 )
 
 logger = logging.getLogger(__name__)
@@ -50,6 +51,18 @@ def _safe_session_attr(session, attr: str, default=None):
     except Exception as exc:
         logger.debug("Could not read session.%s: %s", attr, exc)
         return default
+
+
+def _team_name(year: int, raw) -> str:
+    """Canonical team name for the current season.
+
+    Jolpica-F1 fallback results use different spellings ("RB F1 Team") than live
+    timing. Older seasons keep their exact names for era-correct team colors.
+    """
+    team = str(raw or "")
+    if year == CURRENT_SEASON and team:
+        return normalize_team(team)
+    return team
 
 
 def _points_from_result(session_type: str, position: int, raw_points) -> float:
@@ -116,7 +129,7 @@ def _session_rows(year: int, rnd: int, session_type: str, *, results_only: bool 
                     "driver_number": int(r.get("DriverNumber", 0) or 0),
                     "driver_code": str(r.get("Abbreviation", "") or ""),
                     "driver_name": str(r.get("FullName", "") or r.get("BroadcastName", "") or ""),
-                    "team": str(r.get("TeamName", "") or ""),
+                    "team": _team_name(year, r.get("TeamName")),
                     "grid_position": _safe_int(r.get("GridPosition")),
                     "position": position,
                     "status": str(r.get("Status", "") or ""),
@@ -176,7 +189,7 @@ def _session_rows(year: int, rnd: int, session_type: str, *, results_only: bool 
                         "driver_number": driver_num,
                         "driver_code": _driver_field(driver_info, "Abbreviation"),
                         "driver_name": _driver_field(driver_info, "FullName"),
-                        "team": _driver_field(driver_info, "TeamName"),
+                        "team": _team_name(year, _driver_field(driver_info, "TeamName")),
                         "grid_position": None,
                         "position": None,
                         "status": "",
